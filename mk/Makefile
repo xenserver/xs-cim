@@ -165,9 +165,9 @@ $(MY_SOURCES)/MANIFEST:
 
 $(MY_SOURCES)/xs-cim-src.tar.bz2:
 	mkdir -p $(@D)
-	tar -C $(REPO) -cjf $@ . --exclude=.hg \
-                                 --exclude=.hgignore \
-                                 --exclude-from=$(REPO)/.hgignore
+	tar -C $(REPO) -cjf $@ . --exclude=.git \
+                                 --exclude=.gitignore \
+                                 --exclude-from=$(REPO)/.gitignore
 
 clean:
 	( [ -f $(REPO)/Makefile ] && make -C $(REPO) distclean ) || true
