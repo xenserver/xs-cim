@@ -4,7 +4,7 @@ include $(B_BASE)/common.mk
 include $(B_BASE)/rpmbuild.mk
 
 REPONAME := xs-cim
-REPO := $(call hg_loc,$(REPONAME))
+REPO := $(call git_loc,$(REPONAME))
 
 LIBXENSERVER_BIN := $(PROJECT_OUTPUTDIR)/api-bindings/libxenserver-bin.tar.bz2
 LIBXENSERVER_SRC := $(PROJECT_OUTPUTDIR)/api-bindings/libxenserver-src.tar.bz2
