@@ -1,0 +1,34 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_ComputerSystemCreation
+// ==================================================================
+[Provider ("cmpi:Xen_ComputerSystemIndication"),
+ Description (
+	"A class derived from CIM_InstCreation to represent "
+	"indications for XenServer virtual machine creation events.")]
+class Xen_ComputerSystemCreation : CIM_InstCreation
+{
+};
+
+// ==================================================================
+// Xen_ComputerSystemDeletion
+// ==================================================================
+[Provider ("cmpi:Xen_ComputerSystemIndication"),
+ Description (
+        "A class derived from CIM_InstDeletion to represent "
+        "indications for XenServer virtual machine destruction events.")]
+class Xen_ComputerSystemDeletion : CIM_InstDeletion
+{
+};
+
+// ==================================================================
+// Xen_ComputerSystemModification
+// ==================================================================
+[Provider ("cmpi:Xen_ComputerSystemIndication"),
+ Description (
+        "A class derived from CIM_InstModification to represent "
+        "indications for XenServer virtual machine modification events.")]
+class Xen_ComputerSystemModification : CIM_InstModification
+{
+};

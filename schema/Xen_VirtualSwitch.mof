@@ -1,0 +1,99 @@
+// Copyright (c) 2009 Citrix Systems Inc.. All rights reserved.
+
+// ==================================================================
+// Xen_VirtualSwitch
+// ==================================================================
+[Provider ("cmpi:Xen_VirtualSwitch"),
+ Description (
+	"A class derived from CIM_ComputerSystem to represent "
+	"a Virtual Ethernet Switch. The switch connects to "
+	"host network ports (host NICs) for external connectivity "
+	"and to virtual systems to provide connectivity to virtual machines. "
+	"This class corresponds to the XenServer 'network' in the xen-api "
+	"object model. This is modeled after a CIM_ComputerSystem "
+	"since a VirtualSwitch is considered a 'specialized' version of "
+	"a virtual computer system that performs bridging functions.")]
+class Xen_VirtualSwitch : CIM_ComputerSystem
+{
+};
+
+// =================================================================
+// Xen_VirtualSwitchSettingData
+// =================================================================
+[Provider ("cmpi:Xen_VirtualSwitchSettingData"),
+ Description (
+        "The virtualization specific setting data for the virtual switch."
+	" This class may be used as a definition of the virtual switch while"
+	" creating it, or as the state of an already defined virtual switch.")]
+class Xen_VirtualSwitchSettingData : CIM_VirtualEthernetSwitchSettingData
+{
+   [Description ("Name of the network interface device this virtual switch "
+   "is attached to on the host")]
+   string HostInterface;
+
+   [Description ("Identifies if this virtual switch is connected to "
+   "all the hosts in the pool or not. If 'true', virtual machines connected "
+   "to this virtual switch can reach each other even if they are hosted "
+   "on different hosts.")]
+   Boolean Shared;
+
+   [Description ("Friendly name of this bridge")]
+   string Bridge;
+
+   [Description ("Other user configuration that may be applicable to the switch. "
+   "Maps to the other_config property of the switch in Xen.")]
+   string OtherConfig[];
+};
+
+
+// =================================================================
+// Xen_VirtualSwitchManagementService
+// =================================================================
+[Provider ("cmpi:Xen_VirtualSwitchManagementService"),
+ Description (
+        "A Service Class derived from CIM_VirtualSystemManagementService to allow "
+	"creation/deletion and modification of virtual switches. This is modelled "
+	"after the CIM_VirtualSystemManagementService since a Xen_VirtualSwich is "
+	"modeled after a virtual computer system. Wherever any of the methods of "
+	"this service refer to a CIM_ComputerSystem, it refers to a Xen_VirtualSwitch. "
+	"Also, the only 'resources' that can be configured (add/remove/modify) on "
+	"the VirtualSwitch using methods available on this service are instances of "
+	"Xen_HostNetworkPortSettingData instances (RASDs that represent host NICs) "
+	"to allow connectivity over host interfaces.")]
+class Xen_VirtualSwitchManagementService : CIM_VirtualSystemManagementService
+{
+};
+
+// =================================================================
+// Xen_VirtualSwitchPort
+// =================================================================
+[Provider ("cmpi:Xen_VirtualSwitchPort"),
+ Description (
+        "A Class derived from CIM_NetworkPort that represents "
+	"the Ethernet port on the Virtual Switch. The Network adapter/port "
+	"on the VM is connected to this port through a pair or LANEndpoint "
+	"objects to establish connectivity.")]
+class Xen_VirtualSwitchPort : CIM_NetworkPort
+{
+};
+
+// =================================================================
+// Xen_LANEndpoint
+// =================================================================
+[Provider ("cmpi:Xen_LANEndpoint"),
+ Description (
+        "A Class derived from CIM_LANEndpoint that represents "
+	"one end of a network connection, on the Virtual Switch end"
+	"or the Virtual Machine end. Each connection will contain 2 LAN "
+	"endpoints that represent the 2 ends of the connection. The "
+	"Xen_VirtualSwitch--->Xen_VirtuaSwitchPort---->Xen_VirtualSwitchLANEndpoint"
+	"===>Xen_ComputerSystemLANEndpoint--->Xen_NetworkPort--->Xen_ComputerSystem"
+	" represents the entire chain of a network connection.")]
+class Xen_ComputerSystemLANEndpoint : CIM_LANEndpoint
+{
+};
+class Xen_VirtualSwitchLANEndpoint : CIM_LANEndpoint
+{
+};
+
+

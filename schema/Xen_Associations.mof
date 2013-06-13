@@ -1,0 +1,1433 @@
+[Association,
+ Provider ("cmpi:Xen_HostedVirtualSystemSnapshotService")]
+class Xen_HostedVirtualSystemSnapshotService : CIM_HostedService
+{
+   [Override("Dependent")]
+   Xen_VirtualSystemSnapshotService REF Dependent;
+
+   [Override("Antecedent")]
+   Xen_HostComputerSystem REF Antecedent;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Association classes
+///////////////////////////////////////////////////////////////////////////////
+[Association,
+ Provider ("cmpi:Xen_AssociationProviderCommon")]
+class Xen_HostedVirtualSystemMigrationService : CIM_HostedService
+{
+   [Override("Dependent")]
+   Xen_VirtualSystemMigrationService REF Dependent;
+
+   [Override("Antecedent")]
+   Xen_HostComputerSystem REF Antecedent;
+};
+
+[Association,
+ Provider ("cmpi:Xen_AssociationProviderCommon")]
+class Xen_VirtualSystemMigrationServiceCapabilities : CIM_ElementCapabilities
+{
+   [Override("ManagedElement"),
+    Description (
+	"The virtual system migration service.")]
+   Xen_VirtualSystemMigrationService REF ManagedElement;
+
+   [Override("Capabilities"),
+    Description (
+	"The Virtual System Migration Capabilities object "
+	"associated with the virtual system migration service.")]
+   Xen_VirtualSystemMigrationCapabilities REF Capabilities;
+};
+
+[Association,
+ Provider ("cmpi:Xen_AssociationProviderCommon"),
+ Description (
+	"A class derived from CIM_ServiceAffectsElement to represent "
+	"the association of the CIM_Service (virtual system migration service"
+        " with the virtual system it provides migration services for.")]
+class Xen_VirtualSystemMigrationServiceAffectsComputerSystem : 
+      CIM_ServiceAffectsElement
+{
+   [Override("AffectedElement")]
+   Xen_ComputerSystem REF AffectedElement;
+
+   [Override("AffectingElement")]
+   Xen_VirtualSystemMigrationService REF AffectingElement;
+
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+// Xen_VirtualSystemManagementServiceAffectsComputerSystem
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_VirtualSystemManagementServiceAffectsComputerSystem"),
+ Description (
+	"A class derived from CIM_ServiceAffectsElement to represent "
+	"the association of the CIM_Service (virtual system maangement service"
+        " with the virtual system it manages.")]
+class Xen_VirtualSystemManagementServiceAffectsComputerSystem : CIM_ServiceAffectsElement
+{
+   [Override("AffectedElement")]
+   Xen_ComputerSystem REF AffectedElement;
+
+   [Override("AffectingElement")]
+   Xen_VirtualSystemManagementService REF AffectingElement;
+
+};
+
+// ==================================================================
+// Xen_VSMSElementCapabilities
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_AssociationProviderCommon"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of a virtual system management service"
+	"instance with its capabilities.")]
+class Xen_VirtualSystemManagementServiceCapabilities : CIM_ElementCapabilities
+{
+   [Override("ManagedElement"),
+    Description (
+	"The virtual system management service.")]
+   Xen_VirtualSystemManagementService REF ManagedElement;
+
+   [Override("Capabilities"),
+    Description (
+	"The Virtual System Management Capabilities object "
+	"associated with the virtual system management service.")]
+   Xen_VirtualSystemManagementCapabilities REF Capabilities;
+};
+
+// Copyright (c) 2006 IBM. All rights reserved.
+
+[Association,
+ Provider ("cmpi:Xen_HostedVirtualSystemManagementService")]
+class Xen_HostedVirtualSystemManagementService : CIM_HostedService
+{
+   [Override("Dependent")]
+   Xen_VirtualSystemManagementService REF Dependent;
+
+   [Override("Antecedent")]
+   Xen_HostComputerSystem REF Antecedent;
+};
+
+ // Copyright (c) 2006 IBM. All rights reserved.
+//*******************************************************************/
+//               Associations
+//*******************************************************************/
+
+// =================================================================
+// Xen_ActiveConnection
+// =================================================================
+[Association,
+ Provider ("cmpi:Xen_ActiveConnection"),
+ Description (
+        "Association to represent the active network connection between"
+	"two LAN endpoints that connect a Virtual System to a Virtual "
+	"Ethernet switch.")]
+class Xen_ActiveConnection : CIM_ActiveConnection
+{
+    [Override ( "Antecedent" )]
+    Xen_ComputerSystemLANEndpoint REF Antecedent;
+
+    [Override ( "Dependent" )]
+    Xen_VirtualSwitchLANEndpoint REF Dependent;
+};
+
+// =================================================================
+// Xen_VirtualSwitchPortSAPImplementation
+// =================================================================
+[Association,
+ Provider ("cmpi:Xen_VirtualSwitchPortSAPImplementation"),
+ Description (
+        "Associates a Xen_VirtualSwitchPort object with its"
+	"LANEndpoint object.")]
+class Xen_VirtualSwitchPortSAPImplementation : CIM_DeviceSAPImplementation
+{
+      [Override ( "Antecedent" )]
+   Xen_VirtualSwitchPort REF Antecedent;
+
+      [Override ( "Dependent" )]
+   Xen_VirtualSwitchLANEndpoint REF Dependent;
+};
+
+// =================================================================
+// Xen_NetworkPortSAPImplementation
+// =================================================================
+[Association,
+ Provider ("cmpi:Xen_NetworkPortSAPImplementation"),
+ Description (
+        "Associates a Xen_NetworkPort object with its"
+	"LANEndpoint object.")]
+class Xen_NetworkPortSAPImplementation : CIM_DeviceSAPImplementation
+{
+      [Override ( "Antecedent" )]
+   Xen_NetworkPort REF Antecedent;
+
+      [Override ( "Dependent" )]
+   Xen_ComputerSystemLANEndpoint REF Dependent;
+};
+
+// =================================================================
+// Xen_ComputerSystemVirtualSwitchPort
+// =================================================================
+[Association,
+ Provider ("cmpi:Xen_VirtualSwitchVirtualSwitchPort"),
+ Description (
+	"Associates an instance of the Virtual Switch Port with "
+	"the Virtual Switch that hosts it.")]
+class Xen_VirtualSwitchVirtualSwitchPort : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   Xen_VirtualSwitchPort REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_VirtualSwitch REF GroupComponent;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_HostedMemory
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_HostedMemory"),
+ Description (
+	"A class derived from CIM_HostedDependency to represent "
+	"the association of a XenServer virtual machine's memory with "
+	"its host's memory.")]
+class Xen_HostedMemory : CIM_HostedDependency
+{
+   [Override("Dependent")]
+   Xen_Memory REF Dependent;
+
+   [Override("Antecedent")]
+   Xen_HostMemory REF Antecedent;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_HostedProcessor
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_HostedProcessor"),
+ Description (
+	"A class derived from CIM_HostedDependency to represent "
+	"the association of a XenServer virtual machine's virtual "
+	"processor with its host's processor.")]
+class Xen_HostedProcessor : CIM_HostedDependency
+{
+   [Override("Dependent")]
+   Xen_Processor REF Dependent;
+
+   [Override("Antecedent")]
+   Xen_HostProcessor REF Antecedent;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_HostedNetworkPort
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_HostedNetworkPort"),
+ Description (
+	"A class derived from CIM_HostedDependency to represent "
+	"the association of a XenServer virtual machine's "
+	"virtual network ports with the virtual switch's ports.")]
+class Xen_HostedNetworkPort : CIM_HostedDependency
+{
+   [Override("Dependent")]
+   Xen_NetworkPort REF Dependent;
+
+   [Override("Antecedent")]
+   Xen_VirtualSwitchPort REF Antecedent;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_HostedDisk
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_HostedDisk"),
+ Description (
+	"A class derived from CIM_HostedDependency to represent "
+	"the association of a XenServer virtual machine's virtual disk "
+	" device with its host's virtual disk image.")]
+class Xen_HostedDisk : CIM_HostedDependency
+{
+   [Override("Dependent")]
+   Xen_Disk REF Dependent;
+
+   [Override("Antecedent")]
+   Xen_DiskImage REF Antecedent;
+};
+
+// ==================================================================
+// Xen_HostedDiskDrive
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_HostedDiskDrive"),
+ Description (
+	"A class derived from CIM_HostedDependency to represent "
+	"the association of a XenServer virtual machine's disk "
+	"drives with the host's virtual disk image.")]
+class Xen_HostedDiskDrive : CIM_HostedDependency
+{
+   [Override("Dependent")]
+   Xen_DiskDrive REF Dependent;
+
+   [Override("Antecedent")]
+   Xen_DiskImage REF Antecedent;
+};
+
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_ComputerSystemMemory 
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ComputerSystemMemory"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer virtual machine "
+	"with its memory.")]
+class Xen_ComputerSystemMemory : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   Xen_Memory REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_ComputerSystem REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_ComputerSystemProcessor
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ComputerSystemProcessor"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer virtual machine with its "
+	"virtual processor device(s).")]
+class Xen_ComputerSystemProcessor : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   Xen_Processor REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_ComputerSystem REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_ComputerSystemDisk
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ComputerSystemDisk"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer virtual machine with its "
+	"virtual disk device(s).")]
+class Xen_ComputerSystemDisk : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   Xen_Disk REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_ComputerSystem REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_ComputerSystemDiskDrive
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ComputerSystemDiskDrive"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer virtual machine with its "
+	"virtual CD drive(s).")]
+class Xen_ComputerSystemDiskDrive : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   Xen_DiskDrive REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_ComputerSystem REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_ComputerSystemNetworkPort
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ComputerSystemNetworkPort"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer virtual machine with its "
+	"virtual network interface(s).")]
+class Xen_ComputerSystemNetworkPort : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   Xen_NetworkPort REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_ComputerSystem REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_ComputerSystemConsole
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ComputerSystemConsole"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer virtual machine with its "
+	"Console.")]
+class Xen_ComputerSystemConsole : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   Xen_Console REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_ComputerSystem REF GroupComponent;
+};
+
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_SystemDevice
+// ==================================================================
+[Association,
+ Provider ("cmpi:associationProviderCommon"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer virtual machine with its "
+	"virtual network interface(s).")]
+class Xen_SystemDevice : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   CIM_LogicalDevice REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_ComputerSystem REF GroupComponent;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_StorageSettingsDefineCapabilities
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_StorageSettingsDefineCapabilities"),
+ Description (
+	"A class derived from CIM_SettingsDefineState to represent "
+	"the association of a Xen_Storage instance with its extended "
+	"device specific configuration settings.")]
+class Xen_StorageSettingsDefineCapabilities : CIM_SettingsDefineCapabilities 
+{
+   [Override("GroupComponent")]
+   Xen_StorageAllocationCapabilities REF GroupComponent;
+
+   [Override("PartComponent")]
+   Xen_StorageCapabilitiesSettingData REF PartComponent;
+};
+
+
+// ==================================================================
+// Xen_MemorySettingsDefineCapabilities
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_MemorySettingsDefineCapabilities"),
+ Description (
+        "A class derived from CIM_SettingsDefineState to represent "
+        "the association of a Xen_Memory instance with its extended "
+        "device specific configuration settings.")]
+class Xen_MemorySettingsDefineCapabilities : CIM_SettingsDefineCapabilities
+{
+   [Override("GroupComponent")]
+   Xen_MemoryAllocationCapabilities REF GroupComponent;
+
+   [Override("PartComponent")]
+   Xen_MemoryCapabilitiesSettingData REF PartComponent;
+};
+
+
+// ==================================================================
+// Xen_ProcessorSettingsDefineCapabilities
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ProcessorSettingsDefineCapabilities"),
+ Description (
+        "A class derived from CIM_SettingsDefineState to represent "
+        "the association of a Xen_Processor instance with its extended "
+        "device specific configuration settings.")]
+class Xen_ProcessorSettingsDefineCapabilities : CIM_SettingsDefineCapabilities
+{
+   [Override("GroupComponent")]
+   Xen_ProcessorAllocationCapabilities REF GroupComponent;
+
+   [Override("PartComponent")]
+   Xen_ProcessorCapabilitiesSettingData REF PartComponent;
+};
+
+// ==================================================================
+// Xen_NetworkConnectionSettingsDefineCapabilities
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_NetworkConnectionSettingsDefineCapabilities"),
+ Description (
+        "A class derived from CIM_SettingsDefineState to represent "
+        "the association of a Xen_NetworkConnectionAllocationCapabilities instance "
+        "with the RASD.")]
+class Xen_NetworkConnectionSettingsDefineCapabilities : CIM_SettingsDefineCapabilities
+{
+   [Override("GroupComponent")]
+   Xen_NetworkConnectionAllocationCapabilities REF GroupComponent;
+
+   [Override("PartComponent")]
+   Xen_NetworkConnectionCapabilitiesSettingData REF PartComponent;
+};
+
+// *******************************************************************
+// VM Device to Pool Allocation Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_MemoryAllocatedFromPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_MemoryAllocatedFromPool"),
+ Description (
+	"A class derived from CIM_ElementAllocatedFromPool that "
+	"associates an instance of Xen_Memory representing the "
+	"XenServer virtual machine's memory with the Xen_MemoryPool from which it "
+	"was allocated.")]
+class Xen_MemoryAllocatedFromPool : CIM_ElementAllocatedFromPool {
+
+    [Override ("Antecedent"), Description ("The memory resource pool.")]
+    Xen_MemoryPool REF Antecedent;
+
+    [Override ("Dependent"), Description ("The allocated memory.")]
+    Xen_Memory REF Dependent;
+};      
+
+// ==================================================================
+// Xen_ProcessorAllocatedFromPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ProcessorAllocatedFromPool"),
+ Description (
+	"A class derived from CIM_ElementAllocatedFromPool that "
+	"associates an instance of Xen_Processor representing "
+	"a XenServer virtual machine's virtual processor with the Xen_ProcessorPool "
+	"from which it was allocated.")]
+class Xen_ProcessorAllocatedFromPool : CIM_ElementAllocatedFromPool {
+
+    [Override ("Antecedent"), Description ("The processor resource pool.")]
+    Xen_ProcessorPool REF Antecedent;
+
+    [Override ("Dependent"), Description ("The allocated virtual processor.")]
+    Xen_Processor REF Dependent;
+};      
+
+// ==================================================================
+// Xen_DiskAllocatedFromPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_DiskAllocatedFromPool"),
+ Description (
+	"A class derived from CIM_ElementAllocatedFromPool that "
+	"associates an instance of Xen_Disk representing "
+	"a XenServer virtual machine's virtual disk with the Xen_StoragePool "
+	"from which it was allocated.")]
+class Xen_DiskAllocatedFromPool : CIM_ElementAllocatedFromPool {
+
+    [Override ("Antecedent"), Description ("The disk resource pool.")]
+    Xen_StoragePool REF Antecedent;
+
+    [Override ("Dependent"), Description ("The allocated virtual disk.")]
+    Xen_Disk REF Dependent;
+};      
+
+
+// ==================================================================
+// Xen_DiskDriveAllocatedFromPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_DiskDriveAllocatedFromPool"),
+ Description (
+        "A class derived from CIM_ElementAllocatedFromPool that "
+        "associates an instance of Xen_DiskDrive representing "
+        "a XenServer virtual machine's disk with the Xen_StoragePool "
+        "from which it was allocated.")]
+class Xen_DiskDriveAllocatedFromPool : CIM_ElementAllocatedFromPool {
+
+    [Override ("Antecedent"), Description ("The disk resource pool.")]
+    Xen_StoragePool REF Antecedent;
+
+    [Override ("Dependent"), Description ("The allocated virtual disk drive.")]
+    Xen_DiskDrive REF Dependent;
+};
+
+// ==================================================================
+// Xen_NetworkPortAllocatedFromPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_NetworkPortAllocatedFromPool"),
+ Description (
+	"A class derived from CIM_ElementAllocatedFromPool that "
+	"associates an instance of Xen_NetworkPort representing "
+	"a XenServer virtual machine's virtual network port with the Xen_NetworkConnectionPool "
+	"from which it was allocated.")]
+class Xen_NetworkPortAllocatedFromPool : CIM_ElementAllocatedFromPool {
+
+    [Override ("Antecedent"), Description ("The Network pool.")]
+    Xen_NetworkConnectionPool REF Antecedent;
+
+    [Override ("Dependent"), Description ("The allocated virtual network port.")]
+    Xen_NetworkPort REF Dependent;
+};      
+
+// Copyright (c) 2006 Novell, Inc. All rights reserved.
+
+// *******************************************************************
+// VM Device Setting Data to Resource Pool Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_MemorySettingAllocatedFromPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_MemorySettingAllocationFromPool"),
+ Description (
+	"A class derived from CIM_ResourceAllocationFromPool that "
+	"associates an instance of Xen_MemorySettingData (representing "
+	"a virtual memory allocation) with the Xen_MemoryPool from which "
+	"it is allocated.")]
+class Xen_MemorySettingAllocationFromPool : CIM_ResourceAllocationFromPool {
+
+   [Override ("Antecedent"), Description ("The memory pool.")]
+    Xen_MemoryPool REF Antecedent;
+
+   [Override ("Dependent"), Description ("The memory setting data.")]
+    Xen_MemorySettingData REF Dependent;
+};
+
+// ==================================================================
+// Xen_ProcessorSettingAllocatedFromPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ProcessorSettingAllocationFromPool"),
+ Description (
+	"A class derived from CIM_ResourceAllocationFromPool that "
+	"associates an instance of Xen_ProcessorSettingData (representing "
+	"a virtual processor allocation) with the Xen_ProcessorPool from which "
+	"it is allocated.")]
+class Xen_ProcessorSettingAllocationFromPool : CIM_ResourceAllocationFromPool {
+
+   [Override ("Antecedent"), Description ("The processor pool.")]
+    Xen_ProcessorPool REF Antecedent;
+
+   [Override ("Dependent"), Description ("The processor setting data.")]
+    Xen_ProcessorSettingData REF Dependent;
+};
+
+// ==================================================================
+// Xen_DiskSettingAllocatedFromPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_DiskSettingAllocationFromPool"),
+ Description (
+	"A class derived from CIM_ResourceAllocationFromPool that "
+	"associates an instance of Xen_DiskSettingData (representing "
+	"a virtual disk/disk drive allocation) with the Xen_StoragePool from which "
+	"it is allocated.")]
+class Xen_DiskSettingAllocationFromPool : CIM_ResourceAllocationFromPool {
+
+   [Override ("Antecedent"), Description ("The storage pool.")]
+    Xen_StoragePool REF Antecedent;
+
+   [Override ("Dependent"), Description ("The disk setting data.")]
+    Xen_DiskSettingData REF Dependent;
+};
+
+// ==================================================================
+// Xen_NetworkPortSettingAllocatedFromPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_NetworkPortSettingAllocationFromPool"),
+ Description (
+	"A class derived from CIM_ResourceAllocationFromPool that "
+	"associates an instance of Xen_NetworkPortSettingData (representing "
+	"a virtual network port allocation) with the Xen_NetworkConnectionPool from which "
+	"it is allocated.")]
+class Xen_NetworkPortSettingAllocationFromPool : CIM_ResourceAllocationFromPool {
+
+   [Override ("Antecedent"), Description ("The network pool.")]
+    Xen_NetworkConnectionPool REF Antecedent;
+
+   [Override ("Dependent"), Description ("The network port setting data.")]
+    Xen_NetworkPortSettingData REF Dependent;
+};
+
+// Copyright (c) 2009 Citrix Systems, Inc. All rights reserved.
+
+// *******************************************************************
+// Host Device to Resource Pool Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_MemoryPoolComponent
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_MemoryPoolComponent"),
+ Description (
+	"A class derived from CIM_ConcreteComponent to represent "
+	"the association of XenServer host's memory aggregated into a "
+	"Memory pool.")]
+class Xen_MemoryPoolComponent : CIM_ConcreteComponent
+{
+   [Override("PartComponent")]
+   Xen_HostMemory REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_MemoryPool REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_ProcessorPoolComponent
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ProcessorPoolComponent"),
+ Description (
+	"A class derived from CIM_ConcreteComponent to represent "
+	"the association of XenServer host's processors aggregated to into a "
+	"Processor pool.")]
+class Xen_ProcessorPoolComponent : CIM_ConcreteComponent
+{
+   [Override("PartComponent")]
+   Xen_HostProcessor REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_ProcessorPool REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_StoragePoolComponent
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_StoragePoolComponent"),
+ Description (
+	"A class derived from CIM_ConcreteComponent to represent "
+	"the association of XenServer host's virtual disk image entities "
+	"aggregated into a Storage pool.")]
+class Xen_StoragePoolComponent : CIM_ConcreteComponent
+{
+   [Override("PartComponent")]
+   Xen_DiskImage REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_StoragePool REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_NetworkConnectionPoolComponent does not exist since a Network
+// connection pool is a abstract entity that doles out 'connections'
+// between a LANEndpoint of a Virtual Switch with a LANEndpoint of a 
+// Computer System (VM). The connection corresponds to a 'VIF' and is
+// not really a pool of real host resources.
+// ==================================================================
+
+// *******************************************************************
+// Host Computer system to their resource pool association
+// *******************************************************************
+
+// ==================================================================
+// Xen_HostedMemoryPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_AssociationProviderCommon"),
+ Description (
+	"A class derived from CIM_SystemComponent to represent "
+	"the association of a XenServer host instance with its "
+	"memory resource pool(s).")]
+class Xen_HostedMemoryPool : CIM_HostedResourcePool
+{
+   [Override("PartComponent")]
+   Xen_MemoryPool REF PartComponent;
+
+   [Override("GroupComponent")]
+   CIM_ComputerSystem REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_HostedProcessorPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_AssociationProviderCommon"),
+ Description (
+	"A class derived from CIM_HostedResourcePool to represent "
+	"the association of a XenServer host instance with its "
+	"processor resource pool(s).")]
+class Xen_HostedProcessorPool : CIM_HostedResourcePool
+{
+   [Override("PartComponent")]
+   Xen_ProcessorPool REF PartComponent;
+
+   [Override("GroupComponent")]
+   CIM_ComputerSystem REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_HostedStoragePool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_AssociationProviderCommon"),
+ Description (
+	"A class derived from CIM_SystemComponent to represent "
+	"the association of a XenServer host instance with its "
+	"storage resource pool(s).")]
+class Xen_HostedStoragePool : CIM_HostedResourcePool
+{
+   [Override("PartComponent")]
+   Xen_StoragePool REF PartComponent;
+
+   [Override("GroupComponent")]
+   CIM_ComputerSystem REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_HostedNetworkConnectionPool
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_AssociationProviderCommon"),
+ Description (
+	"A class derived from CIM_SystemComponent to represent "
+	"the association of a XenServer host instance with its "
+	"network connection resource pool(s).")]
+class Xen_HostedNetworkConnectionPool : CIM_HostedResourcePool
+{
+   [Override("PartComponent")]
+   Xen_NetworkConnectionPool REF PartComponent;
+
+   [Override("GroupComponent")]
+   CIM_ComputerSystem REF GroupComponent;
+};
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_MemorySettingsDefineState
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_MemorySettingsDefineState"),
+ Description (
+	"A class derived from CIM_SettingsDefineState to represent "
+	"the association of a virtual memory instance with its "
+	"allocation settings.")]
+class Xen_MemorySettingsDefineState : CIM_SettingsDefineState
+{
+   [Override("ManagedElement")]
+   Xen_Memory REF ManagedElement;
+
+   [Override("SettingData")]
+   Xen_MemorySettingData REF SettingData;
+};
+
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ProcessorSettingsDefineState"),
+ Description (
+	"A class derived from CIM_SettingsDefineState to represent "
+	"the association of a virtual process instance with its allocation"
+	" settings.")]
+class Xen_ProcessorSettingsDefineState : CIM_SettingsDefineState
+{
+   [Override("ManagedElement")]
+   Xen_Processor REF ManagedElement;
+
+   [Override("SettingData")]
+   Xen_ProcessorSettingData REF SettingData;
+};
+
+// ==================================================================
+// Xen_DiskSettingsDefineState
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_DiskSettingsDefineState"),
+ Description (
+	"A class derived from CIM_SettingsDefineState to represent "
+	"the association of a virtual disk instance with its allocation "
+	" settings.")]
+class Xen_DiskSettingsDefineState : CIM_SettingsDefineState
+{
+   [Override("ManagedElement")]
+   Xen_Disk REF ManagedElement;
+
+   [Override("SettingData")]
+   Xen_DiskSettingData REF SettingData;
+};
+
+// ==================================================================
+// Xen_DiskDriveSettingsDefineState
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_DiskDriveSettingsDefineState"),
+ Description (
+        "A class derived from CIM_SettingsDefineState to represent "
+        "the association of a virtual CD drive instance with its allocation "
+	"settings.")]
+class Xen_DiskDriveSettingsDefineState : CIM_SettingsDefineState
+{
+   [Override("ManagedElement")]
+   Xen_DiskDrive REF ManagedElement;
+
+   [Override("SettingData")]
+   Xen_DiskSettingData REF SettingData;
+};
+
+// ==================================================================
+// Xen_NetworkPortSettingsDefineState
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_NetworkPortSettingsDefineState"),
+ Description (
+	"A class derived from CIM_SettingsDefineState to represent "
+	"the association of a virtual network port instance with its "
+	"allocation settings.")]
+class Xen_NetworkPortSettingsDefineState : CIM_SettingsDefineState
+{
+   [Override("ManagedElement")]
+   Xen_NetworkPort REF ManagedElement;
+
+   [Override("SettingData")]
+   Xen_NetworkPortSettingData REF SettingData;
+};
+
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_MemorySettingDataComponent
+// ==================================================================
+[Association,
+ Aggregation,
+ Provider ("cmpi:Xen_MemorySettingDataComponent"),
+ Description (
+	"A class derived from CIM_VirtualSystemSettingDataComponent to represent "
+	"the association of a XenServer virtual machine's settings with its virtual "
+	"memory allocation settings.")]
+class Xen_MemorySettingDataComponent : CIM_VirtualSystemSettingDataComponent
+{
+   [Aggregate, Override("GroupComponent"),
+     Description("The Virtual System setting data.")]
+   Xen_VirtualSystemSettingData REF GroupComponent;
+
+   [Override("PartComponent"),
+    Description("The memory RASD associated with the Virtual System.")]
+   Xen_MemorySettingData REF PartComponent;
+};
+
+// ==================================================================
+// Xen_ProcessorSettingDataComponent
+// ==================================================================
+[Association,
+ Aggregation,
+ Provider ("cmpi:Xen_ProcessorSettingDataComponent"),
+ Description (
+	"A class derived from CIM_VirtualSystemSettingDataComponent to represent "
+	"the association of a XenServer virtual machine's "
+	"settings with its virtual processor allocation settings.")]
+class Xen_ProcessorSettingDataComponent : CIM_VirtualSystemSettingDataComponent
+{
+   [Aggregate, Override("GroupComponent"),
+     Description("The Virtual System setting data.")]
+   Xen_VirtualSystemSettingData REF GroupComponent;
+
+   [Override("PartComponent"),
+    Description("The Processor RASD associated with the Virtual System.")]
+   Xen_ProcessorSettingData REF PartComponent;
+};
+
+// ==================================================================
+// Xen_DiskSettingDataComponent
+// ==================================================================
+[Association,
+ Aggregation,
+ Provider ("cmpi:Xen_DiskSettingDataComponent"),
+ Description (
+	"A class derived from CIM_VirtualSystemSettingDataComponent to represent "
+	"the association of a XenServer virtual machine's "
+	"settings with its virtual disk allocatin settings.")]
+class Xen_DiskSettingDataComponent : CIM_VirtualSystemSettingDataComponent
+{
+   [Aggregate, Override("GroupComponent"),
+     Description("The Virtual System setting data.")]
+   Xen_VirtualSystemSettingData REF GroupComponent;
+
+   [Override("PartComponent"),
+    Description("The Disk RASD associated with the Virtual System.")]
+   Xen_DiskSettingData REF PartComponent;
+};
+
+// ==================================================================
+// Xen_NetworkPortSettingDataComponent
+// ==================================================================
+[Association,
+ Aggregation,
+ Provider ("cmpi:Xen_NetworkPortSettingDataComponent"),
+ Description (
+	"A class derived from CIM_VirtualSystemSettingDataComponent to represent "
+	"the association of a XenServer virtual machine's "
+	"settings with its virtual network port allocation settings.")]
+class Xen_NetworkPortSettingDataComponent : CIM_VirtualSystemSettingDataComponent
+{
+   [Aggregate, Override("GroupComponent"),
+     Description("The Virtual System setting data.")]
+   Xen_VirtualSystemSettingData REF GroupComponent;
+
+   [Override("PartComponent"),
+    Description("The Network RASD associated with the Virtual System.")]
+   Xen_NetworkPortSettingData REF PartComponent;
+};
+
+// ==================================================================
+// Xen_ConsoleSettingDataComponent
+// ==================================================================
+[Association,
+ Aggregation,
+ Provider ("cmpi:Xen_ConsoleSettingDataComponent"),
+ Description (
+	"A class derived from CIM_VirtualSystemSettingDataComponent to represent "
+	"the association of a XenServer virtual machine's "
+	"settings with its virtual console allocation settings .")]
+class Xen_ConsoleSettingDataComponent : CIM_VirtualSystemSettingDataComponent
+{
+   [Aggregate, Override("GroupComponent"),
+     Description("The Virtual System setting data.")]
+   Xen_VirtualSystemSettingData REF GroupComponent;
+
+   [Override("PartComponent"),
+    Description("The console RASD associated with the Virtual System.")]
+   Xen_ConsoleSettingData REF PartComponent;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_MemoryElementSettingData
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_MemoryElementSettingData"),
+ Description (
+	"A class derived from CIM_ElementSettingData to represent "
+	"the association of a Xen_MemorySettingData instance "
+	"describing the extended state of a Xen_Memory instance "
+	"with a Xen_MemorySettingData instance describing its "
+	"defined configuration.")]
+class Xen_MemoryElementSettingData : CIM_ElementSettingData
+{
+   [Override("Dependent")]
+   Xen_MemorySettingData REF SettingData;
+
+   [Override("ManagedElement")]
+   Xen_MemorySettingData REF ManagedElement;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_ProcessorElementSettingData
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_ProcessorElementSettingData"),
+ Description (
+	"A class derived from CIM_ElementSettingData to represent "
+	"the association of a Xen_ProcessorSettingData instance "
+	"describing the extended state of a Xen_Processor instance "
+	"with a Xen_ProcessorSettingData instance describing its "
+	"defined configuration.")]
+class Xen_ProcessorElementSettingData : CIM_ElementSettingData
+{
+   [Override("Dependent")]
+   Xen_ProcessorSettingData REF SettingData;
+
+   [Override("ManagedElement")]
+   Xen_ProcessorSettingData REF ManagedElement;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_DiskElementSettingData
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_DiskElementSettingData"),
+ Description (
+	"A class derived from CIM_ElementSettingData to represent "
+	"the association of a Xen_DiskSettingData instance "
+	"describing the extended state of a Xen_Disk instance "
+	"with a Xen_DiskSettingData instance describing its "
+	"defined configuration.")]
+class Xen_DiskElementSettingData : CIM_ElementSettingData
+{
+   [Override("Dependent")]
+   Xen_DiskSettingData REF SettingData;
+
+   [Override("ManagedElement")]
+   Xen_DiskSettingData REF ManagedElement;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_NetworkPortElementSettingData
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_NetworkPortElementSettingData"),
+ Description (
+	"A class derived from CIM_ElementSettingData to represent "
+	"the association of a Xen_NetworkPortSettingData instance "
+	"describing the extended state of a Xen_NetworkPort "
+	"instance with a Xen_NetworkPortSettingData instance "
+	"describing its defined configuration.")]
+class Xen_NetworkPortElementSettingData : CIM_ElementSettingData
+{
+   [Override("Dependent")]
+   Xen_NetworkPortSettingData REF SettingData;
+
+   [Override("ManagedElement")]
+   Xen_NetworkPortSettingData REF ManagedElement;
+};
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+// ==================================================================
+// Xen_HostVSMSElementCapabilities
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_HostVSMSElementCapabilities"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of a XenServer host "
+	"instance with its virtual machine management capabilities.")]
+class Xen_HostVSMSElementCapabilities : CIM_ElementCapabilities
+{
+   [Override("ManagedElement"),
+    Description (
+	"The XenServer host.")]
+   Xen_HostComputerSystem REF ManagedElement;
+
+   [Override("Capabilities"),
+    Description (
+	"The Virtual System Management Capabilities object "
+	"associated with the host.")]
+   Xen_VirtualSystemManagementCapabilities REF Capabilities;
+};
+
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_HasVirtualizationCapabilities
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of the virtualization capabilities of XenServer "
+	"(e.g. virtual CPUs, virtual memory, virtual disks, etc) "
+	"with the XenServer host instance.")]
+class Xen_HasVirtualizationCapabilities : CIM_ElementCapabilities
+{
+   [Override("Capabilities")]
+   Xen_VirtualizationCapabilities REF Capabilities;
+
+   [Override("ManagedElement")]
+   Xen_HostComputerSystem REF ManagedElement;
+};
+
+
+// *******************************************************************
+// Associations
+// *******************************************************************
+
+// ==================================================================
+// Xen_HostedComputerSystem
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_HostedComputerSystem"),
+ Description (
+        "A class derived from CIM_HostedDependency to represent "
+        "the association of a XenServer virtual machine instance with the "
+        "XenServer host instance.")]
+class Xen_HostedComputerSystem : CIM_HostedDependency
+{
+   [Override("Dependent")]
+   Xen_ComputerSystem REF Dependent;
+
+   [Override("Antecedent")]
+   Xen_HostComputerSystem REF Antecedent;
+};
+
+// ==================================================================
+// Xen_CSElementSettingData
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+	"A class derived from CIM_ElementSettingData to represent "
+	"the association of a XenServer virtual machine's settings, "
+	"describing the extended state of a virtual machine, with "
+	"an instance describing its 'defined' configuration.")]
+class Xen_ComputerSystemElementSettingData : CIM_ElementSettingData
+{
+   [Override("Dependent")]
+   Xen_ComputerSystemSettingData REF SettingData;
+
+   [Override("ManagedElement")]
+   Xen_ComputerSystemSettingData REF ManagedElement;
+};
+
+// ==================================================================
+// Xen_CSElementCapabilities
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of a XenServer virtual machine instance "
+	"with its capabilities.")]
+class Xen_ComputerSystemElementCapabilities : CIM_ElementCapabilities
+{
+   [Override("ManagedElement"),
+    Description (
+	"The virtual computer system.")]
+   Xen_ComputerSystem REF ManagedElement;
+
+   [Override("Capabilities"),
+    Description (
+	"The Capabilities object associated with the virtual "
+	"computer system.")]
+   Xen_ComputerSystemCapabilities REF Capabilities;
+};
+
+// ==================================================================
+// Xen_CSSettingsDefineState
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+	"A class derived from CIM_SettingsDefineState to represent "
+	"the association of a XenServer virtual machine instance "
+	"with its extended settings.")]
+class Xen_ComputerSystemSettingsDefineState : CIM_SettingsDefineState
+{
+   [Override("ManagedElement")]
+   Xen_ComputerSystem REF ManagedElement;
+
+   [Override("SettingData")]
+   Xen_ComputerSystemSettingData REF SettingData;
+};
+// *******************************************************************
+// AllocationCapabilities Associations
+// *******************************************************************
+
+////////////////////////////////////////////////////////////////////////
+// The following associations associate the allocation capabilities with
+// the resource pool
+////////////////////////////////////////////////////////////////////////
+
+[Association,
+ Provider ("cmpi:Xen_MemoryPoolAllocationCapabilities"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of a Xen_MemoryPool instance and its "
+        "allocation capabilities.")]
+class Xen_MemoryPoolAllocationCapabilities : CIM_ElementCapabilities
+{
+   [Override("Capabilities")]
+   Xen_MemoryAllocationCapabilities REF Capabilities;
+
+   [Override("ManagedElement")]
+   Xen_MemoryPool REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_ProcessorPoolAllocationCapabilities"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of a Xen_ProcessorPool instance and its "
+        "allocation capabilities.")]
+class Xen_ProcessorPoolAllocationCapabilities : CIM_ElementCapabilities
+{
+   [Override("Capabilities")]
+   Xen_ProcessorAllocationCapabilities REF Capabilities;
+
+   [Override("ManagedElement")]
+   Xen_ProcessorPool REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_StoragePoolAllocationCapabilities"),
+ Description (
+        "A class derived from CIM_ElementCapabilities to represent "
+        "the association of a Xen_StoragePool instance and its "
+	"allocation capabilities.")]
+class Xen_StoragePoolAllocationCapabilities : CIM_ElementCapabilities
+{
+   [Override("Capabilities")]
+   Xen_StorageAllocationCapabilities REF Capabilities;
+
+   [Override("ManagedElement")]
+   Xen_StoragePool REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_NetworkConnectionPoolAllocationCapabilities"),
+ Description (
+        "A class derived from CIM_ElementCapabilities to represent "
+        "the association of a Xen_NetworkConnectionPool instance and its "
+	"allocation capabilities.")]
+class Xen_NetworkConnectionPoolAllocationCapabilities : CIM_ElementCapabilities
+{
+   [Override("Capabilities")]
+   Xen_NetworkConnectionAllocationCapabilities REF Capabilities;
+
+   [Override("ManagedElement")]
+   Xen_NetworkConnectionPool REF ManagedElement;
+};
+
+
+///////////////////////////////////////////////////////////////////////////
+// The following classes associate the AllocationCapabilities with the
+// CIM_System that represent the host
+///////////////////////////////////////////////////////////////////////////
+
+[Association,
+ Provider ("cmpi:Xen_HostMemoryAllocationCapabilities"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of a XenServer host instance and its "
+        "virtual memory allocation capabilities.")]
+class Xen_HostMemoryAllocationCapabilities : CIM_ElementCapabilities
+{
+   [Override("Capabilities")]
+   Xen_MemoryAllocationCapabilities REF Capabilities;
+
+   [Override("ManagedElement")]
+   Xen_MemoryPool REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_HostProcessorAllocationCapabilities"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of a XenServer host instance and its "
+        "virtual processor allocation capabilities")]
+class Xen_HostProcessorAllocationCapabilities : CIM_ElementCapabilities
+{
+   [Override("Capabilities")]
+   Xen_ProcessorAllocationCapabilities REF Capabilities;
+
+   [Override("ManagedElement")]
+   Xen_HostComputerSystem REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_HostStorageAllocationCapabilities"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of a XenServer host instance and its "
+        "virtual disk allocation capabilities")]
+class Xen_HostStorageAllocationCapabilities : CIM_ElementCapabilities
+{
+   [Override("Capabilities")]
+   Xen_StorageAllocationCapabilities REF Capabilities;
+
+   [Override("ManagedElement")]
+   Xen_HostComputerSystem REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_VirtualSwitchPortAllocationCapabilities"),
+ Description (
+	"A class derived from CIM_ElementCapabilities to represent "
+	"the association of a XenServer virtual switch instance and its "
+        "virtual network connection allocation capabilities.")]
+class Xen_VirtualSwitchPortAllocationCapabilities : CIM_ElementCapabilities
+{
+   [Override("Capabilities")]
+   Xen_NetworkConnectionAllocationCapabilities REF Capabilities;
+
+   [Override("ManagedElement")]
+   Xen_VirtualSwitch REF ManagedElement;
+};
+
+// *******************************************************************
+// Host Device Associations
+// *******************************************************************
+// ==================================================================
+// Xen_HostComputerSystemMemory 
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_HostComputerSystemMemory"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer host with its memory.")]
+class Xen_HostComputerSystemMemory : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   Xen_HostMemory REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_HostComputerSystem REF GroupComponent;
+};
+
+// ==================================================================
+// Xen_HostComputerSystemProcessor
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_HostComputerSystemProcessor"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer host with its "
+	"processor device(s).")]
+class Xen_HostComputerSystemProcessor : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   Xen_HostProcessor REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_HostComputerSystem REF GroupComponent;
+};
+

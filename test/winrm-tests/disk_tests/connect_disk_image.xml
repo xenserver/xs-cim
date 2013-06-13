@@ -1,0 +1,23 @@
+<ConnectToDiskImage_INPUT 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_StoragePoolManagementService">
+  <DiskImage>
+    <a:Address xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+    <a:ReferenceParameters xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+      <w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_DiskImage</w:ResourceURI>
+      <w:SelectorSet>
+        <w:Selector Name="DeviceID">VDI_ID</w:Selector>
+        <w:Selector Name="CreationClassName">Xen_DiskImage</w:Selector>
+        <w:Selector Name="SystemCreationClassName">Xen_StoragePool</w:Selector>
+        <w:Selector Name="SystemName">Xen:SR_UUID</w:Selector>
+      </w:SelectorSet>
+    </a:ReferenceParameters>
+  </DiskImage>
+  <UseSSL>
+    0
+  </UseSSL>
+  <Protocol>
+    bits
+  </Protocol>
+</ConnectToDiskImage_INPUT>

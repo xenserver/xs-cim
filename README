@@ -1,0 +1,113 @@
+1.  INTRODUCTION
+
+The Xen-CIM project implements various profiles defined by the System
+Virtualization, Partitioning, and Clustering (SVPC) working group within
+the Distributed Management Task Force (DMTF).  The SVPC working group
+includes members from Citrix Systems, EMC (VMWare), HP, IBM, Microsoft, Novell, 
+Unisys,XenSource, and others.  The working group web page serves as a central
+point for collaboration and can be found at
+
+    http://www.dmtf.org/apps/org/workgroup/redundancy
+
+Membership to the working group requires registration but is free to all
+DMTF member companies.
+
+All profiles and schema created by the SVPC working group are
+currently DMTF Confidential.  The various profiles emerging from the
+group cannot be shared at this time however the DMTF has given
+permission to share the schema.  Recent schema snapshots are located in
+project directory schema/dmtf.
+
+The profiles and schema are a work-in-progress and undergo rapid change.
+Once stabilized, they are made publicly available as Experimental for
+consumption and comment.  At least two, interoperable implementations
+must exits before promotion to Final.
+
+The schema models a management domain, e.g. virtualization, and contains
+all of the classes and their relationships that are required to describe
+the management domain.
+
+Profiles are schema companions that describe in normative text how the
+model works.  They are the specification to which implementations
+should conform.
+
+The Xen-CIM project aims to implement all relevant profiles produced
+by the SVPC working group.  The project is currently tracking the
+following profiles:
+
+DSP1042 System Virtualization Profile
+DSP1057 Virtual System Profile
+DSP1041 Resource Allocation Profile
+DSP1043 Allocation Capabilities Profile
+DSP1097 Virtual Ethernet Switch Profile
+DSP1050 Ethernet Port Resource Virtualization Profile
+DSP1047 Storage Resource Virtualization Profile
+DSP1044 Processor Resource Virtualization Profile
+
+2.  CONFIGURING
+
+The project configure script accepts the standard configure options.
+In addition, the --with-host-instrumentation=TYPE option can be used to
+specify which host instrumentation will be used by the Xen-CIM providers.
+The available TYPEs are omc and sblim with omc as the default.
+
+"Host instrumentation" refers to implementations of DMTF profiles
+describing physical host environments, such as DSP1052 Computer System
+Profile.  Many of the virtualization profiles reference profiles that have
+been implemented by other open source projects, such as omc and sblim.
+This project leverages that work and thus requires either omc or sblim for
+model completeness.  Further information on omc or sblim can be found at
+their respective project sites:
+
+OMC    - http://developer.novell.com/wiki/index.php/OMC
+SBLIM  - http://sourceforge.net/projects/sblim/
+
+
+3.  BUILDING
+
+You must have a CIMOM (including its associated development packages),
+libxml2, and Xen development packages installed to compile.  Then
+simply try:
+
+./autoconfiscate.sh
+./configure
+make
+
+4.  INSTALLING
+
+Use "make install" to install the provider library files.  Default
+location is /usr/local/lib/cmpi but can be controlled by the usual
+options to configure.
+
+The Xen-CIM schema is derived from the DMTF schema and provides concrete
+classes for the implementation.  These schema files are located in the
+schema subdirectory.  The DMTF schema in schema/dmtf and the Xen-CIM
+schema are installed using the "make postinstall" target.
+
+
+5.  RUNNING
+
+The Xen CIM providers require Xen >= 3.0.4.  Currently the providers
+expect to communicate with the Xen Control Stack in Domain0 using a
+Unix Domain Socket.  This socket provides access to the XMLRPC-based
+Xen API used by the providers.  Only root processes can connect to this
+socket so it is expected that the providers will be running in a
+privileged process.
+
+The Xen Control Stack must be configured to open / listen on this
+socket. The CIM providers are built to talk to the Xen Control stack 
+using the xen-api XML-RPC client. The providers has been tested on 
+releases of XenServer (version > 4.0) but could be used to talk to
+any open source version of xen by using the right version of the xen-api
+XML-RPC client.
+
+6. SECURITY
+
+Basic Authentication is required to be turned on in the CIMOM for
+authenticated access to the Xen Control Stack. The client will then
+be validated against the Control stack using the credentials provided.
+Thus authentication and authorization is delegated to the Xen Control stack.
+
+7. CLIENT
+
+Access the provider functionality using your favorite CIM/WBEM client.

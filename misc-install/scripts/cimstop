@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# kill all the SFCBD and openwsman processes
+clear
+service tog-pegasus stop
+echo "CIMServer killed..."
+

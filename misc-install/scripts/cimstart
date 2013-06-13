@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# set up the paths
+cmpi_path=`echo $LD_LIBRARY_PATH | grep -i "/usr/lib/cmpi"`
+if test -z $cmpi_path
+then
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/Peagsus/providers
+    export LD_LIBRARY_PATH
+fi
+
+# reset the log files
+export SBLIM_TRACE=4
+export SBLIM_TRACE_FILE=/var/log/xencim.log
+export PEGASUS_TRACE_FILE=/var/lib/Pegasus/cache/trace/cimserver.trc
+echo "" > $SBLIM_TRACE_FILE
+echo "" > $PEGASUS_TRACE_FILE
+
+# figure out if this debug or non-debug
+if [ "x${1}x" == "xx" ]; then
+    echo "Launching CIM without debug turned on"
+    ulimit -v 200000
+    service tog-pegasus start
+else
+    echo "Launching CIM with debug tracing turned on. "
+    echo "Collect the following trace files:"
+    echo "    "$SBLIM_TRACE_FILE
+    echo "    "$PEGASUS_TRACE_FILE
+    cimserver enableHttpConnection=true traceComponents=all traceLevel=4
+fi

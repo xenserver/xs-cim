@@ -1,0 +1,60 @@
+#! /bin/bash
+#
+# chkconfig: 2345 99 99
+# description: Controls the KVP daemon in Dom0 for MS CIM Integration
+
+PID_FILE="/var/run/kvpd.pids"
+
+start() {
+
+# Listen on a local UNIX socket which has XAPI requests redirected to it.
+# Users making requests of this service will navigate to:
+# http://<HOST>/services/plugin/xscim with GET/POST requests.
+
+python /opt/xs-cim-cmpi/kvpd.py -s -d
+
+}
+
+
+stop() {
+
+IFS=$'\n'
+
+if [ -e $PID_FILE ]; then
+   for pid in $(cat $PID_FILE); do
+	echo "Killing process..." $pid
+	kill -9 $pid
+   done
+
+   rm $PID_FILE
+   echo "kvpd service stopped."
+else
+   echo "kvp service not started."
+fi
+
+
+}
+
+
+
+restart() {
+	  stop
+	  start
+}
+
+
+case "$1" in
+     start)
+	start
+	;;
+     stop)
+	stop
+	;;
+     restart)
+	restart
+	;;
+     *)
+        echo "Usage: $0 {start|stop|restart}"
+esac
+
+exit 0

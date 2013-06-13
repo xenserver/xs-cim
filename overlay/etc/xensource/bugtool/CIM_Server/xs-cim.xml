@@ -1,0 +1,5 @@
+<collect>
+<files>/opt/openpegasus/trace/cimserver.trc /var/log/xencim.log /var/log/kvpd.log</files>
+<command label="winkvp-version.out">ls -laR /opt/xensource/www</command>
+</collect>
+

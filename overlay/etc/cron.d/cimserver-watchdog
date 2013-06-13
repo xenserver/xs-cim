@@ -1,0 +1,5 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+# Cron Scipt for running the CIM Server Watchdog script 
+# m h dom mon dow user  command
+*/1 *   * * *   root    /opt/xs-cim-cmpi/watchdog

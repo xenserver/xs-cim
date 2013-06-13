@@ -1,0 +1,16 @@
+<DeleteResourcePool_INPUT
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_StoragePoolManagementService"
+    xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+    <Pool>
+        <a:Address >http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+        <a:ReferenceParameters xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+              <w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_StoragePool</w:ResourceURI>
+              <w:SelectorSet>
+                    <w:Selector Name="InstanceID">SR_ID</w:Selector>
+              </w:SelectorSet>
+        </a:ReferenceParameters>
+    </Pool>
+</DeleteResourcePool_INPUT>
+

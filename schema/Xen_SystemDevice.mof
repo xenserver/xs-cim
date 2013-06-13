@@ -1,0 +1,20 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_SystemDevice
+// ==================================================================
+[Association,
+ Provider ("cmpi:associationProviderCommon"),
+ Description (
+	"A class derived from CIM_SystemDevice to represent "
+	"the association of a XenServer virtual machine with its "
+	"logical device instance(s).")]
+class Xen_SystemDevice : CIM_SystemDevice
+{
+   [Override("PartComponent")]
+   CIM_LogicalDevice REF PartComponent;
+
+   [Override("GroupComponent")]
+   Xen_ComputerSystem REF GroupComponent;
+};
+

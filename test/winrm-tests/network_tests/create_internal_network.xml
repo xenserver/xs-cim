@@ -1,0 +1,13 @@
+<DefineSystem_INPUT 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_VirtualSwitchManagementService">
+  <SystemSettings>
+    <sd:CIM_VirtualSystemSettingData
+        xmlns:sd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
+        xsi:type="CIM_VirtualSystemSettingData_Type">
+      <sd:ElementName>WinrmInternalNetwork</sd:ElementName>
+      <sd:Description>Test Internal network created by winrm</sd:Description>
+    </sd:CIM_VirtualSystemSettingData>
+</SystemSettings>
+</DefineSystem_INPUT>

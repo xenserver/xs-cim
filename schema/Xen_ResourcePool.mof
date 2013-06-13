@@ -1,0 +1,80 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_MemoryPool
+// ==================================================================
+[Provider ("cmpi:Xen_MemoryPool"),
+ Description (
+	"A class derived from CIM_ResourcePool to represent "
+	"the 'pool' of memory resources that exist on the XenServer host "
+	"that are available for allocation to XenServer virtual machines.")]
+class Xen_MemoryPool : CIM_ResourcePool
+{
+};
+
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_ProcessorPool
+// ==================================================================
+[Provider ("cmpi:Xen_ProcessorPool"),
+ Description (
+	"A class derived from CIM_ResourcePool to represent "
+	"the 'pool' of processor resources that exist on the XenServer host "
+	"that are available for allocation to XenServer virtual machines.")]
+class Xen_ProcessorPool : CIM_ResourcePool
+{
+};
+
+// Copyright (c) 2008 Citrix Systems Inc. All rights reserved.
+
+// ==================================================================
+// Xen_StoragePool
+// ==================================================================
+[Provider ("cmpi:Xen_StoragePool"),
+ Description (
+	"A class derived from CIM_StoragePool to represent "
+	"the 'pool' of disk resources that exist that are "
+	"available for allocation to specific XenServer virtual machines. "
+	"These may represent storage pools created from "
+	"storage infrastructure outside of the host.")]
+class Xen_StoragePool : CIM_ResourcePool
+{
+     [Description("Other configuration for the XenServer Storage Repository. "
+        "An array of strings of the form 'key:value'. "
+        "Eg: 'i18n-original-value-name_description: Physical DVD drives' or "
+        "i18n-key:local-hotplug-cd ")]
+     string OtherConfig[];
+     
+     [Description("XenServerStorage Manager related configuration. "
+        "An array of strings of the form 'key:value'. "
+        "Eg: 'type:CD'")]
+     string  SMConfig[];
+
+     [Description("Boolean to indicate if this pool is shared"
+     " across the XenServer host pool or not. Only virtual machines "
+     "created out of pools that are 'shared' can be live migrated "
+     "from one host to another.")]
+     boolean Shared;
+};
+
+// Copyright (c) 2008 Citrix Systems Inc. All rights reserved.
+
+// ==================================================================
+// Xen_NetworkConnectionPool
+// ==================================================================
+[Provider ("cmpi:Xen_NetworkConnectionPool"),
+ Description (
+	"A class derived from CIM_ResourcePool to represent "
+	"the 'pool' of ethernet connection resources available to "
+	"connect an Ethernet adapter of a XenServer virtual machine to an "
+	"Ethernet switch port of a XenServer Virtual "
+	"Switch. This represents the VIF 'connection' in "
+	"XenServer terminology.")]
+class Xen_NetworkConnectionPool : CIM_ResourcePool
+{
+};
+
+// Copyright (c) 2006 Novell, Inc. All rights reserved.
+
+

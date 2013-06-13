@@ -1,0 +1,129 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+// Copyright (c) 2006 Unisys Corporation. All rights reserved.
+
+// ==================================================================
+// Xen_Disk
+// ==================================================================
+[Provider ("cmpi:Xen_Disk"),
+ Description (
+        "A class derived from CIM_LogicalDisk to represent "
+        "virtual block device(s) (vbd) in a XenServer virtual machine.")]
+class Xen_Disk : CIM_LogicalDisk
+{
+};
+
+
+// ==================================================================
+// Xen_DiskDrive
+// ==================================================================
+[Provider ("cmpi:Xen_DiskDrive"),
+ Description (
+        "A class derived from CIM_DiskDrive to represent "
+        "device(s) that represent CD/DVDs in a XenServer virtual machine.")]
+class Xen_DiskDrive : CIM_DiskDrive
+{
+};
+
+
+// ==================================================================
+// Xen_NetworkPort
+// ==================================================================
+[Provider ("cmpi:Xen_NetworkPort"),
+ Description (
+        "A class derived from CIM_NetworkPort to represent "
+        "the Network interface device (vif) in a XenServer virtual machine.")]
+class Xen_NetworkPort : CIM_NetworkPort
+{
+};
+
+// ==================================================================
+// Xen_Processor
+// ==================================================================
+[Provider ("cmpi:Xen_Processor"),
+ Description (
+        "A class derived from CIM_Processor to represent "
+        "processor device(s) in a XenServer virtual machine.")]
+class Xen_Processor : CIM_Processor
+{
+};
+
+// ==================================================================
+// Xen_Memory
+// ==================================================================
+[Provider ("cmpi:Xen_Memory"),
+ Description (
+	"A class derived from CIM_Memory to represent "
+	"the virtualized memory in a XenServer virtual machine.")]
+class Xen_Memory : CIM_Memory
+{
+};
+
+// ==================================================================
+// Xen_KVP
+// ==================================================================
+[Provider ("cmpi:Xen_KVP"),
+ Description (
+ 	     "A class derived from CIM_LogicalDevice to represent "
+	     "a KVP record associated with a XenServer virtual "
+	     "machine.")]
+class Xen_KVP : CIM_LogicalDevice
+{
+
+    [Description ("Key for the KVP record")]
+    string Key;
+
+    [Description ("Value for the KVP record")]
+    string Value;
+
+    [Description ("VM reference for the KVP record")]
+    string Vm_uuid;
+
+};
+
+// ==================================================================
+// Xen_Console
+// ==================================================================
+[Provider ("cmpi:Xen_Console"),
+ Description (
+        "A class derived from CIM_LogicalDevice to represent "
+        "a console attached to a XenServer virtual machine.")]
+class Xen_Console : CIM_LogicalDevice
+{
+  //--- Methods ----------------------------------------------------
+  [ Description(
+      "Allows the caller to login to a console session "
+      "to a XenServer virtual machine. "
+      "The returned SessionIdentifier represents the login session that allows "
+      " the caller to access the console."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 Login(
+    [ In(False), Out,
+      Description(
+        "Handle to the login session.")]
+    string SessionIdentifier
+    );
+
+  [ Description(
+      "Allows the caller to log out of the console session."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 Logout(
+    [ IN, Description(
+        "Handle to the login session.")]
+    string SessionIdentifier
+    );
+
+};
+
+

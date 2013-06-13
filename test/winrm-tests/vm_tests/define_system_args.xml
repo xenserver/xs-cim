@@ -1,0 +1,39 @@
+<DefineSystem_INPUT 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+     xmlns="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_VirtualSystemManagementService"> 
+     <SystemSettings>
+       <sd:Xen_ComputerSystemSettingData
+           xmlns:sd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_ComputerSystemSettingData"
+           xsi:type="Xen_ComputerSystemSettingData_Type">
+         <sd:HVM_Boot_Policy>BIOS order</sd:HVM_Boot_Policy>
+         <sd:HVM_Boot_Params>order=dc</sd:HVM_Boot_Params>
+         <sd:Platform>nx=false</sd:Platform>
+         <sd:Platform>acpi=true</sd:Platform>
+         <sd:Platform>pae=true</sd:Platform>
+         <sd:Platform>viridian=true</sd:Platform>
+         <sd:AutomaticShutdownAction>0</sd:AutomaticShutdownAction>
+         <sd:AutomaticStartupAction>1</sd:AutomaticStartupAction>
+         <sd:AutomaticRecoveryAction>2</sd:AutomaticRecoveryAction>
+         <sd:VirtualSystemType>DMTF:xen:PV</sd:VirtualSystemType>
+         <sd:Description>test vm created by winrm</sd:Description>
+         <sd:ElementName>WinRMTestVM</sd:ElementName>
+       </sd:Xen_ComputerSystemSettingData>
+     </SystemSettings>
+     <ResourceSettings>
+         <rasd:CIM_ResourceAllocationSettingData
+             xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
+           <rasd:VirtualQuantity>2</rasd:VirtualQuantity>
+           <rasd:AllocationUnits>count</rasd:AllocationUnits>
+           <rasd:ResourceType>3</rasd:ResourceType>
+         </rasd:CIM_ResourceAllocationSettingData>
+      </ResourceSettings>
+      <ResourceSettings>
+         <rasd:CIM_ResourceAllocationSettingData
+             xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
+           <rasd:VirtualQuantity>1024</rasd:VirtualQuantity>
+           <rasd:AllocationUnits>byte*2^20</rasd:AllocationUnits>
+           <rasd:ResourceType>4</rasd:ResourceType>
+         </rasd:CIM_ResourceAllocationSettingData>
+     </ResourceSettings>
+</DefineSystem_INPUT>

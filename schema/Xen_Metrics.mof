@@ -1,0 +1,1468 @@
+// Copyright (c) 2009 Citrix Systems Inc.. All rights reserved.
+// ==================================================================
+
+// ==================================================================
+// Metrics Service - service to manage performance metrics of the
+//                   Virtualization Platform
+// ==================================================================
+[Provider ("cmpi:Xen_MetricService"),
+ Description("The XenServer service used to collect performance metrics for"
+	    " all XenServer objects.")]
+class Xen_MetricService : CIM_MetricService
+{
+  [Description(
+      "Gets the the Historical metrics for a given VM or Host in XPort XML format. "
+      "See http://oss.oetiker.ch/rrdtool/doc/rrdxport.en.htm for details regarding "
+      "the Xport XML format."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 GetPerformanceMetricsForSystem(
+        [ IN, Description(
+        "A reference to the CIM_ComputerSystem representing the Host or VM.")]
+     CIM_ComputerSystem ref System,
+        [ IN, Description(
+           "Start time (in CIM_DateTime string format) for the metrics. "
+	   "This parameter is optional. If not specified, the current metrics"
+	   "for the specified system will be returned.")]
+     datetime StartTime,
+        [ IN, Description(
+           "End time (in CIM_DateTime string format) for the metrics. "
+	   "This parameter is optional. Defaults to 'now'.")]
+     datetime EndTime,
+        [ IN, Description(
+           "Specify a duration in minutes, that ends in 'now', to collect the "
+	   "metrics over. This can be used in lieu of 'StartTime' "
+	   "and 'EndTime'.") ]
+     uint32 TimeDuration,
+        [ IN, Description(
+           "Resolution interval, in seconds, to average the data over. "
+	   "Defaults to 5 secs.")]
+     uint32 ResolutionInterval,
+        [ IN(False), OUT, 
+	  Description("Metrics in Xport XML format.")]
+     string Metrics
+  );
+};
+
+[Provider ("cmpi:Xen_MetricService")]
+class Xen_MetricsServiceCapabilities : CIM_MetricServiceCapabilities
+{
+
+};
+
+//===================================================================
+// From DSP - Virtual Server Performance Standard Metrics
+//===================================================================
+
+//===================================================================
+// Xen_ProcessorPool related metrics - interval metrics
+// ==================================================================
+[Provider ("cmpi:Xen_MetricService")]
+class Xen_ProcessorResourcePoolCPUMetricDefinition : 
+      CIM_BaseMetricDefinition
+{
+    [Override ( "DataType" )]
+         uint16 DataType = 5;
+    [Override ( "ProgrammaticUnits" )]
+         string ProgrammaticUnits = "percent";
+    [Override ( "IsContinuous" )]
+         boolean IsContinuous = true;
+    [Override ( "ChangeType" )]
+         uint16 ChangeType = 3;
+    [Override ( "TimeScope" )]
+         uint16 TimeScope = 2;
+    [Override ( "GatheringType" )]
+         uint16 GatheringType = 3;
+};
+class Xen_ProcessorResourcePoolCPUMetricValue : 
+     CIM_BaseMetricValue
+{
+};
+
+//===================================================================
+// Xen_HostComputerSystem related metrics - interval metrics 
+// ==================================================================
+[Provider ("cmpi:Xen_MetricService")]
+class Xen_HostProcessorMetricDefinition : CIM_BaseMetricDefinition
+{
+};
+[Provider ("cmpi:Xen_MetricService")]
+class Xen_HostProcessorMetricValue : CIM_BaseMetricValue
+{
+};
+[Association]
+class Xen_MetricDefForHostProcessor : CIM_MetricDefForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_HostProcessor REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_HostProcessorMetricDefinition REF Dependent;
+};
+[Association]
+class Xen_MetricForHostProcessor : CIM_MetricForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_HostProcessor REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_HostProcessorMetricValue REF Dependent;
+};
+[Association]
+class Xen_MetricInstanceHostProcessor : CIM_MetricInstance
+{
+  [Override ( "Antecedent" )]
+      Xen_HostProcessorMetricDefinition REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_HostProcessorMetricValue REF Dependent;
+};
+[Description (
+	"Represents the physical CPU utilization.")]
+class Xen_HostProcessorUtilizationDef : Xen_HostProcessorMetricDefinition
+{
+};
+// add a static instance for this metric definition - one for all host processor metrics
+instance of Xen_HostProcessorUtilizationDef
+{
+    Name="DMTF:DSP1044:Xen_HostProcessorUtilizationDef";
+    Description = "CPU capacity used during the reported time.";
+    ProgrammaticUnits = "percent";
+    Id="Xen_HostProcessorUtilizationDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+    GatheringType = 3;
+};
+[Provider ("cmpi:Xen_HostProcessorMetrics"),
+ Description (
+	"Represents the physical CPU utilization percentage.")]
+class Xen_HostProcessorUtilization : Xen_HostProcessorMetricValue
+{
+};
+//======================================================================
+// Virtual Server CPU related metrics - interval metrics
+//======================================================================
+class Xen_ProcessorMetricDefinition : CIM_BaseMetricDefinition
+{
+    [Override ( "DataType" )]
+    uint16 DataType = 5;
+    [Override ( "ProgrammaticUnits" )]
+    string ProgrammaticUnits = "percent";
+    [Override ( "IsContinuous" )]
+    boolean IsContinuous = true;
+    [Override ( "ChangeType" )]
+    uint16 ChangeType = 3;
+    [Override ( "TimeScope" )]
+    uint16 TimeScope = 2;
+    [Override ( "GatheringType" )]
+    uint16 GatheringType = 3;
+};
+class Xen_ProcessorMetricValue : CIM_BaseMetricValue
+{
+};
+[Association]
+class Xen_MetricDefForVirtualProcessor : CIM_MetricDefForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_Processor REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_ProcessorMetricDefinition REF Dependent;
+};
+[Association]
+class Xen_MetricForVirtualProcessor : CIM_MetricForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_Processor REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_ProcessorMetricValue REF Dependent;
+};
+[Association]
+class Xen_MetricInstanceVirtualProcessor : CIM_MetricInstance
+{
+  [Override ( "Antecedent" )]
+      Xen_ProcessorMetricDefinition REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_ProcessorMetricValue REF Dependent;
+};
+[Description (
+	"Represents the virtual CPU utilization.")]
+class Xen_ProcessorUtilizationDef : Xen_ProcessorMetricDefinition
+{
+};
+// add a static instance for this metric definition - 
+instance of Xen_ProcessorUtilizationDef {
+    Name = "DMTF:DSP1044:CPUVSUtilized";
+    Description = "CPU capacity used during the reported instant.";
+    ProgrammaticUnits = "percent";
+    Id="Xen_VirtualProcessorUtilizationDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+   GatheringType = 3;
+};
+[Provider ("cmpi:Xen_Processor"),
+ Description (
+	"Represents the amount of CPU resources utilized by the associated "
+	"Virtual Server.")]
+class Xen_ProcessorUtilization: Xen_ProcessorMetricValue
+{
+};
+
+//=============================================================================
+// Storage I/O related metrics - Interval metrics
+// Represents the OS view of disk performance data, NOT the storage view
+//=============================================================================
+class Xen_DiskMetricDefinition : CIM_BaseMetricDefinition
+{
+    [Override ( "DataType" )]
+    uint16 DataType = 5;
+    [Override ( "ProgrammaticUnits" )]
+    string ProgrammaticUnits = "second * 10^-6";
+    [Override ( "IsContinuous" )]
+    boolean IsContinuous = true;
+    [Override ( "ChangeType" )]
+    uint16 ChangeType = 3;
+    [Override ( "TimeScope" )]
+    uint16 TimeScope = 2;
+    [Override ( "GatheringType" )]
+    uint16 GatheringType = 3;
+};
+class Xen_DiskMetricValue : CIM_BaseMetricValue
+{
+};
+[Association]
+class Xen_MetricDefForDisk : CIM_MetricDefForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_Disk REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_DiskMetricDefinition REF Dependent;
+};
+[Association]
+class Xen_MetricForDisk : CIM_MetricForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_Disk REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_DiskMetricValue REF Dependent;
+};
+[Association]
+class Xen_MetricInstanceForDisk : CIM_MetricInstance
+{
+  [Override ( "Antecedent" )]
+      Xen_DiskMetricDefinition REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_DiskMetricValue REF Dependent;
+};
+class Xen_DiskReadThroughputDef : Xen_DiskMetricDefinition
+{
+};
+instance of Xen_DiskReadThroughputDef {
+    Name = "DMTF:DSP1045:ReadThroughput";
+    Description = "Read throughput.";
+    ProgrammaticUnits = "byte * second^(-1)";
+    Id="Xen_DiskReadThroughputDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+    GatheringType = 3;
+};
+[Provider ("cmpi:Xen_Disk"),
+ Description (
+	"Throughput of Virtual Disk read operations in "
+	"Bytes read per second.")]
+class Xen_DiskReadThroughput: Xen_DiskMetricValue
+{
+};
+class Xen_DiskWriteThroughputDef : Xen_DiskMetricDefinition
+{
+};
+instance of Xen_DiskWriteThroughputDef {
+    Name = "DMTF:DSP1045:WriteThroughput";
+    Description = "Write throughput.";
+    ProgrammaticUnits = "byte * second^(-1)";
+    Id="Xen_DiskWriteThroughputDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+    GatheringType = 3;
+};
+[Provider ("cmpi:Xen_Disk"),
+ Description (
+	"Throughput of Virtual Disk write operations in "
+	"bytes written per second.")]
+class Xen_DiskWriteThroughput: Xen_DiskMetricValue
+{
+};
+class Xen_DiskReadLatencyDef : Xen_DiskMetricDefinition
+{
+};
+instance of Xen_DiskReadLatencyDef {
+    Name = "DMTF:DSP1045:ReadLatency";
+    Description = "Read Latency.";
+    ProgrammaticUnits = "second * 10^-6";
+    Id="Xen_DiskReadLatencyDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+    GatheringType = 3;
+};
+[Provider ("cmpi:Xen_Disk"),
+ Description (
+	"Latency for Virtual Disk read operation, in microseconds.")]
+class Xen_DiskReadLatency: Xen_DiskMetricValue
+{
+};
+class Xen_DiskWriteLatencyDef : Xen_DiskMetricDefinition
+{
+};
+instance of Xen_DiskWriteLatencyDef {
+    Name = "DMTF:DSP1045:WriteLatency";
+    Description = "Write Latency.";
+    ProgrammaticUnits = "second * 10^-6";
+    Id="Xen_DiskWriteLatencyDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+    GatheringType = 3;
+};
+[Provider ("cmpi:Xen_Disk"),
+ Description (
+	"Latency of a Virtual disk write operation, in microseconds.")]
+class Xen_DiskWriteLatency: Xen_DiskMetricValue
+{
+};
+
+//=============================================================================
+// Network I/O related metrics - Interval metrics
+//=============================================================================
+class Xen_NetworkPortMetricDefinition : CIM_BaseMetricDefinition
+{
+    [Override ( "DataType" )]
+    uint16 DataType = 5;
+    [Override ( "ProgrammaticUnits" )]
+    string ProgrammaticUnits = "bytes * second^-1";
+    [Override ( "IsContinuous" )]
+    boolean IsContinuous = true;
+    [Override ( "ChangeType" )]
+    uint16 ChangeType = 3;
+    [Override ( "TimeScope" )]
+    uint16 TimeScope = 2;
+    [Override ( "GatheringType" )]
+    uint16 GatheringType = 3;
+};
+class Xen_NetworkPortMetricValue: CIM_BaseMetricValue
+{
+};
+[Association]
+class Xen_MetricInstanceForNetworkPort : CIM_MetricInstance
+{
+  [Override ( "Antecedent" )]
+      Xen_NetworkPortMetricDefinition REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_NetworkPortMetricValue REF Dependent;
+};
+
+//---------------------------------------------------
+// VM network metrics
+//
+[Association]
+class Xen_MetricDefForNetworkPort : CIM_MetricDefForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_NetworkPort REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_NetworkPortMetricDefinition REF Dependent;
+};
+[Association]
+class Xen_MetricForNetworkPort : CIM_MetricForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_NetworkPort REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_NetworkPortMetricValue REF Dependent;
+};
+class Xen_NetworkPortReceiveThroughputDef : Xen_NetworkPortMetricDefinition
+{
+};
+instance of Xen_NetworkPortReceiveThroughputDef {
+    Name = "DMTF:DSP1045:ReceiveThroughput";
+    Description = "Network Receive throughput.";
+    ProgrammaticUnits = "byte * 2^10 * second^-1";
+    Id="Xen_NetworkPortReceiveThroughputDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+    GatheringType = 3;
+};
+[Provider ("cmpi:Xen_NetworkPort"),
+ Description (
+        "Network receive throughput of a virtual network interface in"
+	" Kilo Bytes received per second.")]
+class Xen_NetworkPortReceiveThroughput: Xen_NetworkPortMetricValue
+{
+};
+class Xen_NetworkPortTransmitThroughputDef : Xen_NetworkPortMetricDefinition
+{
+};
+instance of Xen_NetworkPortTransmitThroughputDef {
+    Name = "DMTF:DSP1045:TransmitThroughput";
+    Description = "Network transmission throughput.";
+    ProgrammaticUnits = "byte * 2^10 * second^-1";
+    Id="Xen_NetworkPortTransmitThroughputDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+    GatheringType = 3;
+};
+[Provider ("cmpi:Xen_NetworkPort"),
+ Description (
+        "Network transmit throughput of a virtual network interface in "
+	"Kilo Bytes transmitted per second.")]
+class Xen_NetworkPortTransmitThroughput: Xen_NetworkPortMetricValue
+{
+};
+
+//---------------------------------------------------
+// Host network metrics
+//
+[Association]
+class Xen_MetricDefForHostNetworkPort : CIM_MetricDefForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_HostNetworkPort REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_NetworkPortMetricDefinition REF Dependent;
+};
+[Association]
+class Xen_MetricForHostNetworkPort : CIM_MetricForME 
+{
+  [Override ( "Antecedent" )]
+       Xen_HostNetworkPort REF Antecedent;
+  [Override ( "Dependent" )]
+       Xen_NetworkPortMetricValue REF Dependent;
+};
+class Xen_HostNetworkPortReceiveThroughputDef : Xen_NetworkPortMetricDefinition
+{
+};
+instance of Xen_HostNetworkPortReceiveThroughputDef {
+    Name = "DMTF:DSP1045:ReceiveThroughput";
+    Description = "Host Network Receive throughput.";
+    ProgrammaticUnits = "byte * 2^10 * second^-1";
+    Id="Xen_HostNetworkPortReceiveThroughputDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+    GatheringType = 3;
+};
+[Provider ("cmpi:Xen_HostNetworkPort"),
+ Description (
+        "Network receive throughput of a XenServer host's network interface in "
+	"Kilo Bytes received per second.")]
+class Xen_HostNetworkPortReceiveThroughput: Xen_NetworkPortMetricValue
+{
+};
+class Xen_HostNetworkPortTransmitThroughputDef : Xen_NetworkPortMetricDefinition
+{
+};
+instance of Xen_HostNetworkPortTransmitThroughputDef {
+    Name = "DMTF:DSP1045:TransmitThroughput";
+    Description = "Host Network transmission throughput.";
+    ProgrammaticUnits = "byte * 2^10 * second^-1";
+    Id="Xen_HostNetworkPortTransmitThroughputDef";
+    DataType = 5;
+    IsContinuous = true;
+    ChangeType = 3;
+    TimeScope = 2;
+    GatheringType = 3;
+};
+[Provider ("cmpi:Xen_HostNetworkPort"),
+ Description (
+        "Network transmit throughput of a XenServer host's network interface in"
+	" Kilo Bytes transmitted per second.")]
+class Xen_HostNetworkPortTransmitThroughput: Xen_NetworkPortMetricValue
+{
+};
+
+//
+// Following are classes introduced by the Perf metrics profile, but dont fit in the XenServer model
+//
+// [Provider ("cmpi:Xen_ProcessorPool")]
+// class Xen_CPURPReservedDef : Xen_ProcessorResourcePoolCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//     string Name = "DMTF:DSP1044:CPURPReserved";
+//
+//     [Override ( "Description" )]
+//     string Name = "Average CPU capacity reserved during the reported interval.";
+// };
+// [Provider ("cmpi:Xen_ProcessorPool"),
+//  Description (
+//         "Represents the amount of resources in the associated processor"
+//         " pool which is allocated by some virtual computer system, in"
+//         " the measured interval.")]
+// class Xen_CPURPReserved : Xen_ProcessorResourcePoolCPUMetricValue
+// {
+// };
+// [Provider ("cmpi:Xen_ProcessorPool")]
+// class Xen_CPURPCapacityDef : Xen_ProcessorResourcePoolCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//     string Name = "DMTF:DSP1044:CPURPCapacity";
+//
+//     [Override ( "Description" )]
+//     string Name = "Average CPU capacity of the associated CPU resource pool.";
+// };
+// [Provider ("cmpi:Xen_ProcessorPool"),
+//  Description (
+//         "Represents the avg. capacity of the associated processor pool"
+//         " in the measured interval.")]
+// class Xen_CPURPCapacity : Xen_ProcessorResourcePoolCPUMetricValue
+// {
+// };
+// [Provider ("cmpi:Xen_ProcessorPool")]
+// class Xen_CPURPUtilizedDef : Xen_ProcessorResourcePoolCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:CPURPUtilized";
+//
+//     [Override ( "Description" )]
+//         string Name = "Average CPU capacity used during the reported interval.";
+// };
+// [Provider ("cmpi:Xen_ProcessorPool"),
+//  Description (
+//         "Represents the amount of resources in the associated processor"
+//         " that was actually utilized during the measured interval.")]
+// class Xen_CPURPUtilized : Xen_ProcessorResourcePoolCPUMetricValue
+// {
+// };
+
+//
+// ----------Host Processor
+//
+
+// class Xen_NumberOfHostPhysicalCPUsUtilizedDef : Xen_HostProcessorMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:NumberOfPhysicalCPUsUtilized";
+//
+//     [Override ( "Description" )]
+//         string Description = "Average CPU capacity used during the reported interval.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "count(processor)";
+// };
+//
+//[Provider ("cmpi:Xen_HostProcessor")]
+//class Xen_NumberOfHostPhysicalCPUsUtilized : Xen_HostProcessorMetricValue
+//{
+//};
+// class Xen_TotalHostCPUTimeDef : Xen_HostProcessorMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:TotalCPUTime";
+//
+//     [Override ( "Description" )]
+//         string Description = "Total CPU time.";
+// };
+//
+// [Provider ("cmpi:Xen_HostProcessor"),
+//  Description (
+//         "Represents the CPU time spent at the Virtualization"
+//         " platform level.")]
+// class Xen_TotalHostCPUTime : Xen_HostProcessorMetricValue
+// {
+// };
+// class Xen_HypervisorManagementTimeDef : Xen_HostProcessorMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:HypervisorManagementTime";
+//
+//     [Override ( "Description" )]
+//         string Description = "Hypervisor management time.";
+// };
+// [Provider ("cmpi:Xen_HostProcessor"),
+//  Description (
+//         "Represents the CPU time used by the hypervisor.")]
+// class Xen_HypervisorManagementTime : Xen_HostProcessorMetricValue
+// {
+// };
+// class Xen_UnusedGlobalHostCPUCapacityDef : Xen_HostProcessorMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:UnusedGlobalCPUCapacity";
+//
+//     [Override ( "Description" )]
+//         string Description = "Unused global CPU capacity.";
+// };
+// [Provider ("cmpi:Xen_HostProcessor"),
+//  Description (
+//         "Represents the CPU time in ms used by the physical server the"
+//         " hypervisor is running on.")]
+// class Xen_UnusedGlobalHostCPUCapacity : Xen_HostProcessorMetricValue
+// {
+// };
+
+//
+// ---------------------- Virtual CPU
+//
+// [Provider ("cmpi:Xen_Processor")]
+// class Xen_CPUVSReservedDef : Xen_VirtualSystemCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:CPUVSReserved";
+//
+//     [Override ( "Description" )]
+//         string Description = "CPU reserved by the associated virtual server.";
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "Represents the amount of CPU resources reserved by the associated "
+//         "Virtual Server.")]
+// class Xen_CPUVSReserved : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+// class Xen_VSNumberOfPhysicalCPUsUtilizedDef : Xen_VirtualSystemProcessorMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:NumberOfPhysicalCPUsUtilized";
+//
+//     [Override ( "Description" )]
+//         string Description = "Number of physical CPUs utilized.";
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "Represents the average number of physical CPUs utilized by"
+//         " the associated Virtual Server.")]
+// class Xen_VSNumberOfPhysicalCPUsUtilized : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+// class Xen_VSTotalCPUTimeDef : Xen_VirtualSystemCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:TotalCPUTime";
+//
+//     [Override ( "Description" )]
+//         string Description = "Total CPU time.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "second*10^-6";
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "Represents the total CPU time spent at the Virtualization "
+//         "platform level by the Virtual Server.")]
+// class Xen_VSTotalCPUTime : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+// class Xen_VSStealTimeDef : Xen_VirtualSystemCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:StealTime";
+//
+//     [Override ( "Description" )]
+//         string Description = "Steal time.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//         string ProgrammaticUnits = "second*10^-6";
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "Represents the total CPU time spent waiting for the physical"
+//         "CPUs to become available when something is ready to run.")]
+// class Xen_VSStealTime : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+// class Xen_VSActiveVirtualProcessorsDef : Xen_VirtualSystemCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:ActiveVirtualProcessors";
+//
+//     [Override ( "Description" )]
+//         string Description = "Active virtual processors.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//         string ProgrammaticUnits = "count(processor)";
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "Represents the average number of virtual servers active.")]
+// class Xen_VSActiveVirtualProcessors : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+// class Xen_VSInternalViewTotalCPUTimePercentageDef : Xen_VirtualSystemCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:InternalViewTotalCPUTimePercentage";
+//
+//     [Override ( "Description" )]
+//         string Description = "Internal view total CPU percentage.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//         string ProgrammaticUnits = "percent";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 4;
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "Represents the percentage of CPU used by the internal"
+//         " operating system.")]
+// class Xen_VSInternalViewTotalCPUTimePercentage : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+// class Xen_VSInternalViewIdlePercentageDef : Xen_VirtualSystemCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:IdlePercentage";
+//
+//     [Override ( "Description" )]
+//         string Description = "Internal view idle percentage.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//         string ProgrammaticUnits = "percent";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 4;
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "Represents the percentage of CPU spent idle by the internal"
+//         " operating system.")]
+// class Xen_VSInternalViewIdlePercentage : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+// class Xen_VSUnusedPartitionCPUCapacityDef : Xen_VirtualSystemCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:UnusedPartitionCPUCapacity";
+//
+//     [Override ( "Description" )]
+//         string Description = "Unused partition CPU capacity.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//         string ProgrammaticUnits = "second * 10^-6";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 4;
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "Represents the percentage of CPU reserved exclusively for"
+//         " the virtual system, but not used.")]
+// class Xen_VSUnusedPartitionCPUCapacity : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+// class Xen_VSPartitionDefinedCapacityUsedPercentageDef : Xen_VirtualSystemCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:PartitionDefinedCapacityUsedPercentage";
+//
+//     [Override ( "Description" )]
+//         string Description = "Partition defined capacity used percentage.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//         string ProgrammaticUnits = "percent";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 4;
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "Represents the percentage of CPU capacity defined to"
+//         " the virtual system, that is actually used, not counting idle"
+//         " tasks.")]
+// class Xen_VSPartitionDefinedCapacityUsedPercentage : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+// class Xen_VSCPUConsumptionIndexDef : Xen_VirtualSystemCPUMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1044:CPUConsumptionIndex";
+//
+//     [Override ( "Description" )]
+//         string Description = "CPU consumption index.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//         string ProgrammaticUnits = "";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 4;
+// };
+// [Provider ("cmpi:Xen_Processor"),
+//  Description (
+//         "CPU Time consumed by the OS, divided by the CPU time which could"
+//         " have been used by the operating system within the given interval.")]
+// class Xen_VSCPUConsumptionIndex : Xen_VirtualSystemCPUMetricValue
+// {
+// };
+
+
+//=============================================================================
+// Memory Resource Pool related Metrics - point metrics
+//=============================================================================
+class Xen_MemoryResourcePoolMetricDefinition : CIM_BaseMetricDefinition
+{
+    [Override ( "DataType" )]
+	uint16 DataType = 13;
+    [Override ( "ProgrammaticUnits" )]
+	string ProgrammaticUnits = "bytes * 2^20";
+    [Override ( "IsContinuous" )]
+	boolean IsContinuous = true;
+    [Override ( "ChangeType" )]
+	uint16 ChangeType = 4;
+    [Override ( "TimeScope" )]
+	uint16 TimeScope = 2;
+    [Override ( "GatheringType" )]
+	uint16 GatheringType = 3;
+};
+class Xen_MemoryResourcePoolMetricValue : CIM_BaseMetricValue
+{
+};
+// [Provider ("cmpi:Xen_MemoryPool")]
+// class Xen_MemoryRPAllocatedDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:MemoryRPAllocated";
+//
+//     [Override ( "Description" )]
+//         string Description = "Pool memory currently allocated by some virtual server instances.";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 13;
+// };
+// [Provider ("cmpi:Xen_MemoryPool"),
+//  Description (
+//         "Amount of logical memory in the associated memory resource pool which is"
+//         " currently allocated by some virtual server instances..")]
+// class Xen_MemoryRPAllocated : Xen_MemoryResourcePoolMetricValue
+// {
+// };
+// class Xen_MemoryRPLogicalMemorySizeDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:MemoryRPLogicalMemorySize";
+//
+//     [Override ( "Description" )]
+//         string Description = "Pool logical memory size.";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 13;
+// };
+// [Provider ("cmpi:Xen_MemoryPool"),
+//  Description (
+//         "Memory pool logical memory size.")]
+// class Xen_MemoryRPLogicalMemorySize : Xen_MemoryResourcePoolMetricValue
+// {
+// };
+// class Xen_MemoryRPRealMemorySizeDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:MemoryRPRealMemorySize";
+//
+//     [Override ( "Description" )]
+//         string Description = "Pool physical memory size.";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 13;
+// };
+// [Provider ("cmpi:Xen_MemoryPool"),
+//  Description (
+//         "Memory pool physical memory size.")]
+// class Xen_MemoryRPRealMemorySize : Xen_MemoryResourcePoolMetricValue
+// {
+// };
+//=============================================================================
+// Hypervisor memory related metrics - instantaneous metrics
+//=============================================================================
+class Xen_HostMemoryMetricDefinition : CIM_BaseMetricDefinition
+{
+    [Override ( "DataType" )]
+	uint16 DataType = 13;
+    [Override ( "ProgrammaticUnits" )]
+	string ProgrammaticUnits = "bytes * 2^20";
+    [Override ( "IsContinuous" )]
+	boolean IsContinuous = true;
+    [Override ( "ChangeType" )]
+	uint16 ChangeType = 4;
+    [Override ( "TimeScope" )]
+	uint16 TimeScope = 2;
+    [Override ( "GatheringType" )]
+	uint16 GatheringType = 3;
+};
+class Xen_HostMemoryMetricValue : CIM_BaseMetricValue
+{
+};
+// class Xen_HostMemoryAllocatedToVirtualMachinesDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:MemoryAllocatedToVirtualServers";
+//
+//     [Override ( "Description" )]
+//         string Description = "Memory allocated to Virtual Servers.";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 13;
+// };
+// [Provider ("cmpi:Xen_HostMemory"),
+//  Description (
+//         "Sum of physical memory currently used by Virtual Systems not including"
+//         " unallocated physical memory or memory used by hypervisor.")]
+// class Xen_HostMemoryAllocatedToVirtualMachines : Xen_HostMemoryMetricValue
+// {
+// };
+// class Xen_HostSharedMemoryDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:HypervisorMemory";
+//
+//     [Override ( "Description" )]
+//         string Description = "Memory used by the hypervisor for itself.";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 13;
+// };
+// [Provider ("cmpi:Xen_HostMemory"),
+//  Description (
+//         "Host memory shared between virtual servers.")]
+// class Xen_HostSharedMemory : Xen_HostMemoryMetricValue
+// {
+// };
+// class Xen_HostPagedOutMemoryDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:SharedMemory";
+//
+//     [Override ( "Description" )]
+//         string Description = "Memory shared between virtual servers.";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 13;
+// };
+// [Provider ("cmpi:Xen_HostMemory"),
+//  Description (
+//         "Paged out virtual memory not backed by physical memory.")]
+// class Xen_HostPagedOutMemory : Xen_HostMemoryMetricValue
+// {
+// };
+// class Xen_HostFreeSpaceInPagingFilesDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:FreeS[aceInPagingFiles";
+//
+//     [Override ( "Description" )]
+//         string Description = "Free space in paging files.";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 13;
+// };
+// [Provider ("cmpi:Xen_HostMemory"),
+//  Description (
+//         "Amount of virtual memory that can be mapped into the "
+//         "hypervisor's paging files without causing any used pages to be"
+//         " purged from the paging files.")]
+// class Xen_HostFreeSpaceInPagingFiles : Xen_HostMemoryMetricValue
+// {
+// };
+// class Xen_HostPageInRateDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:PageInRate";
+//
+//     [Override ( "Description" )]
+//         string Description = "Page-in rate.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "count / second";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 4;
+// };
+// [Provider ("cmpi:Xen_HostMemory"),
+//  Description (
+//         "Number of pages paged in per second between main memory"
+//         " and a secondary memory (storage).")]
+// class Xen_HostPageInRate : Xen_HostMemoryMetricValue
+// {
+// };
+// class Xen_HostDoublePageRateDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:DoublePageRate";
+//
+//     [Override ( "Description" )]
+//         string Description = "Double page rate.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "count / second";
+//
+//     [Override ( "DataType" )]
+//     uint64 DataType = 4;
+// };
+// [Provider ("cmpi:Xen_HostMemory"),
+//  Description (
+//         "Number of page in operations where the same page was paged"
+//         " by hypervisor and by the virtual machine.")]
+// class Xen_HostDoublePageRate : Xen_HostMemoryMetricValue
+// {
+// };
+// class Xen_HostFreeMemoryDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:HostMemoryFree";
+//
+//     [Override ( "Description" )]
+//         string Description = "Free virtual memory.";
+// };
+// [Provider ("cmpi:Xen_HostMemory"),
+//  Description (
+//         "Free physical Memory")]
+// class Xen_HostVirtualMemory : Xen_HostMemoryMetricValue
+// {
+// };
+// class Xen_HostMemoryCapacityDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:HostMemoryCapacity";
+//
+//     [Override ( "Description" )]
+//         string Description = "Memory Capacity.";
+// };
+// class Xen_HostMemoryAvailableForVirtualServerCreationDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:MemoryAvailableForVirtualServerCreation";
+//
+//     [Override ( "Description" )]
+//         string Description = "Memory available for virtual server creation.";
+// };
+// [Provider ("cmpi:Xen_HostMemory"),
+//  Description (
+//         "Host physical memory available for virtual server creation.")]
+// class Xen_HostMemoryAvailableForVirtualServerCreation : Xen_HostMemoryMetricValue
+// {
+// };
+// class Xen_HostFreePhysicalMemoryDef : Xen_MemoryResourcePoolMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:HostFreePhysicalMemory";
+//
+//     [Override ( "Description" )]
+//         string Description = "Host free physical memory.";
+// };
+// [Provider ("cmpi:Xen_HostMemory"),
+//  Description (
+//         "Host physical memory currently free not claimed by any virtual machine.")]
+// class Xen_HostFreePhysicalMemory : Xen_HostMemoryMetricValue
+// {
+// };
+//=============================================================================
+// Virtual Server memory related metrics - instantaneous metrics
+//=============================================================================
+class Xen_ComputerSystemMemoryMetricDefinition : CIM_BaseMetricDefinition
+{
+    [Override ( "DataType" )]
+	uint16 DataType = 13;
+    [Override ( "ProgrammaticUnits" )]
+	string ProgrammaticUnits = "bytes * 2^20";
+    [Override ( "IsContinuous" )]
+	boolean IsContinuous = true;
+    [Override ( "ChangeType" )]
+	uint16 ChangeType = 4;
+    [Override ( "TimeScope" )]
+	uint16 TimeScope = 2;
+    [Override ( "GatheringType" )]
+	uint16 GatheringType = 3;
+};
+class Xen_ComputerSystemMemoryMetricValue : CIM_BaseMetricValue
+{
+};
+// class Xen_CSPhysicalMemoryAllocatedDef : Xen_ComputerSystemMemoryMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:PhysicalMemoryAllocatedToVirtualSystem";
+//
+//     [Override ( "Description" )]
+//         string Description = "Physical memory allocated to virtual system.";
+// };
+// [Provider ("cmpi:Xen_Memory"),
+//  Description (
+//         "Virtual Memory which is backed by physical memory for the associated
+//         virtual server.")]
+// class Xen_CSPhysicalMemoryAllocated : Xen_ComputerSystemMemoryMetricValue
+// {
+// };
+// class Xen_CSWorkingSetSizeDef : Xen_ComputerSystemMemoryMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:WorkingSetSize";
+//
+//     [Override ( "Description" )]
+//         string Description = "Working set size.";
+// };
+// [Provider ("cmpi:Xen_Memory"),
+//  Description (
+//         "Estimated minimal amount of physical memory require to run this Virtual"
+//         " Machine.")]
+// class Xen_CSWorkingSetSize : Xen_ComputerSystemMemoryMetricValue
+// {
+// };
+// class Xen_CSSharedMemoryDef : Xen_ComputerSystemMemoryMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:SharedMemory";
+//
+//     [Override ( "Description" )]
+//         string Description = "Memory shared between virtual servers.";
+// };
+// [Provider ("cmpi:Xen_Memory"),
+//  Description (
+//         "Amount of shareable memory used by this Virtual Machine.")]
+// class Xen_CSSharedMemory : Xen_ComputerSystemMemoryMetricValue
+// {
+// };
+// class Xen_CSTargetMemorySizeDef : Xen_ComputerSystemMemoryMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:TargetMemorySize";
+//
+//     [Override ( "Description" )]
+//         string Description = "Desired value for physical memory being allocated to this virtual server (resident set size).";
+// };
+// [Provider ("cmpi:Xen_Memory"),
+//  Description (
+//         "Target value of resident set size of the associated virtual server.")]
+// class Xen_CSTargetMemorySize : Xen_ComputerSystemMemoryMetricValue
+// {
+// };
+// class Xen_CSMemoryDelayPercentageDef : Xen_ComputerSystemMemoryMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:MemoryDelayPercentage";
+//
+//     [Override ( "Description" )]
+//         string Description = "Memory delay percentage.";
+// };
+// [Provider ("cmpi:Xen_Memory"),
+//  Description (
+//         "Percentage of time the virtual system was waiting for the completion of "
+//         "a page-in operation.")]
+// class Xen_CSMemoryDelayPercentage : Xen_ComputerSystemMemoryMetricValue
+// {
+// };
+
+
+//
+// --------------------- Disk Metrics
+//
+// class Xen_DiskResponseTimeDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:ResponseTime";
+//
+//     [Override ( "Description" )]
+//         string Description = "Disk avarage response time.";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Average response time (in ms) that the devie required to complete an "
+//         " I/O request.")]
+// class Xen_DiskResponseTime : Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskWaitTimeDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:WaitTime";
+//
+//     [Override ( "Description" )]
+//         string Description = "Disk wait time component.";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Average delay time (in ms) for an I/O request.")]
+// class Xen_DiskWaitTime : Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskCapacityDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:DiskCapacity";
+//
+//     [Override ( "Description" )]
+//         string Description = "Disk capacity.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "byte * 2^20";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Disk capacity in Megabytes.")]
+// class Xen_DiskCapacity : Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskAvailableSpaceDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:DiskAvailableSpace";
+//
+//     [Override ( "Description" )]
+//         string Description = "Available space.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "byte * 2^20";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Disk free capacity in Megabytes.")]
+// class Xen_DiskAvailableSpace: Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskReadOperationsDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:ReadOperations";
+//
+//     [Override ( "Description" )]
+//         string Description = "Read operations.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "count";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Number of read operations issued from the system executed within"
+//         " the interval.")]
+// class Xen_DiskReadOperations: Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskWriteOperationsDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:WriteOperations";
+//
+//     [Override ( "Description" )]
+//         string Description = "Write operations.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "count";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Number of write operations issued from the system executed within"
+//         " the interval.")]
+// class Xen_DiskWriteOperations: Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskAverageDeviceUtilizationDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:AverageDeviceUtilization";
+//
+//     [Override ( "Description" )]
+//         string Description = "Average device utilization.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "percent";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Average device utilization.")]
+// class Xen_DiskAverageDeviceUtilization: Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskActiveTimePercentageDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:ActiveTimePercentage";
+//
+//     [Override ( "Description" )]
+//         string Description = "Active time percentage.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "percent";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Percentage that this disk unit was active processing some"
+//         " request.")]
+// class Xen_DiskActiveTimePercentage: Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskRequestRateDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:RequestRate";
+//
+//     [Override ( "Description" )]
+//         string Description = "Request rate.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "count * second^-1";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Number of I/O requests per second.")]
+// class Xen_DiskRequestRate: Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskQueueDepthDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:QueueDepth";
+//
+//     [Override ( "Description" )]
+//         string Description = "Queue depth.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "second / second";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Average Number of I/O requests currently in the queue "
+//         "from the OS's"
+//         "point of view.")]
+// class Xen_DiskQueueDepth: Xen_DiskMetricValue
+// {
+// };
+// class Xen_DiskTransferredThroughputDef : Xen_DiskMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:TransferredThroughput";
+//
+//     [Override ( "Description" )]
+//         string Description = "Transferred throughput.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "byte * second^(-1)";
+// };
+// [Provider ("cmpi:Xen_Disk"),
+//  Description (
+//         "Bytes transferred (read and write) per second.")]
+// class Xen_DiskTransferredThroughput: Xen_DiskMetricValue
+// {
+// };
+
+
+//
+// ----------------------- Network metrics
+//
+// class Xen_NetworkPortBytesTransmittedDef : Xen_NetworkPortMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:BytesTransmitted";
+//
+//     [Override ( "Description" )]
+//         string Description = "Bytes transmitted.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "bytes";
+// };
+// [Provider ("cmpi:Xen_NetworkPort"),
+//  Description (
+//         "Number of bytes transmitted on this network endpoint"
+//         " during the interval.")]
+// class Xen_NetworkPortBytesTransmitted: Xen_NetworkPortMetricValue
+// {
+// };
+// class Xen_NetworkPortBytesReceivedDef : Xen_NetworkPortMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:BytesReceived";
+//
+//     [Override ( "Description" )]
+//         string Description = "Bytes received.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "bytes";
+// };
+// [Provider ("cmpi:Xen_NetworkPort"),
+//  Description (
+//         "Number of bytes received on this network endpoint"
+//         " during the interval.")]
+// class Xen_NetworkPortBytesReceived: Xen_NetworkPortMetricValue
+// {
+// };
+// class Xen_NetworkPortErrorRateDef : Xen_NetworkPortMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:ErrorRate";
+//
+//     [Override ( "Description" )]
+//         string Description = "Errors per second.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "count / second";
+// };
+// [Provider ("cmpi:Xen_NetworkPort"),
+//  Description (
+//         "Average number of errors per second during the interval (This includes"
+//         " transmission and reception errors).")]
+// class Xen_NetworkPortErrorRate: Xen_NetworkPortMetricValue
+// {
+// };
+// class Xen_NetworkPortPacketsTransmittedDef : Xen_NetworkPortMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:PacketsTransmitted";
+//
+//     [Override ( "Description" )]
+//         string Description = "Packets transmitted.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "count";
+// };
+// [Provider ("cmpi:Xen_NetworkPort"),
+//  Description (
+//         "Total number of packets transmitted.")]
+// class Xen_NetworkPortPacketsTransmitted: Xen_NetworkPortMetricValue
+// {
+// };
+// class Xen_NetworkPortPacketsReceivedDef : Xen_NetworkPortMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:PacketsReceived";
+//
+//     [Override ( "Description" )]
+//         string Description = "Packets received.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "count";
+// };
+// [Provider ("cmpi:Xen_NetworkPort"),
+//  Description (
+//         "Total number of packets received.")]
+// class Xen_NetworkPortPacketsReceived: Xen_NetworkPortMetricValue
+// {
+// };
+// class Xen_NetworkPortUtilizationPercentageDef : Xen_NetworkPortMetricDefinition
+// {
+//     [Override ( "Name" )]
+//         string Name = "DMTF:DSP1045:NetworkPortUtilizationPercentage";
+//
+//     [Override ( "Description" )]
+//         string Description = "Network port utilization percentage.";
+//
+//     [Override ( "ProgrammaticUnits" )]
+//     string ProgrammaticUnits = "percent";
+// };
+// [Provider ("cmpi:Xen_NetworkPort"),
+//  Description (
+//         "Percentage of the theoretical bandwidth that is actually used, based on "
+//         "consumed bandwidth (sum of send/receive) versus available bandwidth.")]
+// class Xen_NetworkPortUtilizationPercentage: Xen_NetworkPortMetricValue
+// {
+// };
+

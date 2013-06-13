@@ -1,0 +1,19 @@
+<CreateDiskImage_INPUT 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_StoragePoolManagementService">
+  <ResourceSetting>
+    <dsd:Xen_DiskSettingData
+        xmlns:dsd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_DiskSettingData"
+        xsi:type="Xen_DiskettingData_Type">
+      <dsd:PoolID>SR_UUID</dsd:PoolID>
+      <dsd:ElementName>DISK_NAME</dsd:ElementName>
+      <dsd:ResourceType>19</dsd:ResourceType>
+      <dsd:ResourceSubType>Disk</dsd:ResourceSubType>
+      <dsd:VirtualQuantity>2048</dsd:VirtualQuantity>
+      <dsd:AllocationUnits>MegaBytes</dsd:AllocationUnits>
+      <dsd:Bootable>false</dsd:Bootable>
+      <dsd:Access>3</dsd:Access>
+    </dsd:Xen_DiskSettingData>
+  </ResourceSetting>
+</CreateDiskImage_INPUT>

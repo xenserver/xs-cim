@@ -1,0 +1,4 @@
+These tests exist to demonstrate the use pegasus's wbemexec tool which issues CIM-XML requests to CIMOM's using raa XML read from input files.
+
+To send the raw XML requests run
+"wbemexec <xmlfile.xml>"

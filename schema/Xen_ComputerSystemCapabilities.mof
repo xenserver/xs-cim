@@ -1,0 +1,21 @@
+// Copyright (c) 2006 Novell, Inc. All rights reserved.
+
+// ==================================================================
+// Xen_ComputerSystemCapabilities
+// ==================================================================
+[Provider ("cmpi:Xen_ComputerSystemCapabilities"),
+ Description (
+	"A class derived from CIM_EnabledLogicalElementCapabilities to "
+	"represent the capability(ies) of a Xen_ComputerSystem.")]
+class Xen_ComputerSystemCapabilities : CIM_EnabledLogicalElementCapabilities
+{
+};
+
+[Provider ("cmpi:Xen_HostComputerSystemCapabilities"),
+ Description (
+	"A class derived from CIM_EnabledLogicalElementCapabilities to "
+	"represent the capability(ies) of a Xen_HostComputerSystem.")]
+class Xen_HostComputerSystemCapabilities : CIM_EnabledLogicalElementCapabilities
+{
+};
+

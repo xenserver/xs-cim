@@ -1,0 +1,23 @@
+<AddResourceSettings_INPUT 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:npsd ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_NetworkPortSettingData"
+  xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_VirtualSwitchManagementService">
+  <AffectedConfiguration> 
+     <a:Address xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+     <a:ReferenceParameters xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+          <w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_VirtualSwitchSettingData</w:ResourceURI>
+          <w:SelectorSet>
+              <w:Selector Name="InstanceID">Xen:NETWORK_UUID</w:Selector>
+           </w:SelectorSet>
+     </a:ReferenceParameters>
+  </AffectedConfiguration>
+  <ResourceSettings>
+     <npsd:Xen_NetworkPortSettingData
+      xsi:type="Xen_NetworkPortSettingData_Type">
+         <npsd:ResourceType>33</npsd:ResourceType>
+         <npsd:Connection>eth0</npsd:Connection>
+         <npsd:VlanTag>1234</npsd:VlanTag>
+      </npsd:Xen_NetworkPortSettingData>
+  </ResourceSettings>
+</AddResourceSettings_INPUT>

@@ -1,0 +1,151 @@
+// Copyright (c) 2010 Citrix Systems Inc. All rights reserved.
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_Job to represent the asynchronous "
+	"tasks returned from one of the extrinsic methods of the CIM classes. "
+	"This class serves as the base class for other job classes.")]
+class Xen_Job : CIM_ConcreteJob {
+};
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_Job to represent the asynchronous "
+	"tasks returned from one of the methods of the "
+	"Xen_VirtualSystemManagementService class. An instance of this class "
+	"can be used to query the status of the task.")]
+class Xen_VirtualSystemManagementServiceJob : Xen_Job {
+};
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_Job to represent the asynchronous "
+	"tasks returned from one of the methods of the "
+	"Xen_VirtualSystemManagementService class. An instance of this class "
+	"can be used to query the status of the task.")]
+class Xen_VirtualSystemModifyResourcesJob : Xen_VirtualSystemManagementServiceJob {
+    [Description(
+        "If this Job object resulted from the AddResourceSettings method, "
+	"this string array contains references to the RASD instances that "
+	"were added or modified.") ]
+	string AffectedResources[];
+};
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_VirtualSystemManagementServiceJob to "
+	"represent the asynchronous "
+	"tasks returned from one of the methods of the "
+	"Xen_VirtualSystemManagementService class. An instance of this class "
+	"can be used to query the status of the task.")]
+class Xen_VirtualSystemCreateJob : Xen_VirtualSystemManagementServiceJob {
+    [Description(
+        "If this Job object resulted from the Copy/DefineSystem method, "
+	"this string contains a CIM reference to the VM instance that "
+	"was created.") ]
+	string ResultingSystem;
+};
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_Job to represent the asynchronous "
+	"tasks returned from one of the methods of the "
+	"Xen_VirtualSystemMigrationService class. An instance of this class "
+	"can be used track the status of the task.")]
+class Xen_VirtualSystemMigrationServiceJob : Xen_Job {
+};
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_Job to represent the asynchronous "
+	"task of connecting to a disk image. An instance of this class "
+	"can be used query the status of the task and inspect the "
+	"'TargetURI' of the disk image and the server's 'SSLCertificate' "
+	"once the connect is completed.")]
+class Xen_ConnectToDiskImageJob : Xen_Job {
+
+    [Description(
+        "The self-signed openssl certificate containing the public key "
+	"required to connect to the TargetURI using SSL. "
+	"This is only available, if SSL was specified during connection.") ]
+    string SSLCertificate;
+
+    [Description(
+        "The resource URI for the disks to connect over a network - "
+	"'iscsi://ipaddress/iqn?lun=<lun1>' or "
+	"'http(s)://iaddress/vdi_uuid_<uuid>' for HTTP. "
+	"'http(s)://iaddress/<vhd_url>' for BITS. "
+	"The URI information can be used to connect to the disks "
+	"using an iSCSI initiator or a BITS client.") ] 
+    string TargetURI;
+
+    [Description(
+        "A (CHAP) username that may be required to be used to "
+	"establish an authenticated connection to the target.") ]
+    string Username;
+
+    [Description(
+        "The (CHAP) password to go with the username.") ]
+    string Password;
+
+    [Description(
+        "An opaque handle that uniquely identifies this disk connection. "
+	"This has to be used in the call to DisconnectFromDiskImage.") ] 
+    string ConnectionHandle;
+
+};
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_Job to represent the asynchronous "
+	"task of disconnecting from a disk image. An instance of this class "
+	"can be used query the status of the task.")]
+class Xen_DisconnectFromDiskImageJob : Xen_Job {
+
+};
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_Job to represent an asynchronous "
+	"task spawned to change a system's state. An instance of this class "
+	"can be used to query the status of the task, i.e. if the system "
+	"state change was initiated successfully or not. The actual state "
+	"of the system will have to be gathered from the 'EnabledState' "
+	"property of the system object.")]
+class Xen_SystemStateChangeJob : Xen_Job {
+};
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_Job to represent the asynchronous "
+	"task of initiating a Snapshot Forest export. An instance of this class "
+	"can be used query the status of the task and inspect the "
+	"'TargetURI' of the disk images being exported.")]
+class Xen_StartSnapshotForestExportJob : Xen_Job {
+    [Description ( "The URI representing the HTTP endpoint containing the metadata "
+        "for the VM's snapshot forest and the associated delta disk images. "
+	"This has to be downloaded and saved along with the disk images." )]
+   string MetadataURI;
+
+    [Description ( 
+        "An array of URIs representing the HTTP endpoints for the VM's base/delta disks." )]
+   string DiskImageURIs[];
+
+    [Description(
+        "The self-signed openssl certificate(s) containing the public key(s) "
+	"required to connect to the disk images using SSL. "
+	"This is only available, if SSL was specified during connection.") ]
+    string SSLCertificates[];
+
+   [Description ( 
+	"An opaque connection handle that represents the unique instance of the "
+	"export process." )]
+   string ExportConnectionHandle;
+};
+
+[Provider ("cmpi:Xen_Job"),
+ Description (
+	"A class derived from Xen_Job to represent the asynchronous "
+	"task of ending a Snapshot Forest export.")]
+class Xen_EndSnapshotForestExportJob : Xen_Job {
+};

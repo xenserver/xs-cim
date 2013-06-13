@@ -1,0 +1,8 @@
+<DisconnectFromDiskImage_INPUT 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2//Xen_StoragePoolManagementService">
+  <ConnectionHandle>
+      CONNECT_HANDLE
+  </ConnectionHandle>
+</DisconnectFromDiskImage_INPUT>

@@ -1,0 +1,4 @@
+#!/bin/bash
+rpm -q xs-cim-cmpi
+rpm -q tog-pegasus
+

@@ -1,0 +1,29 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_VirtualizationCapabilities
+// ==================================================================
+[Provider ("cmpi:Xen_VirtualizationCapabilities"),
+ Description (
+	"A class derived from CIM_Capabilities to represent "
+	"the capability(ies) of the XenServer host to virtualize "
+	"various classes of resources in XenServer virtual machines.")]
+class Xen_VirtualizationCapabilities : CIM_Capabilities
+{
+   [Description(
+	"Type of resource being virtualized."),
+    ValueMap{"Processor", "Memory", "Disk", "NetworkPort"}]
+   string ResourceType;
+
+   [Description(
+	"A boolean indicating if the underlying physical resource is shared "
+	" with other virtual machines, or if the physical resource is allocated "
+        "exclusively to the virtual machine.")]
+   boolean Shared;
+
+   [Description(
+	"A boolean indicating if the virtual resource allocation can be modified "
+	" after it has initially been allocated to a virtual machine.")]
+   boolean Mutable;
+};
+

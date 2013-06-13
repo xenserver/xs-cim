@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CIM CIMVERSION="2.0" DTDVERSION="2.0">
+  <MESSAGE ID="1001" PROTOCOLVERSION="1.0">
+    <SIMPLEREQ>
+      <METHODCALL NAME="DefineSystem">
+        <LOCALINSTANCEPATH>
+          <LOCALNAMESPACEPATH>
+            <NAMESPACE NAME="root"/>
+            <NAMESPACE NAME="cimv2"/>
+          </LOCALNAMESPACEPATH>
+          <INSTANCENAME CLASSNAME="Xen_VirtualSystemManagementService">
+            <KEYBINDING NAME="CreationClassName">
+              <KEYVALUE VALUETYPE="string">Xen_VirtualSystemManagementService</KEYVALUE>
+            </KEYBINDING>
+            <KEYBINDING NAME="SystemName">
+              <KEYVALUE VALUETYPE="string">redwshashiu-xen</KEYVALUE>
+            </KEYBINDING>
+            <KEYBINDING NAME="Name">
+              <KEYVALUE VALUETYPE="string">Xen Hypervisor</KEYVALUE>
+            </KEYBINDING>
+            <KEYBINDING NAME="SystemCreationClassName">
+              <KEYVALUE VALUETYPE="string">CIM_ComputerSystem</KEYVALUE>
+            </KEYBINDING>
+          </INSTANCENAME>
+        </LOCALINSTANCEPATH>
+        <PARAMVALUE EmbeddedObject="instance" NAME="SystemSettings" PARAMTYPE="string">
+          <VALUE>
+            <INSTANCE CLASSNAME="Xen_ComputerSystemSettingData">
+              <PROPERTY NAME="Bootloader" TYPE="string">
+                <VALUE>pygrub</VALUE>
+              </PROPERTY>
+              <PROPERTY NAME="UUID" TYPE="string">
+                <VALUE>20904d23-8a89-1d63-134c-d2606f2fcc47</VALUE>
+              </PROPERTY>
+              <PROPERTY NAME="BootloaderOptions" TYPE="string">
+                <VALUE></VALUE>
+              </PROPERTY>
+              <PROPERTY NAME="KernelOptions" TYPE="string">
+                <VALUE>Term=xterm</VALUE>
+              </PROPERTY>
+              <PROPERTY NAME="VirtualSystemType" TYPE="string">
+                <VALUE>xen-3.0-x86_32p</VALUE>
+              </PROPERTY>
+              <PROPERTY NAME="OnReboot" TYPE="uint16">
+                <VALUE>1</VALUE>
+              </PROPERTY>
+              <PROPERTY NAME="OnPoweroff" TYPE="uint16">
+                <VALUE>0</VALUE>
+              </PROPERTY>
+              <PROPERTY NAME="OnCrash" TYPE="uint16">
+                <VALUE>2</VALUE>
+              </PROPERTY>
+              <PROPERTY NAME="VirtualSystemIdentifier" TYPE="string">
+                <VALUE>vm1</VALUE>
+              </PROPERTY>
+            </INSTANCE>
+          </VALUE>
+        </PARAMVALUE>
+        <PARAMVALUE EmbeddedObject="instance" NAME="ResourceSettings" PARAMTYPE="string">
+          <VALUE.ARRAY>
+            <VALUE>
+              <INSTANCE CLASSNAME="Xen_ProcessorSettingData">
+                <PROPERTY NAME="ResourceType" TYPE="uint16">
+                  <VALUE>3</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="VirtualQuantity" TYPE="uint64">
+                  <VALUE>2</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="AllocationUnits" TYPE="string">
+                  <VALUE>Cores</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="Limit" TYPE="uint64">
+                  <VALUE>100</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="Weight" TYPE="uint32">
+                  <VALUE>512</VALUE>
+                </PROPERTY>
+              </INSTANCE>
+            </VALUE>
+            <VALUE>
+              <INSTANCE CLASSNAME="Xen_MemorySettingData">
+                <PROPERTY NAME="ResourceType" TYPE="uint16">
+                  <VALUE>4</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="VirtualQuantity" TYPE="uint64">
+                  <VALUE>512</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="AllocationUnits" TYPE="string">
+                  <VALUE>MegaBytes</VALUE>
+                </PROPERTY>
+              </INSTANCE>
+            </VALUE>
+            <VALUE>
+              <INSTANCE CLASSNAME="Xen_DiskSettingData">
+                <PROPERTY NAME="ResourceType" TYPE="uint16">
+                  <VALUE>19</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="Caption" TYPE="string">
+                  <VALUE>HardDisk1</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="VirtualQuantity" TYPE="uint64">
+                  <VALUE>512</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="AllocationUnits" TYPE="string">
+                  <VALUE>GigaBytes</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="DiskConfigInfo" TYPE="string">
+                  <VALUE>sr-uuid=ecc78493-862b-721b-5f9a-e5f5419487ce,device=xvda,type=w</VALUE>
+                </PROPERTY>
+              </INSTANCE>
+            </VALUE>
+            <VALUE>
+              <INSTANCE CLASSNAME="Xen_NetworkPortSettingData">
+                <PROPERTY NAME="ResourceType" TYPE="uint16">
+                  <VALUE>10</VALUE>
+                </PROPERTY>
+                <PROPERTY NAME="Caption" TYPE="string">
+                  <VALUE>Ethernet adapter</VALUE>
+                </PROPERTY>
+                    <PROPERTY NAME="Address" TYPE="string">
+                      <VALUE>00:16:3e:39:7a:f7</VALUE>
+                    </PROPERTY>
+                    <PROPERTY NAME="NICConfigInfo" TYPE="string">
+                      <VALUE>device=0,network-uuid=fa617045-2d21-d2b7-c6cc-7d0d4f3d83b1</VALUE>
+                    </PROPERTY>
+              </INSTANCE>
+                  </VALUE>
+          </VALUE.ARRAY>
+        </PARAMVALUE>
+              <PARAMVALUE EmbeddedObject="instance" NAME="ReferenceConfiguration" PARAMTYPE="string">
+                <VALUE>
+                  <INSTANCE CLASSNAME="Xen_ComputerSystemSettingData">
+                    <PROPERTY NAME="Bootloader" TYPE="string">
+                      <VALUE>pygrub</VALUE>
+                    </PROPERTY>
+                    <PROPERTY NAME="UUID" TYPE="string">
+                      <VALUE>20904d23-8a89-1d63-134c-d2606f2fcc47</VALUE>
+                    </PROPERTY>
+                    <PROPERTY NAME="BootloaderOptions" TYPE="string">
+                      <VALUE></VALUE>
+                    </PROPERTY>
+                    <PROPERTY NAME="KernelOptions" TYPE="string">
+                      <VALUE>Term=xterm</VALUE>
+                    </PROPERTY>
+                    <PROPERTY NAME="VirtualSystemType" TYPE="string">
+                      <VALUE>xen-3.0-x86_32p</VALUE>
+                    </PROPERTY>
+                    <PROPERTY NAME="OnReboot" TYPE="uint16">
+                      <VALUE>1</VALUE>
+                    </PROPERTY>
+                    <PROPERTY NAME="OnPoweroff" TYPE="uint16">
+                      <VALUE>0</VALUE>
+                    </PROPERTY>
+                    <PROPERTY NAME="OnCrash" TYPE="uint16">
+                      <VALUE>2</VALUE>
+                    </PROPERTY>
+                    <PROPERTY NAME="VirtualSystemIdentifier" TYPE="string">
+                      <VALUE>vm1</VALUE>
+                    </PROPERTY>
+                  </INSTANCE>
+                </VALUE>
+              </PARAMVALUE>
+      </METHODCALL>
+    </SIMPLEREQ>
+  </MESSAGE>
+</CIM>
+

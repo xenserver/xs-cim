@@ -1,0 +1,22 @@
+<DefineSystem_INPUT 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_VirtualSwitchManagementService">
+  <SystemSettings>
+    <sd:Xen_VirtualSwitchSettingData
+        xmlns:sd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_VirtualSwitchSettingData"
+        xsi:type="Xen_VirtualSwitchSettingData_Type">
+          <sd:ElementName>WINRMExternalNetwork</sd:ElementName>
+          <sd:Description>External network created by the winrm</sd:Description>
+    </sd:Xen_VirtualSwitchSettingData>
+  </SystemSettings>
+<ResourceSettings>
+  <rs:Xen_HostNetworkPortSettingData
+      xmlns:rs="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_HostNetworkPortSettingData"
+      xsi:type="Xen_HostNetworkPortSettingData_Type">
+        <rs:ResourceType>33</rs:ResourceType>
+        <rs:Connection>eth0</rs:Connection>
+        <rs:VlanTag>MYVLANTAG</rs:VlanTag>
+  </rs:Xen_HostNetworkPortSettingData>
+</ResourceSettings>
+</DefineSystem_INPUT>

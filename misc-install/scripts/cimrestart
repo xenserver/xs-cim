@@ -1,0 +1,4 @@
+cimstop
+sleep 5
+cimstart $1
+echo "RESTART DONE."

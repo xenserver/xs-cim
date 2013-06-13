@@ -1,0 +1,168 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_ComputerSystemSettingData
+// ==================================================================
+[Provider ("cmpi:Xen_VirtualSystemSettingData"),
+ Description (
+        "A class derived from CIM_VirtualSystemSettingData to "
+	"represent the current and/or recorded virtualization aspects of "
+	"a XenServer virtual machine, template or a snapshot. A virtual system can be of "
+	"'PV' or 'XenServer paravirtualized' type or 'HVM' or 'hardware virtualized' "
+	"type. Some of the properties in this class apply to one or the other type. "
+	"Specifically, ones that start with 'PV_' apply to paravirtualized "
+	"virtual systems and ones that start with 'HVM_' to hardware virtualized "
+	"These properties are mutually exclusive.")]
+class Xen_VirtualSystemSettingData : CIM_VirtualSystemSettingData
+{
+   [Description ("The Version strings of the Operating System installed on the "
+   "Virtual System. This information is only available if the tools have been run once.")]
+   string OS_Version[];
+
+   [Description ("Bootloader used to extract kernel for booting.  "
+	"Ex: 'pygrub'.  If Bootloader is specified, values "
+	"contained in PV_Kernel and PV_RAMDisk will be ignored. ")]
+   string PV_Bootloader;
+
+   [Description ("Options to pass to the bootloader specified in "
+	"'PV_Bootloader' property.")]
+   string PV_Bootloader_Args;
+
+   [Description ("Path to the kernel image.")]
+   string PV_Kernel;
+
+   [Description ("Command line options to pass to the kernel. ")]
+   string PV_Args;
+
+   [Description ("Legacy command line options to pass to the kernel. ")]
+   string PV_Legacy_Args;
+
+   [Description ("Path to a paravirtualized ramdisk image to boot from.")]
+   string PV_RAMDisk;
+
+   [Description ("String representing any boot-time policies. "
+   "Eg: 'BIOS order' to specify that the VM will boot using the device "
+   "order specified in the bios.")]
+   string HVM_Boot_Policy;
+
+   [Description ("Parameters to pass to the HVM bootloader. "
+   "Eg: 'order=dcn' to specify boot order in "
+   "'CD/harddrive/network' order.")]
+   string HVM_Boot_Params[];
+
+   [Description ("Specify the Shadow multiplier. Defaults to 1.0.")]
+   real64 HVM_ShadowMultiplier;
+
+   [Description ("This property consists of all BIOS platform "
+    "related VM settings. E.g. apic=true viridian=true usb=false "
+    "Possible Values include: "
+    "apic (Enable/disable virtual APIC in the virtual machine); "
+    "acpi (Enable/disable virtual ACPI in the virtual machine); "
+    "pae (Enable/disable PAE in virtual machine); "
+    "usb (If \"true\", emulate USB controller in virtual machine); "
+    "usbdevice (Specifies type of emulated USB device to add eg:\"mouse\" or \"tablet\"); "
+    "localtime (Specify whether virtual machine expects virtual hardware clock to be in local time or UTC); "
+    "stdvga (Specify emulation of standard VGA instead of cirrus logic); "
+    "nx (Enable/disable nx (DEP) support in virtual machine); "
+    "viridian (Enable/disable viridian support in virtual machine).")]
+   string Platform[];
+
+   [Description ("This is a property bag of random data "
+     " associated with the VM." 
+     " This property corresponds to the 'other-config' setting under xen.")]
+    string Other_Config[];
+
+   [Description ("This is a property bag of"
+     " random configuration data for the VM. The VM could use this "
+     " data during boot time.")]
+    string Xenstore_Data[];
+
+   [Description ("This property contains the WEBM URI for the object's parent. "
+   "The parent could be a snapshot, a template or a vm.")]
+    string Parent;
+
+   [Description ("This property contains an array of the WEBM URIs "
+   "for the object's children. The chilren could be snapshots or vms.")]
+    string Children[];
+};
+
+[Provider ("cmpi:Xen_ComputerSystemSettingData"),
+ Description (
+        "A class derived from Xen_VirtualSystemSettingData to "
+	"represent the active settings of a XenServer virtual machine or snapshot.")]
+class Xen_ComputerSystemActiveSettings : Xen_VirtualSystemSettingData
+{
+   [Description ("The Version strings of the XenServer paravirtualization "
+   "drivers and services (tools) installed in the Virtual System. This includes "
+   "versions of the individual drivers (block/net) and the overall version "
+   "of the toolset. This information is only available if the tools have been run once.")]
+   string PV_Drivers_Version[];
+
+   [Description ("A Boolean indicating if the XenServer paravirtualization "
+   "drivers (tools) installed in the Virtual System are up to date or not.")]
+   Boolean PV_Drivers_UpToDate;
+};
+
+// ==================================================================
+[Provider ("cmpi:Xen_ComputerSystemSettingData"),
+ Description (
+        "A class derived from Xen_VirtualSystemSettingData to "
+	"represent the active virtualization settings of "
+	"a XenServer virtual machine.")]
+class Xen_ComputerSystemSettingData : Xen_ComputerSystemActiveSettings
+{
+    [Description("Time when this VM was first started.")]
+    dateTime StartTime;
+
+    [Description("The XenServer host that this VM is currently running on (if running).")]
+    string Host;
+
+    [Description("The XenServer host this virtual machine is closely associated with. This "
+      "could be due to a number of reasons: For Eg: If the VM's disk "
+      "image file is located on the host from a previous instantiation, "
+      "then the next instantiation is going to be on the same host.")]
+    string HostAffinity;
+
+    [Description("The remaining slots available on the VM's Xen"
+		" block device bus to add a virtual block device on.")]
+    string AvailableBlockDeviceSlots;
+
+    [Description("The remaining slots available on the VM's Xen"
+		" network interface device bus to add a virtual NIC on.")]
+    string AvailableNetworkInterfaceSlots;
+
+   [Description ("A Boolean indicating if the XenServer paravirtualization "
+   "drivers (tools) installed in the Virtual System are running. This implies the "
+   "Virtual System has been issued a 'Start'.")]
+   Boolean Xen_Tools_AreRunning;
+};
+
+// ==================================================================
+[Provider ("cmpi:Xen_ComputerSystemTemplate"),
+ Description (
+        "A class derived from Xen_VirtualSystemSettingData to "
+	"represent the recorded virtualization settings "
+	"(a.k.a template) of a XenServer virtual machine. This can be used to "
+	"serve as the reference configuration prior to creation of new VMs.")]
+class Xen_ComputerSystemTemplate : Xen_VirtualSystemSettingData
+{
+};
+
+// ==================================================================
+[Provider ("cmpi:Xen_ComputerSystemSnapshot"),
+ Description (
+        "A class derived from Xen_VirtualSystemSettingData to "
+	"represent the virtualization settings "
+	"of a XenServer virtual machine snapshot. This represents a point-in-time "
+	"setting for the VM.")]
+class Xen_ComputerSystemSnapshot : Xen_ComputerSystemActiveSettings
+{
+    [Description("The Xen_ComputerSystem instance this is a snapshot of.")]
+    string SnapshotOf;
+
+    [Description("Time at which the snapshot was taken.")]
+    dateTime SnapshotTime;
+
+};
+
+

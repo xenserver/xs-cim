@@ -1,0 +1,209 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+
+[Provider ("cmpi:Xen_VirtualSystemManagementService")]
+class Xen_VirtualSystemManagementService : CIM_VirtualSystemManagementService
+{
+   [Description("XenServer build version. Format is <major#>.<minor#>-<extra>")]
+   string Version;
+
+//--------------------------------------------------------------------
+// AddResourceSetting
+//--------------------------------------------------------------------
+  [ Description(
+      "Adds resources to a virtual system configuration\n."
+      "When applied to a \"state\" virtual system configuration, "
+      "as a side effect resources are added to the active virtual "
+      "system."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 AddResourceSetting(
+
+    [ In, Description(
+        "Reference to the affected virtual system.")]
+    CIM_ComputerSystem REF AffectedSystem,
+    
+    [ In, Description(
+        "String containing an embedded instance (in CIM-XML form) of class "
+	"CIM_ResourceAllocationSettingData that describes the "
+        "virtual aspects of a virtual resource to be added to the "
+        "virtual system."),
+      EmbeddedInstance("CIM_ResourceAllocationSettingData")]
+    string ResourceSetting,
+
+    [ In(False), Out,
+      Description(
+        "References to instance of class "
+        "CIM_ResourceAllocationSettingData representing virtual "
+        "aspects of the added virtual resource.")]
+    CIM_ResourceAllocationSettingData REF 
+      ResultingResourceSetting,
+        
+    [ In(False), Out,
+      Description(
+        "If the operation is long running, then optionally a job may "
+        "be returned. In this case, the instance of class "
+        "CIM_ResourceAllocationSettingData representing the added "
+        "resource setting is available via association "
+        "CIM_ConcreteComponent from the instance of class "
+        "CIM_VirtualSystemSettingData representing the affected "
+        "virtual system configuration.")]
+    CIM_ConcreteJob REF Job);
+
+
+  [ Description(
+      "Creates a copy of a reference Virtual System."
+      " This call does a full copy of the Reference Virtual System's disks,"
+      " using the specified Storage Pool. The reference Virtual System"
+      " could be a XenServer virtual machine template or another Virtual System."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 CopySystem(
+          [IN, Description ( 
+             "String containing an embedded instance (in CIM-XML form) "
+	     "of class CIM_VirtualSystemSettingData that is used to "
+             "define attributes of the new virtual system being "
+             "created." ), 
+          EmbeddedInstance ( "CIM_VirtualSystemSettingData" )]
+      string SystemSettings, 
+         [IN, Description ( 
+             "The Storage Pool from which to create the disks for"
+	     " the new Virtual System. If no Storage Pool is specified,"
+	     " the pool-wide 'default' storage pool is assumed.")]
+      CIM_ResourcePool REF StoragePool, 
+         [IN, Description ( 
+             "Reference to an instance of class "
+             "CIM_VirtualSystemSettingData object that is the "
+             "top level object of a reference virtual system "
+             "configuration from which the new Virtual "
+	     "System will be derived. This Virtual System "
+	     "could contain disks, in which case, the new Virtual"
+	     " System will recieve a full copy of the disks." )]
+      CIM_VirtualSystemSettingData REF ReferenceConfiguration, 
+         [In ( false ), Out, Description ( 
+             "If a virtual system is successfully "
+             "defined, a reference to an instance of class "
+             "CIM_ComputerSystem that represents the newly "
+             "defined virtual computer system is returned." )]
+      CIM_ComputerSystem REF ResultingSystem, 
+         [In ( false ), Out, Description ( 
+             "If the operation is long running, then optionally "
+             "a CIM_VirtualSystemCreateJob job may be returned. "
+	     "In this case, the instance of class CIM_ComputerSystem representing the new "
+             "virtual system is presented via the 'ResultingSystem' property of the job, "
+	     "or via association CIM_AffectedJobElementwith property "
+             "AffectedElement refering to the new instance of "
+             "class CIM_ComputerSystem and property "
+             "ElementEffects set to 5 (Create)." )]
+    CIM_ConcreteJob REF Job);
+
+  [ Description(
+      "Converts a Virtual System into a XenServer virtual machine template. Once converted,"
+      " the Virtual System will be unavailable to run. However, a new"
+      " System can be created based on the template using the CopySystem"
+      " or DefineSystem methods with the template specifed in the 'ReferenceConfiguration' "
+      "parameter of the methods."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 ConvertToXenTemplate(
+         [IN, Description ( 
+             "The Virtual System to convert to a XenServer virtual machine template.")]
+      Xen_ComputerSystem REF System,
+
+         [In ( false ), Out, Description ( 
+             "If the virtual system was successfully converted to a template, "
+	     "a reference to a Xen_ComputerSystemTemplate object that "
+	     "represents the newly created XenServer virtual machine template is returned." )]
+      Xen_ComputerSystemTemplate REF ResultingTemplate
+      );
+
+[ Description(
+      "This method finds all the hosts that this virtual system can run on."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 FindPossibleHostsToRunOn(
+         [IN, Description ( 
+             "A CIM reference to the Virtual System.")]
+      Xen_ComputerSystem REF System,
+
+         [In ( false ), Out, Description ( 
+             "An array containing all CIM references to the XenServer hosts "
+	     "that this Virtual System can possibly boot on." )]
+      Xen_HostComputerSystem REF PossibleHosts[]
+      );
+};
+
+//=============================================================================
+// The VirtualSystemManagement capabilities
+// The synchronous and asynchronous methods that are supported
+//=============================================================================
+[Provider ("cmpi:Xen_VirtualSystemManagementCapabilities"),
+ Description (
+	"A class derived from CIM_VirtualSystemManagementCapabilities "
+	"used to describe the management capabilities of "
+	"Xen_VirtualSystemManagementService.")]
+class Xen_VirtualSystemManagementCapabilities : CIM_VirtualSystemManagementCapabilities
+{
+
+  [ Override,
+    Description(
+      "Enumeration of method identifiers each identifying a method "
+      "of class CIM_VirtualSystemManagementService that is "
+      "supported synchronously by the implementation."),
+    ValueMap { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 
+    Values { 
+      "AddResourcesSupported",
+      "DefineSystemSupported",
+      "DestroySystemSupported",
+      "DestroySystemConfigurationSupported",
+      "ModifyResourceSettingsSupported",
+      "ModifySystemSettingsSupported",
+      "RemoveResourcesSupported",
+      "SelectSystemConfigurationSupported",
+      "SnapshotSystemSupported",
+      "AddResourceSupported"
+      }]
+  uint16 SynchronousMethodsSupported[];
+
+  [ Override,
+    Description(
+      "Enumeration of method identifiers each identifying a method "
+      "of class CIM_VirtualSystemManagementService that is "
+      "supported asynchronously by the implementation."),
+    ValueMap { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 
+    Values { 
+      "AddResourcesSupported",
+      "DefineSystemSupported",
+      "DestroySystemSupported",
+      "DestroySystemConfigurationSupported",
+      "ModifyResourceSettingsSupported",
+      "ModifySystemSettingsSupported",
+      "RemoveResourcesSupported",
+      "SelectSystemConfigurationSupported",
+      "SnapshotSystemSupported",
+      "AddResourceSupported"}]
+  uint16 AsynchronousMethodsSupported[];
+
+};
+
+// Copyright (c) 2008 Citrix Systems Inc. All rights reserved.
+

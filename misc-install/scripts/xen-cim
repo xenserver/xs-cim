@@ -1,0 +1,47 @@
+#! /bin/bash
+#
+# xen-cim          Start/Stop xen-CIM
+#
+# description: Xen CIM interface
+# processnames: sfcbd, openwsman
+# config: /etc/sfcb/sfcb.conf, /etc/openwsman/openwsman.conf
+
+# Source function library.
+. /etc/init.d/functions
+
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/cmpi
+export LD_LIBRARY_PATH
+
+start() {
+	echo -n $"Starting xen-cim"
+        cimstart
+	return 0
+}
+
+stop() {
+	echo -n $"Stopping xen-cim "
+        cimstop
+	return 0
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	restart
+	;;
+  *)
+	echo $"Usage: $0 {start|stop}"
+	exit 1
+esac
+
+exit 0

@@ -1,0 +1,20 @@
+<CIM CIMVERSION="2.0" DTDVERSION="2.0">
+  <MESSAGE ID="1001" PROTOCOLVERSION="1.0">
+    <SIMPLEREQ>
+      <IMETHODCALL NAME="GetInstance">
+        <LOCALNAMESPACEPATH>
+           <NAMESPACE NAME="root"/>
+           <NAMESPACE NAME="interop"/>
+        </LOCALNAMESPACEPATH>
+        <IPARAMVALUE NAME="InstanceName">
+          <INSTANCENAME CLASSNAME="Xen_RegisteredSVProfile">
+            <KEYBINDING NAME="InstanceID">
+              <KEYVALUE VALUETYPE="string">Xen:SystemVirtualizationProfile</KEYVALUE>
+            </KEYBINDING>
+          </INSTANCENAME>
+        </IPARAMVALUE>
+      </IMETHODCALL>
+    </SIMPLEREQ>
+  </MESSAGE>
+</CIM>
+

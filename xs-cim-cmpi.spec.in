@@ -1,0 +1,84 @@
+Summary: XenServer CIM providers
+Name: xs-cim-cmpi
+Version: @PRODUCT_VERSION@
+Release: @BUILD_NUMBER@
+License: LGPL
+Vendor: Citrix Systems, Inc.
+Group: Systems Management/Base
+BuildRoot: %{_tmppath}/%{name}
+BuildArch: i386
+Requires: openpegasus
+Requires(preun): openpegasus
+
+%define optdir /opt/%{name}
+%define _datadir %{optdir}/share
+%define sharedir %{optdir}/share/%{name}
+%define _libdir %{optdir}/lib
+
+%define XEN_MOFS @XEN_MOFS@
+%define XEN_REGS %{sharedir}/Xen_DefaultNamespace.regs
+%define INTEROP_MOFS %{sharedir}/Xen_RegisteredProfiles.mof
+%define INTEROP_REGS %{sharedir}/Xen_InteropNamespace.regs
+
+%define pegasus_home /opt/openpegasus
+%define register %{pegasus_home}/share/provider-register.sh
+%define cim_provider %{pegasus_home}/bin/cimprovider
+
+%define uninstall_script /opt/xensource/packages/files/xs-cim/uninstall.sh
+
+%description
+
+%prep
+exit 0
+
+%build
+exit 0
+
+%install
+exit 0
+
+%clean
+exit 0
+
+%posttrans
+set -eu
+chmod a+x %{_datadir}/install-xs-cim-cmpi.sh
+%{_datadir}/install-xs-cim-cmpi.sh
+
+%preun
+set -eu
+%{uninstall_script}
+
+%pretrans
+set -eu
+if [ -e %{uninstall_script} ]
+then
+    %{uninstall_script}
+fi
+
+%postun
+/sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%docdir %{_datadir}/doc/packages/%{name}
+%{optdir}
+/etc/ld.so.conf.d/xs-cim-cmpi.conf
+/etc/xapi.d/plugins/xscim
+/etc/xensource/bugtool/CIM_Server.xml
+/etc/xensource/bugtool/CIM_Server/xs-cim.xml
+/etc/logrotate.d/cimserver
+/opt/xensource/packages/files/xs-cim/uninstall.sh
+/usr/sbin/cimserver-debug-mode
+/opt/xs-cim-cmpi/watchdog
+/opt/xs-cim-cmpi/kvpd.py
+/opt/xs-cim-cmpi/httpservice.py
+/etc/init.d/kvpd
+/etc/xapi.d/vif-hotplug
+/opt/xensource/www/@WWW_KVP@/@WIN_SERVICE_EXE@
+/opt/xensource/www/@WWW_KVP@/@WIN_SERVICE_EXE_SYM@
+/opt/xensource/www/@WWW_KVP@/@WIN_SERVICE_MSI@
+/opt/xensource/www/@WWW_KVP@/@WIN_SERVICE_MSI_SYM@
+/opt/xensource/www/@WWW_KVP@/@WIN_SERVICE_MSI_DEBUG@
+/opt/xensource/www/@WWW_KVP@/@WIN_SERVICE_MSI_SYM_DEBUG@
+%attr(644, root, root) /etc/cron.d/cimserver-watchdog

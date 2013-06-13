@@ -1,0 +1,86 @@
+h1
+{
+color: blue;
+}
+h2
+{
+color: blue;
+text-align: left;
+font-size: 16pt
+}
+h3
+{
+text-align: left;
+font-size: 12pt
+}
+h4
+{
+text-align: left;
+font-size: 10pt
+}
+table
+{
+}
+tr
+{
+border: 1px solid black;
+}
+pre 
+{
+background-color: gray;
+font-size: 8pt
+}
+p
+{
+text-align: left;
+font-size: 12pt
+}
+
+p#id_classdesc{
+font-size: 12pt
+}
+p#id_namespace{
+font-style: italic;
+font-size: 12pt
+}
+p#id_classlayout{
+}
+h3.propertyname
+{
+text-align:left
+font-size: 13 pt
+}
+p.propertydesc
+{
+text-align: left;
+font-size: 10pt
+}
+p.propertyvalues
+{
+text-align: left;
+font-size: 10pt
+}
+h3.methodsig
+{
+text-align:left
+font-size: 13 pt
+}
+p.methoddesc
+{
+text-align: left;
+font-size: 10pt
+}
+table.paramstable
+{
+broder-style: solid;
+border: 1px solid black;
+font-size: 10pt
+}
+ul.possiblevalues
+{
+font-size: 10pt
+}
+tr.table_header
+{
+background-color: gray
+}

@@ -1,0 +1,7 @@
+The scripts in this directory issue CIM-XML requests to the CIMOM and tests for specific pass/failure scenarios. Each script tests a particular CIM class and its methods. These are all unit tests and each script is self contained except fo dependencies in xen-cim-operations.py and TestSetup.py. xen-cim-operations.py is a helper script containing common functions. TestSetup.py contains the base class all test classes derive from. It cotains test setup and teardown code for each test suite/test and also reports on each individual's tpass/failure.
+
+Instructions to run these tests
+1. install pywbem (a python client for CIM, which uses the CIM-XML wire protocol). 
+2. invoke each test script (except xen_cim_operations.py and TestSetup.py) as follows:
+	python <test-script.py> <host-ip> <user> <pass>
+

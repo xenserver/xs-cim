@@ -1,0 +1,259 @@
+// Copyright (c) 2007 Citrix Systems Inc. All rights reserved.
+
+[Provider ("cmpi:Xen_StoragePoolManagementService")]
+class Xen_StoragePoolManagementService : CIM_ResourcePoolConfigurationService
+{
+  //-----------------------------------------------------------------
+  // CreateDiskImage
+  //-----------------------------------------------------------------
+  [ Description(
+      "Creates a XenServer virtual disk image on the specified Storage Pool. The Xen_DiskImage"
+      " resides in, and is associated with the storage pool. This call could"
+      " end up creating a LUN on a backend storage infrastructure or a hard"
+      " disk image file (VHD) on a backend file system."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+    uint32 CreateDiskImage(
+        [ IN, Description(
+           "Embedded instance (in CIM-XML form) of a Xen_DiskSettingData RASD "
+	   "providing details such as size, pool to create the disk on etc.."
+	   ),
+        EmbeddedInstance("CIM_ResourceAllocationSettingData")]
+        string ResourceSetting,
+
+        [ In(False), Out,
+          Description(
+          "Reference to an instance of the Xen_DiskImage class representing "
+          "the newly added disk image resource.")]
+        Xen_DiskImage REF ResultingDiskImage
+  );
+
+  //-----------------------------------------------------------------
+  // DeleteDiskImage
+  //-----------------------------------------------------------------
+  [ Description(
+      "Deletes the specified XenServer virtual disk image. Ends up releasing the backend "
+      "resources used to host the disk image, such as VHD file , etc."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+    uint32 DeleteDiskImage(
+        [ IN, Description(
+           "Reference to Xen_DiskImage instance to delete. "
+	)]
+        Xen_DiskImage ref DiskImage
+  );
+
+  //--------------------------------------------------------------------
+  // ConnectToDiskImage
+  //--------------------------------------------------------------------
+  [ Description(
+      "Makes a XenServer virtual disk image available either as an iSCSI "
+      "target or a Microsoft Background Intelligent Transfer Service (BITS) "
+      "destination endpoint. An iSCSI initiator or BITS client can then "
+      "read (export) or write (export) disk blocks to the target URI. "
+      "The function returns a reference to a Xen_ConnectToDiskImage job "
+      "which should be used to inspect : the 'TargetURI' to connect over "
+      "iSCSI or BITS, the 'SSLCertificate' for the server, the 'ConnectionHandle'"
+      "to use during disconnect. This method could optionally return a job"),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 ConnectToDiskImage(
+
+    [ IN, Description("Reference to a Xen_DiskImage instance to connect to.")]
+    Xen_DiskImage REF DiskImage,
+
+    [ IN, Description(
+        "Reference to a Xen_VirtualSwitch instance to make the DiskImage reachable on. "
+	"If not specified, uses the 'management' network"
+	)]
+    Xen_VirtualSwitch REF VirtualSwitch,
+
+    [ IN, Description(
+        "Network configuration (an array of IP address/subnet mask/gateway strings, "
+	"in that order eg: ['192.168.2.100', '255.255.255.0', '10.60.2.100']) for "
+	"the disk being made available for connect. "
+	"If not specified, the disk will be made available a network configuration "
+	"picked by the DHCP server on the network."
+	)]
+    string NetworkConfiguration[],
+
+    [ IN, Description("Disk Transfer Protocol to use to connect to the disk"),
+        ValueMap {"iscsi","bits","http"}]
+    string Protocol,
+
+    [ IN, Description("Return a target URI that includes SSL")]
+    boolean UseSSL,
+
+    [ IN, Description(
+        "Specifies if the disk image is going to be used in read-only mode (export only). "
+	"The same disk image instance can be 'connected to' simultaneously from multiple clients"
+	"only in 'read-only' mode."
+	"Defaults to False."
+	)]
+    boolean ReadOnly,
+
+    [ IN, Description(
+        "Connect Timeout, in minutes."
+	"Once the timeout expires, the disk image is disconnected from the network "
+	"and its resources are released. If not specified, the implementation"
+	"defaults to 24 hours. If 0 is specified, it never times out."
+	)]
+    Uint32 TimeoutInMinutes,
+
+    [ IN(False), OUT, Description(
+        "The asynchronous job object used to query the status of the task. Additional "
+	"information, such as the 'TargetURI' for the disk, the 'SSLCertificate' for the server "
+	"and the 'ConnectionHandle' to be used in the call to disconnect, "
+	"are available as properties of this object, once the connect task completes successfully.") ] 
+    Xen_ConnectToDiskImageJob REF Job
+  );
+            
+  //----------------------------------------------------------------------------
+  // DisconnectFromDiskImage
+  //----------------------------------------------------------------------------
+  [ Description(
+      "Detaches the XenServer virtual disk image so it is no longer available as an "
+      "iSCSI target or a BITS endpoint and releases resources used. This "
+      "method could optionally return a job."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+
+  uint32 DisconnectFromDiskImage(
+      [ IN, Description(
+        "The 'ConnectionHandle' returned from the ConnectToDiskImage call. ")]
+    string ConnectionHandle,
+
+    [ IN(False), OUT, Description(
+        "The asynchronous job object used to query the status of the task.") ] 
+    Xen_DisconnectFromDiskImageJob REF Job
+
+    );
+   
+   //--------------------------------------------------------------------------
+   // CreateStoragePool
+   //--------------------------------------------------------------------------
+   [Description ( 
+          "Start a job to create a storage pool "
+          "using the specified allocation settings. If 0 is "
+          "returned, the function completed successfully and no "
+          "ConcreteJob instance was required. If 4096/0x1000 is "
+          "returned, a ConcreteJob will be started to create the "
+          "sub-pool. The Job\'s reference will be returned in the "
+          "output parameter Job." ), 
+       ValueMap { "0", "1", "2", "3", "4", "5", "6", "7", "8", "..", 
+          "4096", "4097", "4098..32767", "32768..65535" }, 
+       Values { "Job Completed with No Error", "Not Supported", 
+          "Unknown", "Timeout", "Failed", "Invalid Parameter", 
+          "In Use", "Incorrect ResourceType for the Pool", 
+          "Insufficient Resources", "DMTF Reserved", 
+          "Method Parameters Checked - Job Started", 
+          "Size Not Supported", "Method Reserved", "Vendor Specific" }]
+   uint32 CreateStoragePool(
+         [IN, Description ( 
+             "A end user relevant name for the pool being "
+             "created. If NULL, then a system supplied default "
+             "name can be used. The value will be stored in the "
+             "\'ElementName\' property for the created element." )]
+      string ElementName, 
+         [IN, Description ( 
+             "String containing a the settings required to "
+	     "create a new storage pool out of a backend storage infrastructure. "
+	     "The 'Connection' parameter of the of the RASD corresponds to the "
+	     "'device-config' field for the SR under xen-api and contains "
+	     "all the settings required to connect to the backend infrastructure. "
+	     "Also, 'ElementName' and 'Description' are the other "
+	     "relevant properties of the embedded instance that can "
+	     "be used to give the new SR a display name and description." ), 
+          EmbeddedInstance ( "CIM_ResourceAllocationSettingData" )]
+      string Settings, 
+         [IN, Description ( 
+             "The type of resources the created pool will manage. "
+             "If HostResources contains elements, this property "
+             "must mach their type." ),
+	     ValueMap{"15", "19"} ]
+      uint32 ResourceType,
+         [IN ( false ), OUT, Description ( 
+             "A reference to the resulting pool. This may be null if a job was specified instead." )]
+      CIM_ResourcePool REF Pool, 
+         [IN ( false ), OUT, Description ( 
+             "Reference to the job (could be null if the method completed immediately). "
+              )]
+      CIM_ConcreteJob REF Job);
+
+   //--------------------------------------------------------------------------
+   // DetachStoragePool
+   //--------------------------------------------------------------------------
+   [Description ( 
+          "Disconnect from the storage pool. This action keeps all the disk images "
+	  "in the storage pool intact. The storage pool can be reconnected to using "
+	  "the CreateStoragePool method." ), 
+       ValueMap { "0", "1", "2", "3", "4", "5", "6", "7", "8", "..", 
+          "4096", "4097", "4098..32767", "32768..65535" }, 
+       Values { "Job Completed with No Error", "Not Supported", 
+          "Unknown", "Timeout", "Failed", "Invalid Parameter", 
+          "In Use", "Incorrect ResourceType for the Pool", 
+          "Insufficient Resources", "DMTF Reserved", 
+          "Method Parameters Checked - Job Started", 
+          "Size Not Supported", "Method Reserved", "Vendor Specific" }]
+   uint32 DetachStoragePool(
+         [IN, Description ( 
+             "The CIM reference to the Xen_StoragePool instance being detached." )]
+      Xen_StoragePool REF Pool
+      );
+
+   //--------------------------------------------------------------------------
+   // DiscoveriSCSITargetInfo
+   //--------------------------------------------------------------------------
+   [Description ( 
+          "Discover all the iSCSI target IQNs available on the iSCSI filer "
+	  "that the XenServer host knows about. If a target IQN is specified in the parameter list, "
+	  "the method instead discovers all LUNs associated with it." ), 
+       ValueMap { "0", "1", "2", "3", "4", "5", "6", "7", "8", "..", 
+          "4096", "4097", "4098..32767", "32768..65535" }, 
+       Values { "Job Completed with No Error", "Not Supported", 
+          "Unknown", "Timeout", "Failed", "Invalid Parameter", 
+          "In Use", "Incorrect ResourceType for the Pool", 
+          "Insufficient Resources", "DMTF Reserved", 
+          "Method Parameters Checked - Job Started", 
+          "Size Not Supported", "Method Reserved", "Vendor Specific" }]
+   uint32 DiscoveriSCSITargetInfo(
+         [IN, Description ( 
+             "The iSCSI target host IP address the XenServer host needs to " 
+	     "discover IQNs and LUNs on" )]
+      string TargetHost, 
+
+         [IN, Description ( 
+             "The iSCSI server port. Defaults to 3260, if not specified" )]
+      string Port, 
+
+         [IN, Description ( 
+             "If this parameter is specified, the host returns all possible "
+	     "LUNs on the target IQN. If omitted, the method instead discovers all "
+	     "possible target IQNs on the iSCSI target host specified. " )]
+      string TargetIQN, 
+
+         [IN( False ), OUT, 
+	 Description ( "An XML string containing the IQN information or "
+	 " LUN information for a target IQN, that the host knows of." )]
+      string TargetInfo);
+};

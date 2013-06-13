@@ -1,0 +1,16 @@
+/opt/openpegasus/trace/cimserver.trc {
+	rotate 5
+	size 2M
+	missingok
+}
+/var/log/xencim.log {
+	rotate 5
+	size 2M
+	missingok
+}
+/var/log/kvpd.log {
+	rotate 5
+	size 2M
+	missingok
+}
+

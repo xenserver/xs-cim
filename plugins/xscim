@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+
+#
+# XenAPI plugin for retrieving XenStore data about a VM Guest
+#
+
+import random
+import time
+import xmlrpclib
+import subprocess
+
+import XenAPI
+import XenAPIPlugin
+
+from pluginlib import *
+configure_logging('xscim')
+from pluginlib import log
+
+
+XS_READ = "xenstore-read"
+XAPI_CERT = "/etc/xensource/xapi-ssl.pem"
+##### Exceptions
+
+class ConfigurationError(PluginError):
+    """Raised when there is an inconsistency in the server state that makes further operations
+    dangerous.
+
+    Examples:
+    There are 0, or more than 1 VM templates with the tag transfervm.
+    There are more than 1 running VMs configured to expose the same vdi_uuid.
+    """
+    def __init__(self, *args):
+        PluginError.__init__(self, *args)
+
+def read_from_xenstore(domid, path):
+    """Will try to read from XenStore the contents of a specified field"""
+    xenstore_path = "/local/domain/%s/%s" % (domid, path)
+    log.debug("Attempting to read from: %s" % xenstore_path)
+    try:
+        process = subprocess.Popen([XS_READ, xenstore_path],
+                                   stdout=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        return stdout
+    except:
+        return ""
+
+@log_exceptions
+def read_vm_name(session, vm):
+    """Will attempt to read the VM 'host_name' from xenstore."""
+    domid = session.xenapi.VM.get_domid(vm)
+    path = "data/host_name"
+    host_name = read_from_xenstore(domid, path)
+    return host_name
+
+##### Transfer plugin public RPC methods
+
+@log_exceptions
+def read_netbios_name(session, args):
+    """Given a VM_UUID, will attempt to return the VM NetBios name
+       (providing XenTools is correctly installed 
+    """
+    vm_uuid = validate_exists(args, 'vm_uuid')
+
+    log.debug("vm_uuid:%s" % vm_uuid)
+
+    vm_ref = session.xenapi.VM.get_by_uuid(vm_uuid)
+
+    if not vm_ref:
+        raise ArgumentError('Cannot find specified VM')
+    
+    vm_name = read_vm_name(session, vm_ref)
+
+    if vm_name != "":
+        return vm_name
+    else:
+        return "null"
+
+@log_exceptions
+def read_host_cn(session, args):
+    """This call will return the CN that is present inside the 
+       XAPI certificate of the host on which this call has been made.
+    """
+    regexpr = 's/^.*?CN=(.*)$/\\1/'
+    
+    try:
+        p1 = subprocess.Popen(["openssl", "verify", XAPI_CERT], stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(["grep", "CN"], stdin=p1.stdout, stdout=subprocess.PIPE)
+        p3 = subprocess.Popen(["/bin/sed", "-r", regexpr], stdin=p2.stdout, stdout=subprocess.PIPE)
+        stdout, _  = p3.communicate()
+        if p3.returncode == 0:
+            return str(stdout).strip()
+            
+        else:
+            raise
+    except:
+        raise XenAPI.Failure(["FAILURE_TO_GET_CN","Unable to return the CN name of this host"])
+
+if __name__ == '__main__':
+    XenAPIPlugin.dispatch({'read_netbios_name': read_netbios_name,
+                           'read_host_cn': read_host_cn
+                           })

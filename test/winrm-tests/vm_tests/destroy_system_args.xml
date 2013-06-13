@@ -1,0 +1,15 @@
+<DestroySystem_INPUT 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_VirtualSystemManagementService">
+  <AffectedSystem>
+    <a:Address xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+    <a:ReferenceParameters xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+      <w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_ComputerSystem</w:ResourceURI>
+      <w:SelectorSet>
+        <w:Selector Name="Name">VM_UUID</w:Selector>
+        <w:Selector Name="CreationClassName">Xen_ComputerSystem</w:Selector>
+      </w:SelectorSet>
+    </a:ReferenceParameters>
+  </AffectedSystem>
+  </DestroySystem_INPUT>

@@ -1,0 +1,104 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_ComputerSystem
+// ==================================================================
+[Provider ("cmpi:Xen_ComputerSystem"),
+ Description (
+	"A class derived from CIM_ComputerSystem to represent "
+	"the virtual machines/domains running on the XenServer.")]
+class Xen_ComputerSystem : CIM_ComputerSystem
+{
+       [Description ("The 'name' of the XenServer host that this"
+       " Virtual System is running on."),
+       ModelCorrespondence {"CIM_ComputerSystem.Name"}]
+       string Host;
+       [Description ("The NetBios name of the Computer if it exists")]
+       string NetBiosName;
+      //--------------------------------------------------------------
+      // Methods
+      //--------------------------------------------------------------
+      // Overridden from CIM_EnabledLogicalElement to update the valuemap
+      // and the description
+      [Override ("RequestStateChange"), 
+       Description ( 
+          "Requests that the state of the VM be changed to the "
+          "value specified in the RequestedState parameter. When "
+          "the requested state change takes place, the EnabledState "
+          "and RequestedState of the element will be the same. "
+          "Invoking the RequestStateChange method multiple times "
+          "could result in earlier requests being overwritten or "
+          "lost. \n"
+          "A return code of 0 shall indicate the state change was "
+          "successfully initiated. \n"
+          "A return code of 3 shall indicate that the state "
+          "transition cannot complete within the interval specified "
+          "by the TimeoutPeriod parameter. \n"
+          "A return code of 4096 (0x1000) shall indicate the state "
+          "change was successfully initiated, a ConcreteJob has "
+          "been created, and its reference returned in the output "
+          "parameter Job. Any other return code indicates an error "
+          "condition." ), 
+       ValueMap { "0", "1", "2", "3", "4", "5", "6", "..", "4096", 
+          "4097", "4098", "4099", "4100..32767", "32768..65535" }, 
+       Values { "Completed with No Error", "Not Supported", 
+          "Unknown or Unspecified Error", 
+          "Cannot complete within Timeout Period", "Failed", 
+          "Invalid Parameter", "In Use", "DMTF Reserved", 
+          "Method Parameters Checked - Job Started", 
+          "Invalid State Transition", 
+          "Use of Timeout Parameter Not Supported", "Busy", 
+          "Method Reserved", "Vendor Specific" }, 
+       ModelCorrespondence { 
+          "CIM_EnabledLogicalElement.RequestedState" }]
+   uint32 RequestStateChange(
+         [IN, Description ( 
+             "The state requested for the element. This "
+             "information will be placed into the RequestedState "
+             "property of the instance if the return code of the "
+             "RequestStateChange method is 0 (\'Completed with "
+             "No Error\'), or 4096 (0x1000) (\'Job Started\'). "
+             "Refer to the description of the EnabledState and "
+             "RequestedState properties for the detailed "
+             "explanations of the RequestedState values." ), 
+          ValueMap { "2", "3", "4", "6", "7", "8", "9", "10", 
+             "11", "32768", "32769", "..","32770..65535" }, 
+          Values { "Enabled", "Disabled", "Shut Down", "Offline", 
+             "Test", "Defer", "Quiesce", "Reboot", "Reset", 
+             "Hard Shutdown", "Hard Reboot", "DMTF Reserved","Vendor Reserved" }, 
+          ModelCorrespondence { 
+             "CIM_EnabledLogicalElement.RequestedState" }]
+      uint16 RequestedState, 
+         [IN ( false ), OUT, Description ( 
+             "May contain a reference to the ConcreteJob created "
+             "to track the state transition initiated by the "
+             "method invocation." )]
+      CIM_ConcreteJob REF Job, 
+         [IN, Description ( 
+             "A timeout period that specifies the maximum amount "
+             "of time that the client expects the transition to "
+             "the new state to take. The interval format must be "
+             "used to specify the TimeoutPeriod. A value of 0 or "
+             "a null parameter indicates that the client has no "
+             "time requirements for the transition. \n"
+             "If this property does not contain 0 or null and "
+             "the implementation does not support this "
+             "parameter, a return code of \'Use Of Timeout "
+             "Parameter Not Supported\' shall be returned." )]
+      datetime TimeoutPeriod);
+      [ Description(
+	 "Allows the caller to setup this VM ready for communication "
+	 "via KVP using the Xen_KVP CIM class. The setup process involves "
+	 "creating a virtual interface for the VM over which the communication "
+	 "can then take place."),
+	ValueMap {
+	      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+	Values {
+	      "Completed with No Error","Not Supported","Failed","Timeout",
+	      "Invalid Parameter","DMTF Reserved",
+	      "Method Parameters Checked - Job Started",
+	      "Method Reserved","Vendor Specific"}]
+	uint32 SetupKVPCommunication();
+	       	           
+};
+

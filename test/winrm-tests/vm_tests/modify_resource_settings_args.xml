@@ -1,0 +1,29 @@
+<ModifyResourceSettings_INPUT
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_VirtualSystemManagementService">
+    <ResourceSettings>
+        <sd:Xen_MemorySettingData
+        xmlns:sd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_MemorySettingData"
+        xsi:type="Xen_MemorySettingData_Type">
+            <sd:ResourceType>4</sd:ResourceType>
+            <sd:VirtualQuantity>128</sd:VirtualQuantity>
+            <sd:Reservation>128</sd:Reservation>
+            <sd:Limit>128</sd:Limit>
+            <sd:AllocationUnits>byte*2^20</sd:AllocationUnits>
+            <sd:InstanceID>Xen:VM_UUID/Memory</sd:InstanceID>
+        </sd:Xen_MemorySettingData>
+    </ResourceSettings>
+    <ResourceSettings>
+        <sd:Xen_ProcessorSettingData
+        xmlns:sd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_ProcessorSettingData"
+        xsi:type="Xen_ProcessorSettingData_Type">
+            <sd:ResourceType>3</sd:ResourceType>
+            <sd:VirtualQuantity>2</sd:VirtualQuantity>
+            <sd:Reservation>2</sd:Reservation>
+            <sd:Limit>95</sd:Limit>
+            <sd:AllocationUnits>count</sd:AllocationUnits>
+            <sd:InstanceID>Xen:VM_UUID/Processor</sd:InstanceID>
+        </sd:Xen_ProcessorSettingData>
+    </ResourceSettings>
+</ModifyResourceSettings_INPUT>

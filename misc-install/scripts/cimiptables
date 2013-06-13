@@ -1,0 +1,34 @@
+#!/bin/bash
+
+open_cim_ports()
+{
+    echo 'opening peagsus ports...'
+    iptables -I INPUT 1 -p tcp --dport 5988 -j ACCEPT # CIM-XML & WS-Man
+    iptables -I INPUT 1 -p tcp --dport 5989 -j ACCEPT # SSL
+    iptables -I INPUT 1 -p tcp --dport 1270 -j ACCEPT # Required for SCOM
+    /sbin/service iptables save # save it to persist across reboot
+}
+
+close_cim_ports()
+{
+    echo 'closing pegasus ports...'
+    iptables -D INPUT -p tcp --dport 5988 -j ACCEPT # CIM-XML & WS-Man
+    iptables -D INPUT -p tcp --dport 5989 -j ACCEPT # SSL
+    iptables -D INPUT -p tcp --dport 1270 -j ACCEPT # Required for SCOM
+    /sbin/service iptables save # save it to persis across reboot
+}
+
+while getopts "c" opt; 
+do
+    case $opt in
+        c)closecimports="true";;
+        *) usage;;
+    esac
+done
+
+if [ "${closecimports}" == "true" ];
+then
+    close_cim_ports
+else
+    open_cim_ports
+fi

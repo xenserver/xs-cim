@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+start()
+{
+  /opt/xs-cim-cmpi/share/install-xs-cim-cmpi.sh
+}
+
+case $1 in
+  start) start ;;
+esac

@@ -1,0 +1,68 @@
+// Copyright (c) 2008 Citrix Systems Inc. All rights reserved.
+
+// ==================================================================
+// Xen_HostMemory
+// ==================================================================
+[Provider ("cmpi:Xen_HostMemory"),
+ Description (
+	"A class derived from CIM_Memory to represent "
+	"the memory on a XenServer Host.")]
+class Xen_HostMemory : CIM_Memory
+{
+};
+
+// ==================================================================
+// Xen_HostProcessor
+// ==================================================================
+[Provider ("cmpi:Xen_HostProcessor"),
+ Description (
+        "A class derived from CIM_Processor to represent "
+        "processor device(s) on a XenServer Host.")]
+class Xen_HostProcessor : CIM_Processor
+{
+};
+
+// ==================================================================
+// Xen_HostStorageExtent
+// ==================================================================
+[Provider ("cmpi:Xen_DiskImage"),
+ Description (
+        "A class derived from CIM_StorageExtent to represent "
+        "storage extents available on the host or a backend storage infrastructure"
+	"for use in virtual systems. These could be LUNs, hard disk images etc."
+        "This maps to a VDI in the XenServer terminology.")]
+class Xen_DiskImage : CIM_StorageExtent
+{
+    [Description ("Special configuration string for the extent. "
+        "Array of strings of form 'key:value'. ")]
+    string OtherConfig[];
+};
+
+// ==================================================================
+// Xen_MemoryState
+// ==================================================================
+[Provider ("cmpi:Xen_MemoryState"),
+ Description (
+        "A class derived from CIM_StorageExtent to represent "
+        "the snapshot of an active VM's memory state.")]
+class Xen_MemoryState : CIM_StorageExtent
+{
+    [Description ("Special configuration string for the extent. "
+        "Array of strings of form 'key:value'. ")]
+    string OtherConfig[];
+};
+
+// ==================================================================
+//  Xen_HostNetworkPort
+// ==================================================================
+[Provider ("cmpi:Xen_HostNetworkPort"),
+ Description (
+        "A class derived from CIM_NetworkPort to represent "
+        "network port device(s) on a XenServer host. This port represents "
+	"network connectivity to the outside network that the port "
+	"connects to. Adding it to the VirtualSwitch will give the "
+	"switch access to the external network.")]
+class Xen_HostNetworkPort : CIM_NetworkPort
+{
+};
+

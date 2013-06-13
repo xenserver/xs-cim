@@ -1,0 +1,58 @@
+// Copyright (c) 2008 Citrix Systems Inc
+// ===================================================================
+// Xen_AllocationCapabilities
+// ===================================================================
+[
+  Description (
+    "Xen_MemoryAllocationCapabilities extends the CIM_AllocationCapabilities class "
+    "for the purposes of expressing the memory allocation "
+    "capabilities of the associated memory pool for the allocation "
+    "of a memory resource. This class describes the supported "
+    "types of allocations allowed, specific or general, the sharing "
+    "modes supported for the device, dedicated and or shared and the "
+    "system states where the addition or removal of memory is "
+    "allowed.") ]
+class Xen_MemoryAllocationCapabilities : CIM_AllocationCapabilities   {
+};
+
+[
+  Description (
+    "Xen_ProcessorAllocationCapabilities extends the CIM_AllocationCapabilities class "
+    "for the purposes of expressing the processor allocation "
+    "capabilities of the associated processor pool for the allocation "
+    "of a processor resource. This class describes the supported "
+    "types of allocations allowed, specific or general, the sharing "
+    "modes supported for the device, dedicated and or shared and the "
+    "system states where the addition or removal of processor(s) is "
+    "allowed.") ]
+class Xen_ProcessorAllocationCapabilities : CIM_AllocationCapabilities   {
+};
+
+
+[
+  Description (
+    "Xen_StorageAllocationCapabilities extends the CIM_AllocationCapabilities class "
+    "for the purposes of expressing the Storage allocation "
+    "capabilities of the associated storage pool for the allocation "
+    "of a storage resource. This class describes the supported "
+    "types of allocations allowed, specific or general, the sharing "
+    "modes supported for the device, dedicated and or shared and the "
+    "system states where the addition or removal of storage device(s) is "
+    "allowed.") ]
+class Xen_StorageAllocationCapabilities : CIM_AllocationCapabilities   {
+};
+
+[
+  Description (
+    "Xen_NetworkConnectionAllocationCapabilities extends the CIM_AllocationCapabilities class "
+    "for the purposes of expressing the Network connection allocation "
+    "capabilities of the associated network connection pool. This class describes the supported "
+    "types of allocations allowed, specific or general, the sharing "
+    "modes supported for the connection, dedicated and or shared and the "
+    "system states where the addition or removal of connection is "
+    "allowed.") ]
+class Xen_NetworkConnectionAllocationCapabilities : CIM_AllocationCapabilities   {
+};
+
+
+

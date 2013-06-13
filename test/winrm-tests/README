@@ -1,0 +1,6 @@
+This directory contains a set of Windows batch scripts that use the winrm cmdline tool that ships with Windows (2008/Vista and above) to issue WS-Man requests. The scripts test certain CIM classes and their methods via the WS-Man protocol (enumerate all classes, invoke methods on them etc). Wherever, XML input is required (passing parameters to a method to be invoked on a CIM class) they are read in from the XML file that are inluded in the sub-directories. Each batch file is self contained and runs tests that excericse certain scenarios (VM operations, disk operations etc). 
+
+To run the tests:
+1. Edit the setenv.bat file to include the xen server ip address, username and password.
+2. Run setenv.bat to setup the test environment
+3. Run the individual test script batch files to excercise the scenarios

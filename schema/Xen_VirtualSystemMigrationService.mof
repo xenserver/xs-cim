@@ -1,0 +1,19 @@
+// Copyright (c) 2009 Citrix Systems Inc. All rights reserved.
+
+[Provider ("cmpi:Xen_VirtualSystemMigrationService"),
+ Description (
+	"Service class to control the migration of virtual systems between "
+        "host systems, including allowing checks to determine if an "
+        "intended migration operation is likely to succeed. Requires"
+	" 'xen tools' to be installed in the virtual machines and the use of poolwide "
+	"'shared' storage for virtual machine migrations to work between hosts.")]
+class Xen_VirtualSystemMigrationService : CIM_VirtualSystemMigrationService
+{
+};
+
+[Provider ("cmpi:Xen_VirtualSystemMigrationCapabilities")]
+class Xen_VirtualSystemMigrationCapabilities : 
+      CIM_VirtualSystemMigrationCapabilities
+{
+};
+

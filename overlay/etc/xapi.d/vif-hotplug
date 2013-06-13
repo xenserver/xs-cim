@@ -1,0 +1,95 @@
+#!/bin/bash
+
+action=$2
+vif_uuid=$4
+vm_uuid=$6
+
+OFCTL=/usr/bin/ovs-ofctl
+EBTABLES=/sbin/ebtables
+
+echo "VIF $vif_uuid is $2" >> /tmp/test
+logger -t vif-hotplug "vif-hotplug called with arguments: $*"
+
+kvp_enabled=0
+
+oc=$(xe vif-param-get uuid=$vif_uuid param-name=other-config) 
+if [[ "$oc" =~ ".*kvp_enabled.*" ]]; then
+    logger -t vif-hotplug "VIF is for KVP"
+    kvp_enabled=1
+fi
+
+    # Can't seem to always trust kvp_enabled flag - not present for some VIFs on xenapi network.  
+    # Determine the name of the network bridge the VIF is plugged # into. This should be 'xenapi'
+    network_uuid=$(xe vif-param-get uuid=$vif_uuid param-name=network-uuid) bridge_name=$(xe network-param-get uuid=$network_uuid param-name=bridge) 
+if [ "$bridge_name" == "xenapi" ]; then
+    logger -t vif-hotplug "VIF is on xenapi network"
+    kvp_enabled=1
+fi
+
+if [ $kvp_enabled -eq 1 ]; then
+	
+
+    # Retrieve the domid and device number fot the interface
+    # in order to work out what the VIF interface in Dom0
+    # is called.
+    deviceid=$(xe vif-param-get uuid=$vif_uuid param-name=device)
+    vifmac=$(xe vif-param-get uuid=$vif_uuid param-name=MAC)
+    domid=$(xe vm-param-get uuid=$vm_uuid param-name=dom-id)
+
+	
+    vif_name="vif$domid.$deviceid"
+    logger -t vif-hotplug "Managing rules for $vif_name for bridge $bridge_name"
+
+    bridge_mac=$(/sbin/ifconfig $bridge_name | awk '/HWaddr/{print $5}')
+    broadcast_mac="FF:FF:FF:FF:FF:FF"
+    backend=$(cat /etc/xensource/network.conf)
+	
+    if [ "$action" == "online" ]; then
+	if [ "$backend" == "openvswitch" ]; then
+	    logger -t vif-hotplug "Enforcing rules using the OVS"
+		
+	    port_info=$(ovs-ofctl dump-ports $bridge_name $vif_name)
+	    port_num=$(echo $port_info | sed -n '/port [0-9]/s/.* \([0-9][0-9]*\).*/\1/p')
+
+	    # Allow ARP traffic to behave in the normal way
+    	    $OFCTL add-flow $bridge_name "priority=60000 dl_type=0x0806 action=normal"
+	    $OFCTL add-flow $bridge_name "dl_src=$bridge_mac dl_dst=$vifmac action=output:$port_num"
+	    $OFCTL add-flow $bridge_name "dl_src=$vifmac dl_dst=$bridge_mac action=LOCAL"
+	    $OFCTL add-flow $bridge_name "dl_dst=$broadcast_mac action=LOCAL"
+	    # Make sure that the default action on this bridge is DROP
+	    $OFCTL add-flow $bridge_name "priority=0,actions=drop"
+	elif [ "$backend" == "bridge" ]; then
+	    logger -t vif-hotplug "Enforcing rules using EBTABLES"
+		
+            # Accepting only packets which are destined for bridge IP
+            # and drop all the rest. Dom0 can communicate with any of the
+	    # connected hosts.
+	    ebtables_bridge_mac=`echo ${bridge_mac//:0/:} | tr '[:upper:]' '[:lower:]'`
+	    ($EBTABLES -L INPUT | grep -q -- "-d $ebtables_bridge_mac" ) || $EBTABLES -A INPUT -d $ebtables_bridge_mac -j ACCEPT
+	    ($EBTABLES -L INPUT | grep -q -- "-d $broadcast_mac" ) || $EBTABLES -A INPUT -d $broadcast_mac -j ACCEPT
+	    ($EBTABLES -L OUTPUT | grep -q -- "-s $ebtables_bridge_mac" ) || $EBTABLES -A OUTPUT -s $ebtables_bridge_mac -j ACCEPT
+
+	    ebtables_vif_mac=`echo ${vif_mac//:0/:} | tr '[:upper:]' '[:lower:]'`
+	    ($EBTABLES -L INPUT | grep -q -- "-s $ebtables_vif_mac" ) || $EBTABLES -A INPUT -s $vifmac -j DROP
+	    ($EBTABLES -L OUTPUT | grep -q -- "-d $ebtables_vif_mac" ) || $EBTABLES -A OUTPUT -d $vifmac -j DROP
+	    ($EBTABLES -L FORWARD | grep -q -- "-s $ebtables_vif_mac" ) || $EBTABLES -A FORWARD -s $vifmac -j DROP
+	    ($EBTABLES -L FORWARD | grep -q -- "-d $ebtables_vif_mac" ) || $EBTABLES -A FORWARD -d $vifmac -j DROP
+	else
+	    logger -t vif-hotplug "ERROR: Unrecognised network backend"
+	fi
+    else
+	if [ "$backend" == "openvswitch" ]; then
+	    logger -t vif-hotplug "Removing OVS rules"
+	    $OFCTL del-flows $bridge_name "dl_dst=$vifmac"
+	    $OFCTL del-flows $bridge_name "dl_src=$vifmac"
+	elif [ "$backend" == "bridge" ]; then
+	    logger -t vif-hotplug "Removing bridge rules"
+	    $EBTABLES -D INPUT -s $vifmac -j DROP
+	    $EBTABLES -D OUTPUT -d $vifmac -j DROP
+	    $EBTABLES -D FORWARD -s $vifmac -j DROP
+	    $EBTABLES -D FORWARD -d $vifmac -j DROP
+	else
+	    logger -t vif-hotplug "ERROR: Unrecognised network backend"
+	fi
+    fi
+fi

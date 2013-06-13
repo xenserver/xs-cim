@@ -1,0 +1,18 @@
+<CreateStoragePool_INPUT 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"    
+     xmlns:sd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" 
+     xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_StoragePoolManagementService"> 
+    <Settings>
+        <sd:CIM_ResourceAllocationSettingData
+          xsi:type="CIM_ResourceAllocationSettingData_Type">
+            <sd:Connection>location=//10.60.2.40/public</sd:Connection>
+            <sd:Connection>iso_path=/reduser</sd:Connection>
+            <sd:Connection>username=ENG/reduser</sd:Connection>
+            <sd:Connection>cifspassword=Citrix$2</sd:Connection>
+            <sd:ResourceSubType>iso</sd:ResourceSubType>
+        </sd:CIM_ResourceAllocationSettingData>
+    </Settings>
+    <ElementName>WinrmTestCIFSISOSR</ElementName>
+    <ResourceType>16</ResourceType>
+</CreateStoragePool_INPUT>

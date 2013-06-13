@@ -1,0 +1,312 @@
+// Copyright (c) 2006 Novell, Inc. All rights reserved.
+// ==================================================================
+// Xen_RegisteredSVProfile
+// ==================================================================
+[Provider ("cmpi:Xen_RegisteredProfiles"),
+ Description (
+        "A class derived from CIM_RegisteredProfile used to "
+        "advertise conformance to the System Virtualization Profile.")]
+class Xen_RegisteredSystemVirtualizationProfile : CIM_RegisteredProfile
+{
+};
+
+// Copyright (c) 2006 Novell, Inc. All rights reserved.
+// ==================================================================
+// Xen_RegisteredVSProfile
+// ==================================================================
+[Provider ("cmpi:Xen_RegisteredProfiles"),
+ Description (
+        "A class derived from CIM_RegisteredProfile used to "
+        "advertise conformance to the Virtual System Profile.")]
+class Xen_RegisteredVirtualSystemProfile : CIM_RegisteredProfile
+{
+};
+
+// Copyright (c) 2009 Citrix Systems, Inc. All rights reserved.
+// ==================================================================
+// Xen_RegisteredProcessorAllocationProfile
+// ==================================================================
+[Provider ("cmpi:Xen_RegisteredProfiles"),
+ Description (
+        "A class derived from CIM_RegisteredProfile used to "
+        "advertise conformance to the Processor Allocation Profile.")]
+class Xen_RegisteredProcessorAllocationProfile : CIM_RegisteredProfile
+{
+};
+
+// Copyright (c) 2009 Citrix Systems, Inc. All rights reserved.
+// ==================================================================
+// Xen_RegisteredMemoryAllocationProfile
+// ==================================================================
+[Provider ("cmpi:Xen_RegisteredProfiles"),
+ Description (
+        "A class derived from CIM_RegisteredProfile used to "
+        "advertise conformance to the Memory Allocation Profile.")]
+class Xen_RegisteredMemoryAllocationProfile : CIM_RegisteredProfile
+{
+};
+
+// Copyright (c) 2009 Citrix Systems, Inc. All rights reserved.
+// ==================================================================
+// Xen_RegisteredDeviceAllocationProfile
+// ==================================================================
+[Provider ("cmpi:Xen_RegisteredProfiles"),
+ Description (
+        "A class derived from CIM_RegisteredProfile used to "
+        "advertise conformance to the Device Allocation Profile.")]
+class Xen_RegisteredGenericDeviceAllocationProfile : CIM_RegisteredProfile
+{
+};
+
+// ==================================================================
+// Xen_StorageVirtualizationProfile
+// ==================================================================
+[Provider ("cmpi:Xen_RegisteredProfiles"),
+ Description (
+        "A class derived from CIM_RegisteredProfile used to "
+        "advertise conformance to the Storage Resource Virtualization Profile.")]
+class Xen_RegisteredStorageVirtualizationProfile : CIM_RegisteredProfile
+{
+};
+
+// ==================================================================
+// Xen_EthernetPortVirtualizationProfile
+// ==================================================================
+[Provider ("cmpi:Xen_RegisteredProfiles"),
+ Description (
+        "A class derived from CIM_RegisteredProfile used to "
+        "advertise conformance to the Ethernet Port Resource Virtualization Profile.")]
+class Xen_RegisteredEthernetPortVirtualizationProfile : CIM_RegisteredProfile
+{
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Scoped Profiles
+///////////////////////////////////////////////////////////////////////////////
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+        "A class derived from CIM_ReferencedProfile used to "
+        "advertise scoped processor allocation profile.")]
+class Xen_ReferencedProcessorAllocationProfile : CIM_ReferencedProfile
+{
+   [Override ( "Antecedent" )] 
+   Xen_RegisteredSystemVirtualizationProfile REF Antecedent;
+
+   [Override ( "Dependent" )]
+   Xen_RegisteredProcessorAllocationProfile REF Dependent;
+};
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+        "A class derived from CIM_ReferencedProfile used to "
+        "advertise scoped memory allocation profile.")]
+class Xen_ReferencedMemoryAllocationProfile : CIM_ReferencedProfile
+{
+   [Override ( "Antecedent" )] 
+   Xen_RegisteredSystemVirtualizationProfile REF Antecedent;
+
+   [Override ( "Dependent" )]
+   Xen_RegisteredMemoryAllocationProfile REF Dependent;
+};
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+        "A class derived from CIM_ReferencedProfile used to "
+        "advertise scoped generic device allocation profile.")]
+class Xen_ReferencedGenericDeviceAllocationProfile : CIM_ReferencedProfile
+{
+   [Override ( "Antecedent" )] 
+   Xen_RegisteredSystemVirtualizationProfile REF Antecedent;
+
+   [Override ( "Dependent" )]
+   Xen_RegisteredGenericDeviceAllocationProfile REF Dependent;
+};
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+        "A class derived from CIM_ReferencedProfile used to "
+        "advertise scoped storage virtualization profile.")]
+class Xen_ReferencedStorageVirtualizationProfile : CIM_ReferencedProfile
+{
+   [Override ( "Antecedent" )] 
+   Xen_RegisteredSystemVirtualizationProfile REF Antecedent;
+
+   [Override ( "Dependent" )]
+   Xen_RegisteredStorageVirtualizationProfile REF Dependent;
+};
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+        "A class derived from CIM_ReferencedProfile used to "
+        "advertise scoped ethernet port virtualization profile.")]
+class Xen_ReferencedEthernetPortVirtualizationProfile : CIM_ReferencedProfile
+{
+   [Override ( "Antecedent" )] 
+   Xen_RegisteredSystemVirtualizationProfile REF Antecedent;
+
+   [Override ( "Dependent" )]
+   Xen_RegisteredEthernetPortVirtualizationProfile REF Dependent;
+};
+
+// Copyright (c) 2006 Novell, Inc. All rights reserved.
+// ==================================================================
+// Central instances of the profile
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+	"A class derived from CIM_ElementConformsToProfile "
+	"indicating that a ManagedElement conforms to the "
+	"System Virtualization Profile.")]
+class Xen_ElementConformsToSystemVirtualizationProfile : CIM_ElementConformsToProfile
+{
+   [Override ("ConformantStandard"), Key,
+	Description ("The RegisteredSystemVirtualizationProfile to "
+	             "which the ManagedElement conforms.")]
+   Xen_RegisteredSystemVirtualizationProfile REF ConformantStandard;
+
+   [Override ("ManagedElement"), Key,
+	Description ("The ManagedElement that conforms to the "
+	             "RegisteredSystemVirtualizationProfile.")]
+   Xen_HostComputerSystem REF ManagedElement;
+};
+
+// Copyright (c) 2006 Novell, Inc. All rights reserved.
+// ==================================================================
+// Xen_ElementConformsToProfile
+// ==================================================================
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+	"A class derived from CIM_ElementConformsToProfile "
+	"indicating that a ManagedElement conforms to the "
+	"Virtual System Profile.")]
+class Xen_ElementConformsToVirtualSystemProfile : CIM_ElementConformsToProfile
+{
+   [Override ("ConformantStandard"), Key,
+	Description ("The RegisteredVirtualSystemProfile to "
+	             "which the ManagedElement conforms.")]
+   Xen_RegisteredVirtualSystemProfile REF ConformantStandard;
+
+   [Override ("ManagedElement"), Key,
+	Description ("The ManagedElement that conforms to the "
+	             "RegisteredVirtualSystemProfile.")]
+   Xen_ComputerSystem REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+        "A class derived from CIM_ElementConformsToProfile "
+        "indicating that a ManagedElement conforms to the "
+        "Storage Virtualization Profile.")]
+class Xen_ElementConformsToStorageVirtualizationProfile : CIM_ElementConformsToProfile
+{
+   [Override ("ConformantStandard"), Key,
+        Description ("The Storage Virtualization profile to "
+                     "which the ManagedElement conforms.")]
+   Xen_RegisteredStorageVirtualizationProfile REF ConformantStandard;
+
+   [Override ("ManagedElement"), Key,
+        Description ("The ManagedElement that conforms to the "
+                     "Storage Virtualization profile.")]
+   Xen_HostComputerSystem REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_associationProviderCommon"),
+ Description (
+        "A class derived from CIM_ElementConformsToProfile "
+        "indicating that a ManagedElement conforms to the "
+        "Ethernet Port Virtualization Profile.")]
+class Xen_ElementConformsToEthernetPortVirtualizationProfile : CIM_ElementConformsToProfile
+{
+   [Override ("ConformantStandard"), Key,
+        Description ("The Ethernet port virtualization profile to "
+                     "which the ManagedElement conforms.")]
+   Xen_RegisteredEthernetPortVirtualizationProfile REF ConformantStandard;
+
+   [Override ("ManagedElement"), Key,
+        Description ("The ManagedElement that conforms to the "
+                     "Ethernet Port Virtualization profile.")]
+   Xen_VirtualSwitch REF ManagedElement;
+};
+
+//=============================================================================
+// Pools conforming to pool allocation profiles
+//=============================================================================
+[Association,
+ Provider ("cmpi:Xen_ResourcePoolConformsToProcessorAllocationProfile"),
+ Description (
+        "A class derived from CIM_ElementConformsToProfile "
+        "indicating that a ManagedElement conforms to the "
+        "Processor Allocation Profile.")]
+class Xen_ResourcePoolConformsToProcessorAllocationProfile : CIM_ElementConformsToProfile
+{
+   [Override ("ConformantStandard"), Key,
+        Description ("The Processor Allocation profile to "
+                     "which the ManagedElement conforms.")]
+   Xen_RegisteredProcessorAllocationProfile REF ConformantStandard;
+
+   [Override ("ManagedElement"), Key,
+        Description ("The ManagedElement that conforms to the "
+                     "Processor Allocation profile.")]
+   Xen_ProcessorPool REF ManagedElement;
+};
+[Association,
+ Provider ("cmpi:Xen_ResourcePoolConformsToMemoryAllocationProfile"),
+ Description (
+        "A class derived from CIM_ElementConformsToProfile "
+        "indicating that a ManagedElement conforms to the "
+        "Memory Allocation Profile.")]
+class Xen_ResourcePoolConformsToMemoryAllocationProfile : CIM_ElementConformsToProfile
+{
+   [Override ("ConformantStandard"), Key,
+        Description ("The Storage Virtualization profile to "
+                     "which the ManagedElement conforms.")]
+   Xen_RegisteredProcessorAllocationProfile REF ConformantStandard;
+
+   [Override ("ManagedElement"), Key,
+        Description ("The ManagedElement that conforms to the "
+                     "Storage Virtualization profile.")]
+   Xen_MemoryPool REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_ResourcePoolConformsToStorageVirtualizationProfile"),
+ Description (
+        "A class derived from CIM_ElementConformsToProfile "
+        "indicating that a ManagedElement conforms to the "
+        "Storage Virtualization Profile.")]
+class Xen_ResourcePoolConformsToStorageVirtualizationProfile : CIM_ElementConformsToProfile
+{
+   [Override ("ConformantStandard"), Key,
+        Description ("The Storage Virtualization profile to "
+                     "which the ManagedElement conforms.")]
+   Xen_RegisteredStorageVirtualizationProfile REF ConformantStandard;
+
+   [Override ("ManagedElement"), Key,
+        Description ("The ManagedElement that conforms to the "
+                     "Storage Virtualization profile.")]
+   Xen_StoragePool REF ManagedElement;
+};
+
+[Association,
+ Provider ("cmpi:Xen_ResourcePoolConformsToEthernetPortVirtualizationProfile"),
+ Description (
+        "A class derived from CIM_ElementConformsToProfile "
+        "indicating that a Ethernet Connection Pool conforms to the "
+        "Ethernet Port Virtualization Profile.")]
+class Xen_ResourcePoolConformsToEthernetPortVirtualizationProfile : CIM_ElementConformsToProfile
+{
+   [Override ("ConformantStandard"), Key,
+        Description ("The Ethernet Port Virtualization profile to "
+                     "which the ManagedElement conforms.")]
+   Xen_RegisteredEthernetPortVirtualizationProfile REF ConformantStandard;
+
+   [Override ("ManagedElement"), Key,
+        Description ("The ManagedElement that conforms to the "
+                     "Ethernet Port Virtualization profile.")]
+   Xen_NetworkConnectionPool REF ManagedElement;
+};

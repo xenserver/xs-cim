@@ -1,0 +1,459 @@
+-------------------------------------------------------------------
+Mon Aug 13 10:51:25 MDT 2007 - jfehlig@novell.com
+
+         - Test suite integration with xm-test, which will provide
+           a kernel/ramdisk for use by various automated tests.
+           Provided by Luke Szymanski.
+
+-------------------------------------------------------------------
+Fri Aug 10 15:30:22 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_Network and Xen_NetworkPortSettingData to
+           new 'Cmpilify' interface.  Provided by Raj Subrahmanian.
+
+-------------------------------------------------------------------
+Thu Aug  2 17:52:15 MDT 2007 - jfehlig@novell.com
+
+         - Converted profile registration classes to 'Cmpilify'
+           single, read-only interface.  In the process split
+           Xen_RegisteredSVProfile and Xen_RegisteredVSProfile
+           into separate libraries.
+
+-------------------------------------------------------------------
+Fri Jul 27 15:56:35 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_ProcessorPool to 'Cmpilify' interface.
+
+-------------------------------------------------------------------
+Fri Jul 27 10:27:37 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_MemoryPool to 'Cmpilify' interface.
+
+-------------------------------------------------------------------
+Thu Jul 26 16:44:30 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_ConsoleSettingData to 'Cmpilify' interface.
+         - Implemented ModifyInstance for Xen_ConsoleSettingData
+           to support changing such options as vncdisplay,
+           vncpasswd, etc.
+
+-------------------------------------------------------------------
+Thu Jul 19 18:02:01 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_Console to 'Cmpilify' interface.  Removed
+           corresponding resource files that are no longer used.
+
+-------------------------------------------------------------------
+Thu Jul 19 11:33:04 MDT 2007 - jfehlig@novell.com
+
+         - Updated cmpilify.[ch] from SBLIM CVS to include generic
+           provider association interface.
+
+-------------------------------------------------------------------
+Wed Jul 18 16:01:11 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_ComputerSystemSettingData to 'Cmpilify'
+           interface.  Removed corresponding resource files that
+           are no longer used.
+         - Added support for modifying adjustable settings in
+           Xen_ComputerSystemSettingData.
+
+-------------------------------------------------------------------
+Tue Jul 17 16:07:53 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_MemorySettingData to 'Cmpilify' interface.
+           Removed corresponding resource files that are no longer
+           used.
+         - Added support for memory ballooning via 'modify'
+           operation on Xen_MemorySettingData.
+
+-------------------------------------------------------------------
+Mon Jul 16 17:20:05 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_Memory to 'Cmpilify' interface.  Removed
+           corresponding resource files that are no longer used.
+
+-------------------------------------------------------------------
+Mon Jul 16 12:31:38 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_ComputerSystemCapabilities to 'Cmpilify'
+           interface.  Removed corresponding resource files that
+           are no longer used.
+
+-------------------------------------------------------------------
+Mon Jul 16 12:09:50 MDT 2007 - jfehlig@novell.com
+
+         - Moved all providers currently using 'Cmpilr' interface
+           to latest 'Cimplify' interface from sblim cvs.  Removed
+           cmpilr.[ch] and added cmpilify.[ch].
+
+-------------------------------------------------------------------
+Tue Jun 12 17:50:28 MDT 2007 - jfehlig@novell.com
+
+         - Ported Xen_ProcessorSettingData to 'Cmpilr' interface
+         - Changed 'Cmpilr' interface to stop overloading 'res'
+           parameter to get() and modify().  Udpated providers
+           already using the interface.  There will be one more
+           round of updates to 'Cmpilr' when we synch with SBLIM
+           cmpilify project.
+         - Added support in Xen_VirtualSystemManagementService for
+           specifying VCPU Weight and Limit (cap) in Xen_ProcessorRASD.
+
+-------------------------------------------------------------------
+Fri Jun  8 10:16:45 MDT 2007 - jfehlig@novell.com
+
+        - Add initial consistence checks in test suite for Xen_MemoryPool,
+          Xen_ProcessorPool and Xen_VirtualSystemManagementService.
+          Patch provided by Luke Szymanski.
+
+-------------------------------------------------------------------
+Mon Jun  4 16:57:17 MDT 2007 - jfehlig@novell.com
+
+        - Fixed memory leak in Xen_Disk
+        - Optimizations and cleanup in xen_utils
+        - Converted Xen_Processor to new instance resource
+          abstraction layer.
+
+-------------------------------------------------------------------
+Wed May 30 15:42:24 MDT 2007 - jfehlig@novell.com
+
+        - Converted providers to libtool modules.  Previously they
+          were libtool libraries.  libtool modules are dlopen()'ed
+          whereas libtool libraries are linked against - and the
+          providers are certainly dlopen()'ed by cimoms.
+
+-------------------------------------------------------------------
+Wed May 23 13:11:53 MDT 2007 - jfehlig@novell.com
+
+        - Renamed some of the recently introduced test input files
+          to better reflect their purpose.
+        - Removed Xen_RunningOS from list of association providers
+          that are tested.  This association (and Xen_OperatingSystem)
+          have been removed from the project.
+
+-------------------------------------------------------------------
+Wed May 23 12:46:16 MDT 2007 - jfehlig@novell.com
+
+        - Added tests for association providers.  Patch provided
+          by Luke Szymanski.
+
+-------------------------------------------------------------------
+Tue May 22 11:37:02 MDT 2007 - jfehlig@novell.com
+
+        - Xen_ElementConformsToSVProfile.mof and
+          Xen_ElementConformsToVSProfile.mof contained incorrect
+          ManagedElement reference property types.
+
+-------------------------------------------------------------------
+Thu May 17 15:18:02 MDT 2007 - jfehlig@novell.com
+
+        - Added test directory and scripts.  The beginnings of
+          automated testing for the project!  Patches provided by
+          Luke Szymanski.
+
+-------------------------------------------------------------------
+Mon May 14 10:56:45 MDT 2007 - jfehlig@novell.com
+
+        - Removed Xen_OperatingSystem and Xen_RunningOS from build.
+          Implementation and mof still exist but provider is no
+          longer built and mof not included in schema list.  These
+          classes are not defined in SVPC.
+
+-------------------------------------------------------------------
+Fri May 11 17:08:37 MDT 2007 - jfehlig@novell.com
+
+        - Propogated CMPIStatus structure through to resource files
+          in cmpilr.[ch].  Also changed all functions in cmpilr
+          function table to return int and any data in caller-provided
+          pointer.  This allows functions such as CMPILR_enumInstanceNames
+          to return success when no instances exist instead of an
+          exception - which will terminate any enumInstanceNames chain.
+        - Updated providers to changes in cmpilr interface.
+
+-------------------------------------------------------------------
+Fri May 11 13:11:08 MDT 2007 - jfehlig@novell.com
+
+        - Added function to tracing interface for tracing error
+          descriptions in XenAPI session object.
+        - Xen_DiskSettingData and Xen_VirtualSystemManagementCapabilities
+          classes now use new tracing interface.
+        - Converted Xen_Disk to new instance provider interface.
+
+-------------------------------------------------------------------
+Wed May  9 18:01:49 MDT 2007 - jfehlig@novell.com
+
+        - Fixed crashes when enumerating Xen_Memory[SettingData],
+          Xen_Processor[SettingData], and Xen_OperatingSystem.
+
+-------------------------------------------------------------------
+Wed May  9 17:19:27 MDT 2007 - jfehlig@novell.com
+
+        - Integrated new 'Cmpilr' instance provider interface into
+          build (Gareth Bestor)
+        - Ported Xen_VirtualSystemManagementCapabilities and
+          Xen_DiskSettingData to new 'Cmpilr' interface.
+        - Added some convenience functions to xen utils.
+
+-------------------------------------------------------------------
+Mon Apr 30 10:25:14 MDT 2007 - jfehlig@novell.com
+
+        - Fixed VirtualSystemManagementService.DefineSystem and
+          AddResourceSetting to work with xen-unstable/3.0.5
+
+-------------------------------------------------------------------
+Thu Apr 19 15:57:27 MDT 2007 - jfehlig@novell.com
+
+        - Move providers to xen-unstable.  Patches provided by
+          Raj Subrahmanian.
+        - Fix conversion of processor RASD to xen_vm_record
+          structure in VirtualSystemManagementService.
+
+-------------------------------------------------------------------
+Thu Mar 29 16:05:05 MDT 2007 - jfehlig@novell.com
+
+        - Added support for specifying VIF model in
+          Xen_VirtualSystemManagementService.DefineSystem.
+        - Populate NICConfigInfo property in Xen_NetworkPort and
+          Xen_NetworkPortSettingData.
+
+-------------------------------------------------------------------
+Tue Mar 27 16:01:43 MDT 2007 - jfehlig@novell.com
+
+        - Implemented support for Reboot in
+          Xen_ComputerSystem.RequestStateChange.  Support for
+          reset already existed - added Reboot with same semantics. 
+          
+
+-------------------------------------------------------------------
+Wed Mar 21 10:35:23 MDT 2007 - jfehlig@novell.com
+
+        - Changed syntax of VirtualSystemType property to coincide
+          with the strings found in xen_caps.  E.g. xen_caps has
+          strings such as xen-3.0-x86_32p, hvm-3.0-x86_32, and so
+          on.  Providers now expect that VirtualSystemType property
+          contains these strings as well.  On a DefineSystem
+          operation, Xen_VirtualSystemManagementService provider
+          only looks first part of string (e.g. xen or hvm) to
+          determine whether a PV or HVM guest is being defined.
+
+-------------------------------------------------------------------
+Tue Mar 20 17:51:34 MDT 2007 - jfehlig@novell.com
+
+        - Added support for acpi, apic, pae, usb, and usbdevice
+          settings for HVM guests.
+
+-------------------------------------------------------------------
+Tue Mar 20 16:23:35 MDT 2007 - jfehlig@novell.com
+
+        - Upstream patch 14341 was added to Xen 3.0.4-testing bits
+          of SLES10 SP1.  Providers had to be modified to account
+          for changes in xen_vm.h in libxenapi.
+
+-------------------------------------------------------------------
+Fri Mar  9 16:47:13 MST 2007 - jfehlig@novell.com
+
+        - Added support for receiving type CIMInstance (as well as
+          string) for EmbeddedInstance method parameters.  OpenWBEM
+	  and sfcb cimoms now support providing CIMInstances - i.e.
+          the cimoms handle parsing the embedded instances.  Support
+          for parsing MOF-encoded string remains for the time.
+
+-------------------------------------------------------------------
+Wed Mar  7 19:24:17 MST 2007 - jfehlig@novell.com
+
+        - Updated Console classes to use Xen APIs Console.location
+          property.  xen-unstable c/s 14021 was backported for
+          SLES10 SP1.  This c/s renames Console.uri to
+          Console.location.  Needed to build providers against
+          xen-unstable as well.
+
+-------------------------------------------------------------------
+Fri Mar  2 11:58:24 MST 2007 - jfehlig@novell.com
+
+        - Fixed regression in Xen_ComputerSystemSettingData.
+          Bootloader, BootloaderOptions, Kernel, RAMDisk, and
+          KernelOptions were not being displayed properly.
+
+-------------------------------------------------------------------
+Wed Feb 28 16:25:05 MST 2007 - jfehlig@novell.com
+
+        - Added support for Xen_ConsoleSettingData.ConsoleConfigInfo
+          in Xen_VirtualSystemManagementService.DefineSystem().  This
+          allows specifying additional console configuration such as
+          vncunused=1, vncpasswd=foobar, etc.
+
+-------------------------------------------------------------------
+Mon Feb 26 14:48:40 MST 2007 - jfehlig@novell.com
+
+        - Added support for localtime, stdvga, OnPoweroff,
+          OnReboot, and OnCrash to Xen_ComputerSystemSettingData.
+
+-------------------------------------------------------------------
+Fri Feb 23 14:53:40 MST 2007 - jfehlig@novell.com
+
+        - Added initial support for creating HVM guests via
+          VirtualSystemManagementService.DefineSystem().
+
+-------------------------------------------------------------------
+Fri Feb 23 10:22:17 MST 2007 - jfehlig@novell.com
+
+        - Allow specifying VM UUID on create (DefineSystem).
+
+-------------------------------------------------------------------
+Wed Feb 21 15:45:06 MST 2007 - jfehlig@novell.com
+
+        - Added Xen_ConsoleSettingData provider
+
+-------------------------------------------------------------------
+Wed Feb 20 17:15:06 MST 2007 - jfehlig@novell.com
+
+        - Added Xen_Console and Xen_ComputerSystemConsole
+          providers.  -- Raj Subrahmanian
+
+-------------------------------------------------------------------
+Mon Feb 12 15:30:12 MST 2007 - jfehlig@novell.com
+
+        - Updated to match recent changes in Xen-API VIF class.
+
+-------------------------------------------------------------------
+Fri Feb  9 19:33:06 MST 2007 - jfehlig@novell.com
+
+        - Implemented workaround for bug in OpenWBEM CMPI
+          interface.
+
+-------------------------------------------------------------------
+Fri Feb  2 11:26:36 MST 2007 - jfehlig@novell.com
+
+        - VirtualSystemTypesSupported property of 
+          Xen_VirtualSystemManagementCapabilites now contains the
+          supported guests mined from 'xen_caps' field of 'xm info'.
+
+-------------------------------------------------------------------
+Wed Jan 31 20:34:25 MST 2007 - jfehlig@novell.com
+
+        - Fixed segfault due to uninitialized variables.
+
+-------------------------------------------------------------------
+Wed Jan 31 19:52:57 MST 2007 - jfehlig@novell.com
+
+        - A few adjustments to the rudimentary session validation.
+
+-------------------------------------------------------------------
+Wed Jan 31 17:08:34 MST 2007 - jfehlig@novell.com
+
+        - Disable the compiling of Xen_HostedProcessor and 
+          Xen_HostedNetworkPort.  -- Raj Subrahmanian
+
+-------------------------------------------------------------------
+Wed Jan 31 16:55:31 MST 2007 - jfehlig@novell.com
+
+        - Fixed Xen_VirtualSystemManagementService to handle case
+          of xend being down.  If xend is not running, the provider
+          is still functional but sets 'Started' to false and
+          'EnabledState' to disabled.
+
+-------------------------------------------------------------------
+Wed Jan 31 14:44:20 MST 2007 - jfehlig@novell.com
+
+        - Added rudimentary session validation.
+
+-------------------------------------------------------------------
+Tue Jan 30 14:52:15 MST 2007 - jfehlig@novell.com
+
+        - Implemented DeleteInstance for class
+          Xen_NetworkPortSettingData
+
+-------------------------------------------------------------------
+Tue Jan 30 14:44:32 MST 2007 - jfehlig@novell.com
+
+        -  Implemented DeleteInstance for class
+           Xen_NetworkPort
+
+-------------------------------------------------------------------
+Tue Jan 30 14:25:47 MST 2007 - jfehlig@novell.com
+
+        - Implemented SetInstance (ModifyInstance) for 
+          class Xen_MemorySettingData
+
+-------------------------------------------------------------------
+Tue Jan 30 11:15:49 MST 2007 - jfehlig@novell.com
+
+        - Implemented DeleteResource for Xen_DiskSettingData
+
+-------------------------------------------------------------------
+Tue Jan 30 11:12:00 MST 2007 - jfehlig@novell.com
+
+        - Implemented DeleteResource for Xen_Disk
+
+-------------------------------------------------------------------
+Tue Jan 30 11:01:17 MST 2007 - jfehlig@novell.com
+
+        - Removed implementation of [Modify|Remove]ResourceSetting
+
+-------------------------------------------------------------------
+Tue Jan 30 10:28:48 MST 2007 - jfehlig@novell.com
+
+        - Removed ModifyResourceSetting and RemoveResourceSetting
+          from Xen_VirtualSystemManagementService.  These can be
+          accomplished using intrinsic [Modify|Delete]Instance.
+          AddResourceSetting will remain for now.
+
+-------------------------------------------------------------------
+Mon Jan 29 19:29:54 MST 2007 - jfehlig@novell.com
+
+        - Removed unused parameters from disk and vif resource
+          abstraction interface.
+
+-------------------------------------------------------------------
+Mon Jan 29 19:01:15 MST 2007 - jfehlig@novell.com
+
+        -  Changed representation of disk and vif resources.
+           Previously used domain resources to realize disk
+           and vif resources.  Now just keep lists of all disks
+           or vifs resources.
+
+-------------------------------------------------------------------
+Fri Jan 26 17:54:34 MST 2007 - jfehlig@novell.com
+
+        - Plug huge memory leak in the logging code.
+
+-------------------------------------------------------------------
+Thu Jan 25 15:52:19 MST 2007 - jfehlig@novell.com
+
+        - Added support for RemoveResourceSetting on
+          Xen_VirutalSystemManagementService. Xen API does not yet
+          support removing resources from a domain so the
+          RemoveResourceSetting method fails.  CIM code is compete
+          for removing disks and network ports.
+
+-------------------------------------------------------------------
+Thu Jan 25 14:21:02 MST 2007 - jfehlig@novell.com
+
+        - Changed Disk and NetworkPort classes to use UUID in
+          key properties instead of the non-correlatable "Disk1"
+          and "Vif3" values.
+
+-------------------------------------------------------------------
+Wed Jan 24 18:48:42 MST 2007 - jfehlig@novell.com
+
+        - Added support for AddResourceSetting and
+	  ModifyResourceSetting on Xen_VirtualSystemManagementService.
+	  Will not support AddResourceSettings and
+	  ModifyResourceSettings due to no support in CMPI for
+	  reference arrays as ouput parameters in extrinsic methods.
+
+-------------------------------------------------------------------
+Fri Jan 19 16:30:13 MST 2007 - jfehlig@novell.com
+
+        -  Removed MOF files no longer needed and adjusted top-level
+           Makefile.am accordingly
+        -  Fixed a small issue in Xen_MemoryPool_Resource.c found
+           while removing MOF files.
+
+Fri Jan 12 14:54:45 MST 2007 - jfehlig@novell.com
+
+	- Implemented library versioning for all providers.
+	  Currently set to version 1.0.0.
+	- Minor cleanup of configure.ac and src/Makefile.am
+	- Fixed a waring (which would have been a bug) found by SuSE
+	  autobuild in src/Xen_NetworkPort_Resource.c

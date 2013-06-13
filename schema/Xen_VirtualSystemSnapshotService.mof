@@ -1,0 +1,225 @@
+// Copyright (c) 2009 Citrix Systems Inc. All rights reserved.
+
+[Provider ("cmpi:Xen_VirtualSystemSnapshotService"),
+ Description (
+	"A Service object to manage Virtual Machine snapshots. The Snapshot settings"
+	" are available via the Xen_ComputerSystemSnapshot class.")]
+class Xen_VirtualSystemSnapshotService : CIM_VirtualSystemSnapshotService
+{
+//=============================================================================
+// Methods to transfer a VM snapshot tree out of XenServer - EXPORT
+//=============================================================================
+[ Description(
+      "This method starts the export process of a Virtual System's snapshot forest by "
+      "exposing the (delta) disk images that are part of the forest and making them "
+      "available for download via BITS. The Metadata associated with the snapshot tree "
+      "associated with the snapshot forest is also available for download and is expected "
+      "to be saved along with the along with the disks. The caller is expected to save "
+      "the disk's ID (part of the filename being downloaded), since the ID is "
+      "included as part of the Metadata and will be required during the import process."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 StartSnapshotForestExport(
+         [IN, Description ( 
+             "A CIM reference to the Virtual System whose snapshot tree is being exported.")]
+      Xen_ComputerSystem REF System,
+
+         [ IN, Description(
+	     "The Virtual Switch (or 'virtual network') to make the disk images"
+	     "reachable on. If not specified, assumes the 'management' network.")]
+      Xen_VirtualSwitch REF VirtualSwitch,
+
+         [ IN, Description(
+	     "Specifies that the server make the disk images available using HTTPS. "
+	     "The server's SSL certificate(s) required for connection the will be "
+	     "available as a property of the associated job object. Assumes 'No SSL' "
+	     "if not specified.")]
+      boolean UseSSL,
+
+         [ IN, Description(
+            "Network configuration for the transfervm's that are exposed by this call."
+            "To be specified in an array in the order of: start-ip, end-ip, mask, gateway "
+            "(e.g. ['192.168.0.1','192.168.0.10', '255.255.255.0', '192.168.0.1']) "
+            "If not specified, the disk will be made available a network configuration "
+            "picked by the DHCP server on the network.")]   
+    string NetworkConfiguration[],
+
+         [ IN, Description(
+           "TansferVM Timeout, in minutes."
+           "Once the timeout expires, the transfervms are disconnected from the network "
+           "and their resources are released. If not specified, the implementation"
+           "defaults to 24 hours. If 0 is specified, it never times out.")]
+    Uint32 TimeoutInMinutes,
+
+
+         [IN (false), OUT, Description ( 
+             "The job object to track the status of this asynchronous task. Once completed, "
+	     "the job object's 'DiskImageURLs' property contains the URLs that the disk "
+	     "images can be downloaded from. It also contains the 'ExportConnectionHandle' "
+	     "property that is required to end the Export process and free up resources.")]
+      Xen_StartSnapshotForestExportJob REF Job
+      );
+
+[ Description(
+      "This method allows the caller to indicate to the server to "
+      "clean up resources that may have been used during the export process."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 EndSnapshotForestExport(
+         [IN, Description ( 
+             "The Export Connection handle returned from the "
+	     "StartSnapshotForestExport call. This is required to "
+	     " cleanup all resources taken up during the export process.")]
+      string ExportConnectionHandle,
+
+         [IN (false), OUT, Description ( 
+             "The job object to track the status of this asynchronous task.")]
+      Xen_EndSnapshotForestExportJob REF Job
+      );
+
+//=============================================================================
+// Methods to transfer a VM snapshot tree into XenServer - IMPORT
+//=============================================================================
+[ Description(
+      "Prepares the process of a snapshot forest import into XenServer. "
+      "The caller is expected to have already created a Xen_DiskImage, "
+      "connected to it and uploaded the metadata blob prior to calling this API."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 PrepareSnapshotForestImport(
+        [IN, Description ("Xen_DiskImage instance that contains "
+	 "the contents of the metadata for the snapshot forest.")]
+	Xen_DiskImage REF MetadataDiskImage,
+
+         [IN(false), OUT, Description ("Import context "
+	 " to be used across all further calls.")]
+	string ImportContext
+      );
+
+[ Description(
+	"This method cleans up a failed import operation. It requires that "
+	"a the disk map returned via the 'CreateNextDiskInImportSequence' "
+	"is passed into this function, and that no more create calls have "
+	"been made since. Any disk that have already been imported will "
+	"then be destroyed."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 CleanupSnapshotForestImport(
+        [IN, Description ("Xen_DiskImage instance that contains "
+	 "the contents of the metadata for the snapshot forest.")]
+	Xen_DiskImage REF MetadataDiskImage,
+
+  	 [IN, Description ("DiskImageMap as passed back to the caller by the "
+	 "CreateNextDiskInImportSequence call. This parameter maps the Old "
+	 "vdi_uuid's with the newly created disks as part of the import process.")]
+	 string DiskImageMap
+       );
+
+
+[ Description(
+      "This call creates the next (delta) disk that needs to be uploaded "
+      "into Xen. The client is then expected to connect to the disk image "
+      "and upload the contents using the BITS protocol. "
+      "The client will need to call this API repeatedly "
+      "until it returns the 'no more disks to be imported' error (error code:32768). "
+      "Between loops, the client is expected to pick up the updated "
+      "'ImportContext' and 'DiskImageMap' from the output parameters and pass "
+      "them back as input parameters."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768","32769..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","No more Disks to be Imported","Vendor Specific"}]
+  uint32 CreateNextDiskInImportSequence(
+         [IN, OUT, Description ("An input/output parameter representing "
+	 "the context for the import process returned from the "
+	 "'PrepareSnapshotForestImport' call. The updated value of this "
+	 "parameter needs to be picked up from the output parameter of this call.")]
+	string ImportContext,
+
+        [IN, Description ("The Storage pool the disks are being created out of.")]
+	Xen_StoragePool REF StoragePool,
+
+        [IN, OUT, Description ("An input/output parameter that represents "
+	 "mapping between the old disk IDs that had been saved as part "
+	 "of the export and the new IDs of the disks that have been created "
+	 "as part of the import process. For the first call, pass in a emtpy string."
+	 "The updated value is needs to be picked up from the output parameter of this call.")]
+	string DiskImageMap,
+
+        [IN(false), OUT, Description ("The disk image created as part of the snapshot tree "
+	"The disk contents will have be copied using the BITS protocol "
+	 "by invoking the Xen_StoragePoolManagementService::ConnectToDiskImage API.")]
+	Xen_DiskImage REF NewDiskImage,
+
+        [IN(false), OUT, Description ("The ID of the caller's VHD file whose "
+	"contents have to be copied over to the newly created disk image.")]
+	string  OldDiskID
+      );
+
+[ Description(
+      "This method is to be called after the CreateNextDiskInImportSequence API "
+      "i.e. after all the disks associated with the "
+      "snapshot forest have been imported and their contents uploaded. "
+      "It links up all the delta disks and creates the Virtual System with "
+      "the snapshots in place."),
+    ValueMap {
+      "0","1","2","3","4","..","4096","4097..32767","32768..65535"},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved",
+      "Method Parameters Checked - Job Started",
+      "Method Reserved","Vendor Specific"}]
+  uint32 FinalizeSnapshotForestImport(
+          [IN, Description ("Xen_DiskImage instance that contains "
+	 "the contents of the metadata for the snapshot forest.")]
+	Xen_DiskImage REF MetadataDiskImage,
+
+         [IN, Description ("The Storage pool the disks were being created out of.")]
+	Xen_StoragePool REF StoragePool,
+
+         [IN, Description ("Mapping between the old disk IDs "
+	 "that had been saved as part of the export and the new IDs "
+	 "of the disks that have been created on the system. The most updated "
+	 "value needs to have been picked up from the output parameter list "
+	 "of last call to CreateNextDiskImageInImportSequence.")]
+	string DiskImageMap,
+
+       [IN(false), OUT, Description ("A reference to the newly created"
+	 "Virtual System.")]
+	Xen_ComputerSystem REF VirtualSystem
+      );
+};
+
+[Provider ("cmpi:Xen_VirtualSystemSnapshotCapabilities")]
+class Xen_VirtualSystemSnapshotCapabilities : CIM_VirtualSystemSnapshotCapabilities
+{
+};
+
+[Provider ("cmpi:Xen_VirtualSystemSnapshotServiceCapabilities")]
+class Xen_VirtualSystemSnapshotServiceCapabilities : CIM_VirtualSystemSnapshotServiceCapabilities
+{
+};
+

@@ -1,0 +1,4 @@
+<RequestStateChange_INPUT 
+     xmlns="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/root/cimv2/Xen_HostComputerSystem"> 
+     <RequestedState>REQSTATE</RequestedState>
+</RequestStateChange_INPUT>

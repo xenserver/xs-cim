@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Cimserver watchdog script
+# This is operated by a Cron script
+# and simply checks for the process.
+# If the process doesn't exist,
+# then the OpenPegasus process is 
+# started up.
+#
+
+cimserver="/opt/openpegasus/bin/cimserver"
+log_file="/var/log/messages"
+tag="xs-cim"
+
+# If this files exists, the watchdog will no
+# restart OpenPegasus.
+switch="/opt/xs-cim-cmpi/watchdog-off"
+
+function add_log_msg {
+    logger -f $log_file -t $tag $1
+}
+
+pid=$(pidof $cimserver)
+if [ ! -e $switch ]; then
+  if [ "$pid" == "" ]; then
+      add_log_msg "CIM Server found to be not running by watchdog."
+      /etc/init.d/openpegasus start
+      add_log_msg "CIM Server started by watchdog."
+  fi
+fi
+
+exit 0

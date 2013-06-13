@@ -1,0 +1,15 @@
+ <p:GetPerformanceMetricsForSystem_INPUT 
+     xmlns:p="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_MetricService"
+     xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+     xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+     <p:System>
+        <a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address> 
+        <a:ReferenceParameters>
+            <w:ResourceURI>http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/SYSTEMCLASSNAME</w:ResourceURI> 
+            <w:SelectorSet>
+                <w:Selector Name="CreationClassName">SYSTEMCLASSNAME</w:Selector> 
+                <w:Selector Name="Name">SYSTEM_UUID</w:Selector>
+            </w:SelectorSet>
+        </a:ReferenceParameters>
+     </p:System>
+ </p:GetPerformanceMetricsForSystem_INPUT>

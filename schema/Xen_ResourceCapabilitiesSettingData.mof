@@ -1,0 +1,51 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_MemoryCapabilitiesSettingData
+// ==================================================================
+[Provider ("cmpi:Xen_MemoryCapabilitiesSettingData"),
+ Description (
+        "A class derived from CIM_ResourceAllocationSettingData to represent "
+        "the min, max, increment and default Xen_MemorySettingData values "
+        "used when defining memory resources for a new XenServer virtual machine.")]
+class Xen_MemoryCapabilitiesSettingData : CIM_ResourceAllocationSettingData
+{
+};
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_ProcessorCapabilitiesSettingData
+// ==================================================================
+[Provider ("cmpi:Xen_ProcessorCapabilitiesSettingData"),
+ Description (
+        "A class derived from CIM_ResourceAllocationSettingData to represent "
+        "the min, max, increment and default Xen_ProcessorSettingData values "
+	"used when defining processor resources for a new XenServer virtual machine.")]
+class Xen_ProcessorCapabilitiesSettingData : CIM_ResourceAllocationSettingData
+{
+};
+
+// ==================================================================
+// Xen_StorageCapabilitiesSettingData
+// ==================================================================
+[Provider ("cmpi:Xen_StorageCapabilitiesSettingData"),
+ Description (
+        "A class derived from CIM_ResourceAllocationSettingData to represent "
+        "the min, max, increment and default Xen_StorageSettingData values "
+        "used when defining storage resources for a new XenServer virtual machine.")]
+class Xen_StorageCapabilitiesSettingData : CIM_ResourceAllocationSettingData
+{
+};
+
+// ==================================================================
+// Xen_NetworkConnectionCapabilitiesSettingData
+// ==================================================================
+[Provider ("cmpi:Xen_NetworkConnectionCapabilitiesSettingData"),
+ Description (
+        "A class derived from CIM_ResourceAllocationSettingData to represent "
+        "the min, max, increment and default RASD values "
+        "used when defining ethernet connection resources for a new XenServer virtual machine.")]
+class Xen_NetworkConnectionCapabilitiesSettingData : CIM_ResourceAllocationSettingData
+{
+};
+

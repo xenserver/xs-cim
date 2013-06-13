@@ -1,0 +1,155 @@
+// Copyright (c) 2009 Citrix Systems Inc.. All rights reserved.
+
+// ==================================================================
+// Xen_ComputerSystem
+// ==================================================================
+[Provider ("cmpi:Xen_HostPool"),
+ Description (
+	"A class derived from CIM_SystemSpecificCollection to represent "
+	"the cluster of XenServer hosts. The cluster represent the topmost-level "
+	"management domain")]
+class Xen_HostPool : CIM_SystemSpecificCollection
+{
+  //////////////////////////////////////////////////////////////////
+  // Extended Properties
+  //
+  [ Description("High Availability feature is enabled on this host cluster. See "
+  "product specs for more details. ")]
+  boolean HighAvailabilityEnabled;
+
+  [ Description("PoolID for the Default Storage Pool for this host cluster. When no "
+  "storage pool is specifed during virtual disk creation, the management system "
+  "automatically picks the default pool.")]
+  string DefaultStoragePoolID;
+
+  [ Description("Identifier of the Master for this host cluster. All management"
+  "requests should be directed at the master for best performance.")]
+  string Master;
+
+  //////////////////////////////////////////////////////////////////
+  //  Host Management
+  //
+
+  // [ Description(
+  //    "Enumerates the hosts in this cluster."),
+  //  ValueMap {
+  //    "0","1","2","3","4",".."},
+  //  Values {
+  //    "Completed with No Error","Not Supported","Failed","Timeout",
+  //    "Invalid Parameter","DMTF Reserved"}]
+  // uint32 ListHosts(
+  //
+  //  [ In(False), Out,
+  //    Description(
+  //      "References to Xen_HostComputerSystem instances representing host "
+  //      "systems that are part of this host cluster.")]
+  //  CIM_ResourceAllocationSettingData REF 
+  //    Hosts[]
+  //	);
+
+  [ Description(
+      "Creates a new XenServer host cluster and sets the host that this call is directed to"
+      " as the master of that cluster. Other hosts can then be added to the cluster once this"
+      " completes."),
+    ValueMap {
+      "0","1","2","3","4",".."},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved"}]
+  uint32 Create(
+
+    [ In(False), 
+      Description("Display Name for the new host cluster. This could be displayed in the management tool.")]
+	string Name,
+
+    [ In(False), 
+      Description("Description for the new host cluster.")]
+	string Description
+	);
+
+  [ Description(
+      "Adds a XenServer host to the host cluster."),
+    ValueMap {
+      "0","1","2","3","4",".."},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved"}]
+  uint32
+  AddHost(
+    [ In, Description(
+        "Hostname or IP Address of the XenServer host "
+        "system that is being added to this host cluster.")]
+	string HostName,
+
+    [ In, Description(
+        "Administrator username for the XenServer host being added.")]
+	string Username,
+
+    [ In, Description(
+        "Administrator password for the XenServer host being added.")]
+	string Password,
+
+    [ In(False), Out,
+      Description(
+	"CIM reference to the newly added XenServer host")]
+	Xen_HostComputerSystem REF Host
+	);
+
+  [ Description(
+      "Removes a Xen_HostComputerSystem object from the host cluster. "
+      "The host will no longer be able to participate in the cluster."),
+    ValueMap {
+      "0","1","2","3","4",".."},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved"}]
+  uint32 RemoveHost(
+    [ In, Description(
+        "A CIM reference to the XenServer host being removed.")]
+    Xen_HostComputerSystem REF Host
+	);
+
+  //////////////////////////////////////////////////////////////////
+  // High Availability feature 
+  //
+  [ Description(
+      "Enables the High-Availability feature on the XenServer host cluster (pool)."
+      "VMs will automatically be migrated to an appropriate host (with "
+      "proper network connectivity and resources) should one go down. See product "
+      "feature specs for more details."),
+    ValueMap {
+      "0","1","2","3","4",".."},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved"}]
+  uint32 EnableHighAvailability(
+	);
+
+  [ Description(
+      "Disables the High-Availability feature on the XenServer host cluster (pool)."),
+    ValueMap {
+      "0","1","2","3","4",".."},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved"}]
+  uint32 DisableHighAvailability(
+	);
+
+   /////////////////////////////////////////////////////////////////
+   // Miscellaneous
+   //
+  [ Description(
+      "Sets the default storage pool for this host cluster."),
+    ValueMap {
+      "0","1","2","3","4",".."},
+    Values {
+      "Completed with No Error","Not Supported","Failed","Timeout",
+      "Invalid Parameter","DMTF Reserved"}]
+  uint32 SetDefaultStoragePool(
+      [In, Description("A CIM reference of the Xen_StoragePool that is being set as 'default'"
+	" for the host cluster.")]
+      	Xen_StoragePool ref StoragePool
+	);
+
+};
+

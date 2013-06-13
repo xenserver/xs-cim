@@ -1,0 +1,30 @@
+// Copyright (c) 2006 IBM. All rights reserved.
+
+// ==================================================================
+// Xen_ComputerSystem
+// ==================================================================
+[Provider ("cmpi:Xen_HostComputerSystem"),
+ Description (
+	"A class derived from CIM_ComputerSystem to represent "
+	"the XenServer host.")]
+class Xen_HostComputerSystem : CIM_ComputerSystem
+{
+      [Description("Date/Time when the server was started.")]
+      dateTime StartTime;
+
+      [Description("Other configuration information for the host")]
+      string OtherConfig[];
+
+      [Description("Difference between UTC and local standard time. "
+      "This value adjusted for daylight savings."
+      "For example, for a server in the U.S. Eastern time zone, "
+      "the value is -5*60*60 when daylight savings is not in effect "
+      "and -4*60*60 when it is.")]
+      sint32 TimeOffset;
+ 
+      [Description ("The CN is the FQDN name of the host if rDNS is setup, "
+       		     "otherwise it's the IP address of the host.")]
+      string CN;
+};
+
+

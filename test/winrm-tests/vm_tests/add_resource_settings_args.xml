@@ -1,0 +1,36 @@
+<AddResourceSettings_INPUT
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns ="http://schemas.citrix.com/wbem/wscim/1/cim-schema/2/Xen_VirtualSystemManagementService">
+    <ResourceSettings>
+    <sd:Xen_ProcessorSettingData
+    xmlns:sd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_ProcessorSettingData"
+    xsi:type="Xen_ProcessorSettingData_Type">
+        <sd:ResourceType>3</sd:ResourceType>
+        <sd:VirtualQuantity>2</sd:VirtualQuantity>
+        <sd:Reservation>2</sd:Reservation>
+        <sd:Limit>95</sd:Limit>
+        <sd:AllocationUnits>count</sd:AllocationUnits>
+    </sd:Xen_ProcessorSettingData>
+    </ResourceSettings>
+    <ResourceSettings>
+    <sd:Xen_MemorySettingData
+    xmlns:sd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_MemorySettingData"
+    xsi:type="Xen_MemorySettingData_Type">
+        <sd:ResourceType>4</sd:ResourceType>
+        <sd:VirtualQuantity>512</sd:VirtualQuantity>
+        <sd:Reservation>512</sd:Reservation>
+        <sd:Limit>512</sd:Limit>
+        <sd:AllocationUnits>byte*2^20</sd:AllocationUnits>
+    </sd:Xen_MemorySettingData>
+    </ResourceSettings>
+    <AffectedConfiguration>
+        <a:Address xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+        <a:ReferenceParameters xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+            <w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Xen_ComputerSystemSettingData</w:ResourceURI>
+                <w:SelectorSet>
+                    <w:Selector Name="InstanceID">Xen:VM_UUID</w:Selector>
+                </w:SelectorSet>
+        </a:ReferenceParameters>
+    </AffectedConfiguration>
+</AddResourceSettings_INPUT>
