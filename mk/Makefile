@@ -6,8 +6,8 @@ include $(B_BASE)/rpmbuild.mk
 REPONAME := xs-cim
 REPO := $(call git_loc,$(REPONAME))
 
-LIBXENSERVER_BIN := $(PROJECT_OUTPUTDIR)/api-bindings/libxenserver-bin.tar.bz2
-LIBXENSERVER_SRC := $(PROJECT_OUTPUTDIR)/api-bindings/libxenserver-src.tar.bz2
+LIBXENSERVER_BIN := $(PROJECT_OUTPUTDIR)/xen-api-sdk/libxenserver-bin.tar.bz2
+LIBXENSERVER_SRC := $(PROJECT_OUTPUTDIR)/xen-api-sdk/libxenserver-src.tar.bz2
 
 LIBXENSERVER_DIR := $(MY_OBJ_DIR)/libxenserver
 LIBXENSERVER_H := $(LIBXENSERVER_DIR)/include/xen/api/xen_all.h
