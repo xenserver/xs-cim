@@ -138,10 +138,7 @@ xs-cim-cmpi: $(LIBXENSERVER_SO) $(LIBXENSERVER_H) $(CMPI_H) $(REPO)/Makefile
 		$(XS_CIM_RPM_TMP_DIR)/$(WWW_ROOT)/$(WWW_KVP)/$(WIN_SERVICE_MSI_SYM_DEBUG)
 
 $(REPO)/Makefile: $(REPO)/configure
-	cd $(REPO) && libtoolize --force
-	cd $(REPO) && aclocal
-	cd $(REPO) && autoheader
-	cd $(REPO) && automake --add-missing
+	cd $(REPO) && autoreconf -if
 	cd $(REPO) && ./configure --prefix=$(XS_CIM_HOME) \
 	                          CIMSERVER=pegasus \
 				  PROVIDERDIR=$(XS_CIM_HOME)/lib/cmpi \
