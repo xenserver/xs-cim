@@ -868,16 +868,7 @@ int create_resource_pool(
     }
     else if ((strcmp(type, "lvmoiscsi") == 0) ||
         (strcmp(type, "lvmohba")   == 0)) {
-        xen_utils_add_to_string_string_map("allocation", "thick", &sm_config);
-        xen_utils_add_to_string_string_map("use_vhd",    "true", &sm_config);
-        xen_utils_add_to_string_string_map("multipathable", "true", &sm_config);
-        char *scsiid = xen_utils_get_from_string_string_map(device_config, "SCSIid");
-        if (scsiid) {
-            char serial[MAX_INSTANCEID_LEN];
-            memset(serial, 0, sizeof(serial));
-            snprintf(serial, MAX_INSTANCEID_LEN, "scsi-%s", scsiid);
-            xen_utils_add_to_string_string_map("devserial", serial, &sm_config);
-        }
+        //No longer anything to do here.
     }
     else if (strcmp(type, "iso") == 0) {
         content_type = "iso";
