@@ -9,6 +9,7 @@ BuildRoot: %{_tmppath}/%{name}
 BuildArch: i386
 Requires: openpegasus
 Requires(preun): openpegasus
+Source0: xs-cim.tar.gz
 
 %define optdir /opt/%{name}
 %define _datadir %{optdir}/share
@@ -27,18 +28,14 @@ Requires(preun): openpegasus
 %define uninstall_script /opt/xensource/packages/files/xs-cim/uninstall.sh
 
 %description
-
-%prep
-exit 0
-
-%build
-exit 0
+An OpenPegasus provider for managing a XenServer host via the CIM protocol.
 
 %install
-exit 0
+cd %{buildroot}
+tar zxvf %{SOURCE0}
 
 %clean
-exit 0
+rm -rf %{buildroot}
 
 %posttrans
 set -eu
@@ -71,8 +68,8 @@ fi
 /opt/xensource/packages/files/xs-cim/uninstall.sh
 /usr/sbin/cimserver-debug-mode
 /opt/xs-cim-cmpi/watchdog
-/opt/xs-cim-cmpi/kvpd.py
-/opt/xs-cim-cmpi/httpservice.py
+/opt/xs-cim-cmpi/kvpd.py*
+/opt/xs-cim-cmpi/httpservice.py*
 /etc/init.d/kvpd
 /etc/xapi.d/vif-hotplug
 /opt/xensource/www/@WWW_KVP@/@WIN_SERVICE_EXE@
