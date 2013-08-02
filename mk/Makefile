@@ -106,24 +106,35 @@ $(XS_CIM_SPEC): $(REPO)/xs-cim-cmpi.spec.in xs-cim-cmpi
 	    $< >$@
 
 .PHONY: xs-cim-cmpi
-xs-cim-cmpi: $(LIBXENSERVER_SO) $(LIBXENSERVER_H) $(CMPI_H) $(REPO)/Makefile
+xs-cim-cmpi: $(LIBXENSERVER_SO) $(LIBXENSERVER_H) $(CMPI_H) $(REPO)/Makefile $(RPM_DIRECTORIES)
 	$(call mkdir_clean,$(XS_CIM_RPM_TMP_DIR))
 	make -C $(REPO)
 	make -C $(REPO) DESTDIR=$(XS_CIM_RPM_TMP_DIR) install
 	rsync -av --exclude \*~ $(REPO)/overlay/ $(XS_CIM_RPM_TMP_DIR)/
 	sed -i -e 's,@XEN_MOFS@,$(XEN_MOFS_SH),g' $(XS_CIM_RPM_TMP_DIR)/$(XS_CIM_HOME)/share/install-xs-cim-cmpi.sh
+	
+	# Libraries
 	rm -f $(XS_CIM_RPM_TMP_DIR)$(XS_CIM_HOME)/lib/cmpi/*.{a,la}
 	mv $(XS_CIM_RPM_TMP_DIR)$(XS_CIM_HOME)/etc/* $(XS_CIM_RPM_TMP_DIR)/etc
 	mkdir -p $(XS_CIM_RPM_TMP_DIR)$(XS_CIM_HOME)/lib
 	cp -a $(LIBXENSERVER_DIR)/libxenserver.so* $(XS_CIM_RPM_TMP_DIR)$(XS_CIM_HOME)/lib
 	cp -a $(KVPD_DIR)/*.py $(XS_CIM_RPM_TMP_DIR)$(XS_CIM_HOME)
+
+	# XAPI plugins
 	mkdir -p $(XS_CIM_RPM_TMP_DIR)$(XAPI_PLUGINS_PATH)
 	cp -a $(XAPI_PLUGINS) $(XS_CIM_RPM_TMP_DIR)/$(XAPI_PLUGINS_PATH)/
 	mkdir -p $(XS_CIM_RPM_TMP_DIR)$(XS_CIM_DIR_PATH)
+
+	# Uninstall script
 	cp -a $(XS_UNINSTALL) $(XS_CIM_RPM_TMP_DIR)$(XS_CIM_DIR_PATH)/
 	mkdir -p $(XS_CIM_RPM_TMP_DIR)$(INIT_D_PATH)
+
+	# Copy kvp daemon
 	cp $(KVPD_DIR)/kvpd $(XS_CIM_RPM_TMP_DIR)/$(INIT_D_PATH)
 	mkdir -p $(XS_CIM_RPM_TMP_DIR)$(WWW_ROOT)/$(WWW_KVP)/
+
+	# Copy windows service executables to their dirs and create
+	# symlinks for the purposes of the HTTP client.
 	cp $(WIN_SERVICE_DIR)/Release/$(WIN_SERVICE_MSI_SYM) \
 		$(XS_CIM_RPM_TMP_DIR)$(WWW_ROOT)/$(WWW_KVP)/$(WIN_SERVICE_MSI)
 	cp $(WIN_SERVICE_DIR)/Debug/$(WIN_SERVICE_MSI_SYM) \
@@ -136,6 +147,7 @@ xs-cim-cmpi: $(LIBXENSERVER_SO) $(LIBXENSERVER_H) $(CMPI_H) $(REPO)/Makefile
 		$(XS_CIM_RPM_TMP_DIR)/$(WWW_ROOT)/$(WWW_KVP)/$(WIN_SERVICE_EXE_SYM)
 	ln -s $(WWW_ROOT)/$(WWW_KVP)/$(WIN_SERVICE_MSI_DEBUG) \
 		$(XS_CIM_RPM_TMP_DIR)/$(WWW_ROOT)/$(WWW_KVP)/$(WIN_SERVICE_MSI_SYM_DEBUG)
+	cd $(XS_CIM_RPM_TMP_DIR) && tar zcvf $(RPM_SOURCESDIR)/xs-cim.tar.gz *
 
 $(REPO)/Makefile: $(REPO)/configure
 	cd $(REPO) && libtoolize --force
