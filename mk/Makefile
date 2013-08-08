@@ -150,10 +150,7 @@ xs-cim-cmpi: $(LIBXENSERVER_SO) $(LIBXENSERVER_H) $(CMPI_H) $(REPO)/Makefile $(R
 	cd $(XS_CIM_RPM_TMP_DIR) && tar zcvf $(RPM_SOURCESDIR)/xs-cim.tar.gz *
 
 $(REPO)/Makefile: $(REPO)/configure
-	cd $(REPO) && libtoolize --force
-	cd $(REPO) && aclocal
-	cd $(REPO) && autoheader
-	cd $(REPO) && automake --add-missing
+	cd $(REPO) && autoreconf -if
 	cd $(REPO) && ./configure --prefix=$(XS_CIM_HOME) \
 	                          CIMSERVER=pegasus \
 				  PROVIDERDIR=$(XS_CIM_HOME)/lib/cmpi \
