@@ -448,7 +448,7 @@ int vssd_to_vm_rec(
     if ((status->rc == CMPI_RC_OK) && !CMIsNullValue(propertyvalue) && (propertyvalue.type == CMPI_stringA))
         vm_rec->other_config = xen_utils_convert_CMPIArray_to_string_string_map(propertyvalue.value.array);
     else 
-        vm_rec->other_config = xen_string_string_map_alloc(1); /* create an empty other config */
+        vm_rec->other_config = xen_string_string_map_alloc(0); /* create an empty other config */
 
     /* PV Driver version information - common to both HVM and PV domains */
 
@@ -486,7 +486,7 @@ int vssd_to_vm_rec(
 
             /* add a null HVM boot params since this is a PV guest, 
               Oddly, vm_create requires it*/
-            map = xen_string_string_map_alloc(1);
+            map = xen_string_string_map_alloc(0);
             if (map == NULL)
                 goto Error;
             map->size = 0;

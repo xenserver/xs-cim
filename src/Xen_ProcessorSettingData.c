@@ -106,7 +106,7 @@ int proc_rasd_to_vm_rec(
     }
 
     if(vm_rec->vcpus_params == NULL)
-        vm_rec->vcpus_params = xen_string_string_map_alloc(1); /* xen doesnt like null */
+        vm_rec->vcpus_params = xen_string_string_map_alloc(0); 
 
     return 1;
 }
