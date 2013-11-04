@@ -220,7 +220,7 @@ int disk_rasd_to_vbd(
 
     (*vdi_rec)->virtual_size  = disk_size;
 #if OSS_XENAPI
-    (*vdi_rec)->other_config  = xen_string_string_map_alloc(1);
+    (*vdi_rec)->other_config  = xen_string_string_map_alloc(0);
     vdi_location = "";
     (*vdi_rec)->other_config->contents[0].key= strdup("location");
     (*vdi_rec)->other_config->contents[0].val = strdup(vdi_location);
