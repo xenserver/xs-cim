@@ -6,7 +6,7 @@ License: LGPL
 Vendor: Citrix Systems, Inc.
 Group: Systems Management/Base
 BuildRoot: %{_tmppath}/%{name}_data
-BuildArch: i386
+BuildArch: i386 i686 x86_64
 Requires: openpegasus
 Requires(preun): openpegasus
 Source0: xs-cim.tar.gz

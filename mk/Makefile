@@ -40,8 +40,8 @@ XS_CIM_DIR_PATH := /opt/xensource/packages/files/xs-cim
 
 INIT_D_PATH := /etc/init.d
 
-XS_CIM_RPM := $(MY_OUTPUT_DIR)/RPMS/i386/xs-cim-cmpi-$(PRODUCT_VERSION)-$(BUILD_NUMBER).i386.rpm
-XS_CIM_RPM_LINK := $(MY_OUTPUT_DIR)/xs-cim-cmpi.i386.rpm
+XS_CIM_RPM := $(MY_OUTPUT_DIR)/RPMS/x86_64/xs-cim-cmpi-$(PRODUCT_VERSION)-$(BUILD_NUMBER).x86_64.rpm
+XS_CIM_RPM_LINK := $(MY_OUTPUT_DIR)/xs-cim-cmpi.x86_64.rpm
 
 XS_CIM_HOME := /opt/xs-cim-cmpi
 XS_CIM_SPEC := $(MY_OBJ_DIR)/xs-cim-cmpi.spec

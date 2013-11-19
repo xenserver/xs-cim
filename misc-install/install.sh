@@ -65,10 +65,10 @@ else
     echo ""
     
     # bind-utils is required by tog-pegasus
-    rpm -ivh bind-libs-9.3.6-4.P1.el5.i386.rpm
-    rpm -ivh bind-utils-9.3.6-4.P1.el5.i386.rpm
-    rpm -ivh tog-pegasus-2.10.0-1.i386.rpm
+    rpm -ivh bind-libs-9.3.6-4.P1.el5.x86_64.rpm
+    rpm -ivh bind-utils-9.3.6-4.P1.el5.x86_64.rpm
+    rpm -ivh tog-pegasus-2.10.0-1.x86_64.rpm
     # replace /etc/pam.d/wbem file owned by pegasus
-    rpm -ivh xs-cim-cmpi-1.5.0-pegasus.i386.rpm --replacefiles
+    rpm -ivh xs-cim-cmpi-1.5.0-pegasus.x86_64.rpm --replacefiles
 fi
 
