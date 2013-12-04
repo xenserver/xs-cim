@@ -23,7 +23,7 @@
 #    Automake input file for the CMPI Xen CIM provider.
 # =============================================================================
 
-AM_CFLAGS=-O2 -Wall -Werror -Wno-nonnull @LIBXEN_CFLAGS@ @LIBXML2_CFLAGS@
+AM_CFLAGS=-O2 -Wall -Wno-nonnull @LIBXEN_CFLAGS@ @LIBXML2_CFLAGS@
 
 # Start with an empty extra distribution file list
 EXTRA_DIST=

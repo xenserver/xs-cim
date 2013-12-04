@@ -17,7 +17,11 @@ extern FILE* fd;
 #include "Xen_SettingDataParser.h"
 
 #ifndef YY_FLEX_LEX_COMPAT
+
+#if YY_FLEX_SUBMINOR_VERSION < 35
 int yylineno = 1;
+#endif
+
 #endif
 
 %}

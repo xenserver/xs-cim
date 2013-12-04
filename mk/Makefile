@@ -45,7 +45,7 @@ XS_CIM_RPM_LINK := $(MY_OUTPUT_DIR)/xs-cim-cmpi.i386.rpm
 
 XS_CIM_HOME := /opt/xs-cim-cmpi
 XS_CIM_SPEC := $(MY_OBJ_DIR)/xs-cim-cmpi.spec
-XS_CIM_RPM_TMP_DIR := $(MY_OBJ_DIR)/RPM_BUILD_DIRECTORY/tmp/xs-cim-cmpi
+XS_CIM_RPM_TMP_DIR := $(MY_OBJ_DIR)/RPM_BUILD_DIRECTORY/tmp/xs-cim-cmpi_data
 
 KVPD_DIR := $(REPO)/kvpservice
 
