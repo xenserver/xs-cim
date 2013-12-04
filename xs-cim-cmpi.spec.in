@@ -5,7 +5,7 @@ Release: @BUILD_NUMBER@
 License: LGPL
 Vendor: Citrix Systems, Inc.
 Group: Systems Management/Base
-BuildRoot: %{_tmppath}/%{name}
+BuildRoot: %{_tmppath}/%{name}_data
 BuildArch: i386
 Requires: openpegasus
 Requires(preun): openpegasus
