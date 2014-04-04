@@ -20,6 +20,8 @@
 #include "RASDs.h"
 #include "Xen_Disk.h"
 
+#define XAPI_NULL_REF "OpaqueRef:NULL"
+
 typedef struct {
     xen_vbd vbd;
     xen_vbd_record *vbd_rec;
@@ -444,10 +446,16 @@ CMPIrc xen_resource_set_properties(
     vdi_opt = vbd_rec->vdi;
     if (vdi_opt && vdi_opt->is_record)
         vdi_rec = vdi_opt->u.record;
-    else if (!xen_vdi_get_record(resource->session->xen, &vdi_rec, vbd_rec->vdi->u.handle)) {
+    else if (vbd_rec && (strcmp(vbd_rec->vdi->u.handle, "") != 0) && (strcmp(vbd_rec->vdi->u.handle, XAPI_NULL_REF) != 0)) {
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("VBD Ref: '%s'", vbd_rec->vdi->u.handle));
+
+        if (!xen_vdi_get_record(resource->session->xen, &vdi_rec, vbd_rec->vdi->u.handle)) {
         /* This can happen if the VDI handle is NULL (such as in an empty CD), just trace it and move on */
         xen_utils_trace_error(resource->session->xen, __FILE__, __LINE__);
         RESET_XEN_ERROR(resource->session->xen);
+        }
+    } else {
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("VBD Ref is NULL. Don't call out."));
     }
 
     /* set the properties on the appropriate classes */
