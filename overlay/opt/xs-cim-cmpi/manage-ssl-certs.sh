@@ -1,5 +1,10 @@
 #!/bin/bash
 
+####### LOAD XENSOURCE-INVENTORY #######
+
+. /etc/xensource-inventory
+
+
 ########## GLOBAL VARIABLES ############
 
 PEG_HOME="/opt/openpegasus"
@@ -49,6 +54,14 @@ function link_sym_cert() {
     $CIMCONFIG -s $KEY_CONFIG=$SYM_CERT -p
 }
 
+############# REMOVE CN OTHER_CONFIG CACHE ##################
+
+function remove_cn_other_config_cache() {
+    echo "Attempt to remove CN if in other_config..."
+    xe host-param-remove uuid=$INSTALLATION_UUID param-name=other-config param-key=host_cn
+
+}
+
 ############# RESTART OPENPEGASUS ###########################
 function restart_pegasus() {
     cd $PEG_HOME
@@ -61,6 +74,7 @@ case "$1" in
         echo "Using XAPI's cert..."
         link_sym_cert $XAPI_CERT
         restart_pegasus
+        remove_cn_other_config_cache
         echo "Done"
         ;;
 
@@ -69,6 +83,7 @@ case "$1" in
         generate_self_signed_certificate
         link_sym_cert $PEMFILE
         restart_pegasus
+        remove_cn_other_config_cache
         ;;
      *)
         echo "Usage:"
