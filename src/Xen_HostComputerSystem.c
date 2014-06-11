@@ -275,15 +275,30 @@ static CMPIrc host_set_properties(
     /* Populate the instance's properties with the backend data */
     _set_allowed_operations(resource->broker, ctx->host_rec, inst, "AvailableRequestedStates");
 
-    /* Get CN name by calling a plugin on the Host */
+    /* Check other-config (as a cache) */
     char *CN = NULL;
-    xen_string_string_map *args = xen_string_string_map_alloc(0);
-    xen_host_call_plugin(resource->session->xen, &CN, ctx->host, "xscim", "read_host_cn", args);
-    xen_string_string_map_free(args);
-    _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_DEBUG,("CN name back from plugin = %s for host %s", CN, ctx->host));
-    CMSetProperty(inst, "CN", (CMPIValue *)CN, CMPI_chars);
-    if (CN)
-      free(CN);
+    CN = xen_utils_get_from_string_string_map(ctx->host_rec->other_config, "host_cn");
+    /* Did not find the CN in the cache, call out to plugin */
+    if (CN) {
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_DEBUG,("CN back from other_config = %s for host %s", CN, ctx->host));
+        CMSetProperty(inst, "CN", (CMPIValue *)CN, CMPI_chars);
+    } else {
+        /* Get CN name by calling a plugin on the Host */
+        //char *CN = NULL;
+        xen_string_string_map *args = xen_string_string_map_alloc(0);
+        xen_host_call_plugin(resource->session->xen, &CN, ctx->host, "xscim", "read_host_cn", args);
+        xen_string_string_map_free(args);
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_DEBUG,("CN name back from plugin = %s for host %s", CN, ctx->host));
+        /* Update the other_config cache */
+        xen_host_add_to_other_config(resource->session->xen, ctx->host, "host_cn", CN);
+        CMSetProperty(inst, "CN", (CMPIValue *)CN, CMPI_chars);
+	// Only need to free CN here because we have made the plugin call.
+	// If we've taken the value from the cache it will be free'd when
+	// ctx->host_rec is free'd.
+        if (CN)
+          free(CN);
+    } 
+
     CMSetProperty(inst, "Caption",(CMPIValue *)"XenServer Host", CMPI_chars);
     DMTF_Dedicated dedicated = DMTF_Dedicated_Other;
     CMPIArray *arr = CMNewArray(resource->broker, 1, CMPI_uint16, NULL);
