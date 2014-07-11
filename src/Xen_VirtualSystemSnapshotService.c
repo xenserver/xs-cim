@@ -597,12 +597,16 @@ int start_snapshot_forest_export(
             if(elems == 4) {
                 CMPIData arrelem = CMGetArrayElementAt(arr, 0, NULL);
                 ip_address_start = CMGetCharPtr(arrelem.value.string);
+                _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("IP Start: %s", ip_address_start));
                 arrelem = CMGetArrayElementAt(arr, 1, NULL);
                 ip_address_end = CMGetCharPtr(arrelem.value.string);
+                _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("IP End: %s", ip_address_end));
                 arrelem = CMGetArrayElementAt(arr, 2, NULL);
                 subnet_mask = CMGetCharPtr(arrelem.value.string);
+                _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("Subnet: %s", subnet_mask));
                 arrelem = CMGetArrayElementAt(arr, 3, NULL);
                 ip_gateway = CMGetCharPtr(arrelem.value.string);
+                _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("Gateway: %s", ip_gateway));
             }
         }
     }
@@ -825,6 +829,7 @@ static int _exec_create_instruction(
     char **old_vdi_uuid
     )
 {
+    int rc = 1;
     xen_sr sr_ref = NULL;
     xen_vdi newvdi = NULL;
 
@@ -857,11 +862,20 @@ static int _exec_create_instruction(
         if(*dest_vdi_uuid) {
             xen_utils_add_to_string_string_map(
                 *old_vdi_uuid, *dest_vdi_uuid, vdi_map);
+        } else {
+            xen_utils_trace_error(session->xen, __FILE__, __LINE__);
+            rc = 0;
         }
         xen_vdi_free(newvdi);
+
+    } else {
+        xen_utils_trace_error(session->xen, __FILE__, __LINE__);
+        rc = 0;
     }
-    xen_vdi_record_free(vdi_rec);
-    return 1;
+
+    if (vdi_rec)
+        xen_vdi_record_free(vdi_rec);
+    return rc;
 }
 
 static int _exec_clone_instruction(
@@ -872,32 +886,51 @@ static int _exec_clone_instruction(
     char **old_vdi_uuid
     )
 {
+    int rc = 0;
+    char *child_vdi_uuid = NULL;
+    char *parent_vdi_uuid = NULL;
     xen_vdi parent_vdi = NULL;
+    xen_vdi newvdi = NULL;
+    xen_string_string_map *driver_params = NULL;
 
     /* instruction is of the form 'clone <child-vdi-uuid> <parent-vdi-uuid>' */
     /* Clone an existing VDI */
     _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("Executing clone instruction"));
-    if(instruction_args->size != 3)
-        return 0;
-    char *child_vdi_uuid = strdup(instruction_args->contents[1]);
-    char *parent_vdi_uuid = xen_utils_get_from_string_string_map(
-                            *vdi_map, instruction_args->contents[2]);
+    if(instruction_args->size != 3) {
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_ERROR, ("Clone command does not have the correct number of arguments. Expected 3, recieved %d", instruction_args->size));
+        goto Exit;
+    }
+
+    child_vdi_uuid = strdup(instruction_args->contents[1]);
+    parent_vdi_uuid = xen_utils_get_from_string_string_map(
+                        *vdi_map, instruction_args->contents[2]);
+
     if(xen_vdi_get_by_uuid(session->xen, &parent_vdi, parent_vdi_uuid)){
-        xen_string_string_map* driver_params = xen_string_string_map_alloc(0);
-        xen_vdi newvdi = NULL;
+        driver_params = xen_string_string_map_alloc(0);
         if(xen_vdi_clone(session->xen, &newvdi, parent_vdi, driver_params) && newvdi) {
             xen_vdi_get_uuid(session->xen, dest_vdi_uuid, newvdi);
             if(*dest_vdi_uuid) {
                 xen_utils_add_to_string_string_map(
                     child_vdi_uuid, *dest_vdi_uuid, vdi_map);
             }
-            xen_vdi_free(newvdi);
+        } else {
+            xen_utils_trace_error(session->xen, __FILE__ , __LINE__);
+            _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_ERROR, ("Failed to clone %s", parent_vdi));
+            goto Exit;
         }
-        xen_string_string_map_free(driver_params);
-        xen_vdi_free(parent_vdi);
     }
     *old_vdi_uuid = child_vdi_uuid;
-    return 1;
+    rc=1;
+
+Exit:
+    if (parent_vdi)
+        xen_vdi_free(parent_vdi);
+    if (newvdi)
+        xen_vdi_free(newvdi);
+    if (driver_params)
+        xen_string_string_map_free(driver_params);
+
+    return rc;
 }
 
 static int _exec_reuse_instruction(
@@ -913,8 +946,19 @@ static int _exec_reuse_instruction(
     if(instruction_args->size != 3)
         return 0;
     *old_vdi_uuid = strdup(instruction_args->contents[1]);
-    *dest_vdi_uuid = strdup(xen_utils_get_from_string_string_map(
-                            *vdi_map, instruction_args->contents[2]));
+
+    /* lookup the dsetination VDI from the vdi_map */
+    char *mapped_vdi_uuid = xen_utils_get_from_string_string_map(
+                            *vdi_map, instruction_args->contents[2]);
+
+    if(!mapped_vdi_uuid) {
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_ERROR, ("Unable to find %s in vdi_map",
+                                                instruction_args->contents[2]));
+        return 0;
+    }
+
+    *dest_vdi_uuid = strdup(mapped_vdi_uuid);
+
     /* remove the parent uuid from the map */
     xen_utils_remove_from_string_string_map(
         instruction_args->contents[2], vdi_map);
@@ -931,39 +975,81 @@ static int _exec_snap_instruction(
     xen_string_string_map **vdi_map
     )
 {
+    int rc = 0;
     /* instruction is of the form 'snap <vdi-uuid>' */
     /* create a new snapshot of an existing VDI */
     _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("Executing snap instruction"));
     if(instruction_args->size != 2)
         return 0;
+    char *old_uuid = instruction_args->contents[1];
     char *dest_uuid = xen_utils_get_from_string_string_map(
-                            *vdi_map, instruction_args->contents[1]);
+                            *vdi_map, old_uuid);
     xen_vdi dest_vdi = NULL;
+    xen_sr sr = NULL;
+    xen_vdi newvdi = NULL;
+    xen_string_string_map* driver_params = NULL;
+    char *dest_vdi_uuid = NULL;
+
+    if (!dest_uuid) {
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_ERROR, ("Did not find VDI uuid '%s' in vdi_map.", old_uuid));
+        goto Exit;
+    }
+
     if (xen_vdi_get_by_uuid(session->xen, &dest_vdi, dest_uuid)) {
-        xen_sr sr = NULL;
-        xen_vdi newvdi = NULL;
-        xen_vdi_get_sr(session->xen, &sr, dest_vdi);
 
-        xen_string_string_map* driver_params = xen_string_string_map_alloc(0);
-        xen_vdi_snapshot(session->xen, &newvdi, dest_vdi, driver_params);
-        xen_string_string_map_free(driver_params);
-        xen_vdi_destroy(session->xen, dest_vdi);
-        xen_vdi_set_name_label(session->xen, newvdi, instruction_args->contents[1]);
+        if (!xen_vdi_get_sr(session->xen, &sr, dest_vdi))
+            goto Exit;
 
-        xen_sr_scan(session->xen, sr);
-        xen_sr_free(sr);
-        xen_vdi_free(dest_vdi);
-        char *dest_vdi_uuid = NULL;
-        xen_vdi_get_uuid(session->xen, &dest_vdi_uuid, newvdi);
+        driver_params = xen_string_string_map_alloc(0);
+
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("About to snapshot"));
+        if (!xen_vdi_snapshot(session->xen, &newvdi, dest_vdi, driver_params))
+            goto Exit; 
+
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("About to destroy"));
+        if (!xen_vdi_destroy(session->xen, dest_vdi))
+            goto Exit;
+        
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("About to set label"));
+        if (!xen_vdi_set_name_label(session->xen, newvdi, instruction_args->contents[1]))
+            goto Exit;
+
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("About to scan sr"));
+        if (!xen_sr_scan(session->xen, sr))
+            goto Exit;
+
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("About to get UUID"));
+
+        if (!xen_vdi_get_uuid(session->xen, &dest_vdi_uuid, newvdi))
+            goto Exit;
+
+        _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("About to update map"));
         if(dest_vdi_uuid) {
             xen_utils_add_to_string_string_map(
                 instruction_args->contents[1], dest_vdi_uuid, vdi_map);
-            free(dest_vdi_uuid);
+        } else {
+            _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("No dest_vdi_uuid. Skipping adding to map."));
         }
-        xen_vdi_free(newvdi);
     }
-    /* no disk to be returned to caller */
-    return 1;
+        /* no disk to be returned to caller */
+        rc = 1;
+
+Exit:
+    _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("Exit"));
+    if (!rc)
+        xen_utils_trace_error(session->xen, __FILE__, __LINE__);
+    if (newvdi)
+        xen_vdi_free(newvdi);
+    if (sr)
+        xen_sr_free(sr);
+    if (dest_vdi)
+        xen_vdi_free(dest_vdi);
+    if (dest_vdi_uuid)
+        free(dest_vdi_uuid);
+    if (driver_params)
+        xen_string_string_map_free(driver_params);
+        
+    return rc;
 }
 
 static int _exec_leaf_instruction(
@@ -1156,7 +1242,7 @@ int create_next_disk_in_import_sequence(
         vdi_map = xen_utils_convert_string_to_string_map(CMGetCharPtr(argdata.value.string), ",");
 
 	if (vdi_map->size > 0) {
-	  int i;
+         int i;
 	  for(i=0;i< vdi_map->size; i++){
 	      _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("Key:%s,Val:%s", vdi_map->contents[i].key, vdi_map->contents[i].val));   
 	  }
@@ -1191,6 +1277,16 @@ int create_next_disk_in_import_sequence(
               _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_ERROR, ("A Carriage Return symbol has been found! '\r' This may stop us from parsing the input correctly."));
         }
         while((dest_vdi_uuid == NULL) && tmp) {
+
+
+
+	if (vdi_map->size > 0) {
+	  int i;
+	  for(i=0;i< vdi_map->size; i++){
+	      _SBLIM_TRACE(_SBLIM_TRACE_LEVEL_INFO, ("Key:%s,Val:%s", vdi_map->contents[i].key, vdi_map->contents[i].val));   
+	  }
+	}
+
             /* Keep executing instructions till the next disk in the sequence has been created */
             /* the newly created disk will then have to be returned to caller so they can upload disk contents */
             next_instruction = strchr(tmp, '\n'); /* instructions are newline delimited */
