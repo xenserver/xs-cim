@@ -179,6 +179,11 @@ AM_INIT_AUTOMAKE([-Wall -Werror])
 # Check for the required C compiler
 AC_PROG_CC
 
+# Check for ar
+# automake 1.12 gives warnings without this macro, but this macro was not
+# defined before automake 1.11.2 so conditionally define it.
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+
 # Check if the C compiler supports 'const'
 AC_C_CONST
 
