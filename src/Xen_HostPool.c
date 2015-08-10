@@ -566,7 +566,7 @@ static CMPIrc EnableHighAvailability(
                 heartbeat_srs->contents[0] = default_sr;
                 xen_string_string_map *ha_config = xen_string_string_map_alloc(0);
 
-                if (xen_pool_enable_ha(session->xen, heartbeat_srs, ha_config, "")); {
+                if (xen_pool_enable_ha(session->xen, heartbeat_srs, ha_config)); {
                     rc = Xen_HostPool_EnableHighAvailability_Completed_with_No_Error;
                     statusrc = CMPI_RC_OK;
                 }
